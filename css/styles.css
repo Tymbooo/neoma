@@ -409,6 +409,121 @@ body.game-page--wordsearch {
   display: block;
 }
 
+/* Word quiz modal */
+.word-quiz-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: max(0.75rem, env(safe-area-inset-top)) max(0.75rem, env(safe-area-inset-right)) max(0.75rem, env(safe-area-inset-bottom)) max(0.75rem, env(safe-area-inset-left));
+}
+
+.word-quiz-modal[hidden] {
+  display: none !important;
+}
+
+.word-quiz-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(4, 6, 12, 0.72);
+  backdrop-filter: blur(8px);
+}
+
+.word-quiz-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 420px;
+  max-height: min(90vh, 640px);
+  overflow: auto;
+  padding: clamp(1rem, 4vw, 1.35rem);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+}
+
+.word-quiz-heading {
+  margin: 0 0 0.35rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.word-quiz-prompt {
+  margin: 0 0 0.5rem;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  color: var(--text);
+}
+
+.word-quiz-word {
+  margin: 0 0 1rem;
+  font-family: var(--mono);
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--accent-2);
+}
+
+.word-quiz-feedback {
+  margin: 0 0 0.75rem;
+  min-height: 1.25em;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--accent-3);
+}
+
+.word-quiz-feedback.word-quiz-feedback--error {
+  color: #fca5a5;
+}
+
+.word-quiz-choices {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.word-quiz-choice {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0.65rem 0.85rem;
+  text-align: left;
+  font-family: var(--font);
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--text);
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, transform 0.1s;
+}
+
+.word-quiz-choice:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.word-quiz-choice:focus-visible {
+  outline: 2px solid var(--accent-2);
+  outline-offset: 2px;
+}
+
+.word-quiz-choice:active {
+  transform: scale(0.99);
+}
+
+body.word-quiz-open #word-grid {
+  pointer-events: none;
+}
+
 /* Phones: minimal side padding so the grid uses almost full width */
 @media (max-width: 639px) {
   body.home {
@@ -496,5 +611,15 @@ body.game-page--wordsearch {
   .placeholder-card {
     padding: 1.1rem 0.65rem;
     border-radius: 16px;
+  }
+
+  .word-quiz-card {
+    padding: 0.85rem 0.65rem;
+    max-height: min(88dvh, 100%);
+  }
+
+  .word-quiz-choice {
+    padding: 0.55rem 0.65rem;
+    font-size: 0.8125rem;
   }
 }

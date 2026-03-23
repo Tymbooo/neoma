@@ -18,7 +18,7 @@
   <main class="game-shell game-shell--wordsearch">
     <div class="wordsearch-layout">
       <div class="wordsearch-panel wordsearch-panel--grid">
-        <p class="wordsearch-hint">Click and drag in a straight line — horizontally, vertically, or diagonally — to highlight a word. Release to submit.</p>
+        <p class="wordsearch-hint">Drag in a straight line to highlight a word, then answer the meaning question to clear it. Press Esc to close a question without clearing.</p>
         <div id="word-grid" class="word-grid" role="application" aria-label="Letter grid"></div>
       </div>
       <aside class="wordsearch-panel">
@@ -29,6 +29,24 @@
       </aside>
     </div>
   </main>
+
+  <div id="word-quiz-modal" class="word-quiz-modal" hidden aria-hidden="true">
+    <div class="word-quiz-backdrop" tabindex="-1"></div>
+    <div
+      class="word-quiz-card"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="word-quiz-heading"
+      aria-describedby="word-quiz-prompt"
+    >
+      <p id="word-quiz-heading" class="word-quiz-heading">You highlighted a word</p>
+      <p id="word-quiz-prompt" class="word-quiz-prompt"></p>
+      <p class="word-quiz-word" id="word-quiz-word" aria-label="Word found"></p>
+      <p id="word-quiz-feedback" class="word-quiz-feedback" role="status" aria-live="polite"></p>
+      <div class="word-quiz-choices" id="word-quiz-choices"></div>
+    </div>
+  </div>
+
   <script src="../js/word-search.js"></script>
 </body>
 </html>

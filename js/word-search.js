@@ -10,6 +10,84 @@
     "DOMAIN",
   ];
 
+  /** Multiple choice: correct meaning + three distractors per grid word */
+  const QUIZ = {
+    EXPROBABLE: {
+      question: "Which meaning fits this (site) name best?",
+      correct:
+        "Something highly likely — like “exponential” meets “probable”",
+      wrong: [
+        "A legal contract clause only used in the EU",
+        "A technical term for CPU cache size",
+        "A file extension for 3D models",
+      ],
+    },
+    HOSTINGER: {
+      question: "Hostinger is best known as:",
+      correct: "A company that provides web hosting and domains",
+      wrong: [
+        "A video streaming codec",
+        "A built-in macOS backup tool",
+        "A type of SSL certificate brand",
+      ],
+    },
+    SEARCH: {
+      question: "In everyday language, “search” means:",
+      correct: "To look carefully for someone or something",
+      wrong: [
+        "To encrypt a password",
+        "To delete temporary files",
+        "To increase screen brightness",
+      ],
+    },
+    PUZZLE: {
+      question: "A puzzle is usually:",
+      correct: "A problem or game designed to challenge your thinking",
+      wrong: [
+        "A background image on your desktop",
+        "A social media notification sound",
+        "A browser bookmark folder",
+      ],
+    },
+    GAMES: {
+      question: "Games are typically:",
+      correct: "Activities people play for fun, challenge, or competition",
+      wrong: [
+        "System updates for your phone",
+        "Spreadsheet formulas",
+        "Email attachment limits",
+      ],
+    },
+    CURSOR: {
+      question: "On a computer, a cursor often refers to:",
+      correct:
+        "The pointer or blinking mark that shows where you interact on screen",
+      wrong: [
+        "The computer’s power supply",
+        "A list of Wi‑Fi networks",
+        "The maximum zoom level in a map app",
+      ],
+    },
+    NEOMA: {
+      question: "In this project, “Neoma” is:",
+      correct: "The workspace / project codename you’re building this site in",
+      wrong: [
+        "A standard unit for measuring RAM speed",
+        "An official ISO date format",
+        "A default filename for exports from Photoshop",
+      ],
+    },
+    DOMAIN: {
+      question: "A domain (like exprobable.com) is:",
+      correct: "A human-readable name that points to a place on the internet",
+      wrong: [
+        "The physical data cable in your wall",
+        "Your email inbox storage quota only",
+        "A single webpage’s scroll position",
+      ],
+    },
+  };
+
   const ROWS = 10;
   const COLS = 10;
 
@@ -85,7 +163,10 @@
           const c = c0 + dc * i;
           grid[r][c] = w[i];
         }
-        placed.push({ word: w, cells: w.split("").map((_, i) => ({ r: r0 + dr * i, c: c0 + dc * i })) });
+        placed.push({
+          word: w,
+          cells: w.split("").map((_, i) => ({ r: r0 + dr * i, c: c0 + dc * i })),
+        });
         ok = true;
       }
     }
@@ -107,20 +188,23 @@
     if (r0 === r1) {
       const step = dc > 0 ? 1 : -1;
       const out = [];
-      for (let c = c0; step > 0 ? c <= c1 : c >= c1; c += step) out.push({ r: r0, c });
+      for (let c = c0; step > 0 ? c <= c1 : c >= c1; c += step)
+        out.push({ r: r0, c });
       return out;
     }
     if (c0 === c1) {
       const step = dr > 0 ? 1 : -1;
       const out = [];
-      for (let r = r0; step > 0 ? r <= r1 : r >= r1; r += step) out.push({ r, c: c0 });
+      for (let r = r0; step > 0 ? r <= r1 : r >= r1; r += step)
+        out.push({ r, c: c0 });
       return out;
     }
     if (Math.abs(dr) === Math.abs(dc)) {
       const sr = dr > 0 ? 1 : -1;
       const sc = dc > 0 ? 1 : -1;
       const out = [];
-      for (let i = 0; i <= Math.abs(dr); i++) out.push({ r: r0 + sr * i, c: c0 + sc * i });
+      for (let i = 0; i <= Math.abs(dr); i++)
+        out.push({ r: r0 + sr * i, c: c0 + sc * i });
       return out;
     }
     return null;
@@ -130,18 +214,49 @@
     return r + "," + c;
   }
 
+  function getQuiz(word) {
+    const q = QUIZ[word];
+    if (q) return q;
+    return {
+      question: "Which option best describes this word?",
+      correct: "A themed word from this puzzle",
+      wrong: [
+        "Unrelated tech jargon",
+        "A random place name",
+        "A cooking measurement",
+      ],
+    };
+  }
+
   function init() {
     const gridEl = document.getElementById("word-grid");
     const listEl = document.getElementById("word-list");
     const progressEl = document.getElementById("wordsearch-progress");
     const winEl = document.getElementById("wordsearch-win");
+    const modalEl = document.getElementById("word-quiz-modal");
+    const promptEl = document.getElementById("word-quiz-prompt");
+    const wordEl = document.getElementById("word-quiz-word");
+    const feedbackEl = document.getElementById("word-quiz-feedback");
+    const choicesEl = document.getElementById("word-quiz-choices");
 
-    if (!gridEl || !listEl) return;
+    if (!gridEl || !listEl || !modalEl || !choicesEl) return;
 
     const { grid, placed } = buildGrid(shuffle(WORDS));
     const wordSet = new Set(placed.map((p) => p.word));
     const foundWords = new Set();
     const foundCells = new Map();
+
+    let quizOpen = false;
+    let pendingWord = null;
+    let pendingCells = null;
+    let escapeHandler = null;
+
+    const backdropEl = modalEl.querySelector(".word-quiz-backdrop");
+    if (backdropEl) {
+      backdropEl.addEventListener("click", () => {
+        if (quizOpen) closeQuiz();
+      });
+    }
 
     const cellEls = [];
     for (let r = 0; r < ROWS; r++) {
@@ -217,11 +332,86 @@
       updateProgress();
     }
 
+    function closeQuiz() {
+      quizOpen = false;
+      pendingWord = null;
+      pendingCells = null;
+      document.body.classList.remove("word-quiz-open");
+      modalEl.hidden = true;
+      modalEl.setAttribute("aria-hidden", "true");
+      choicesEl.innerHTML = "";
+      feedbackEl.textContent = "";
+      feedbackEl.classList.remove("word-quiz-feedback--error");
+      document.body.style.overflow = "";
+      if (escapeHandler) {
+        document.removeEventListener("keydown", escapeHandler);
+        escapeHandler = null;
+      }
+    }
+
+    function openQuiz(word, cells) {
+      const spec = getQuiz(word);
+      pendingWord = word;
+      pendingCells = cells;
+      quizOpen = true;
+
+      promptEl.textContent = spec.question;
+      wordEl.textContent = word;
+      feedbackEl.textContent = "";
+      feedbackEl.classList.remove("word-quiz-feedback--error");
+
+      const options = shuffle([
+        { text: spec.correct, correct: true },
+        ...spec.wrong.map((text) => ({ text, correct: false })),
+      ]);
+
+      choicesEl.innerHTML = "";
+      for (const opt of options) {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "word-quiz-choice";
+        btn.textContent = opt.text;
+        btn.dataset.correct = opt.correct ? "1" : "0";
+        btn.addEventListener("click", () => {
+          if (btn.dataset.correct === "1") {
+            feedbackEl.textContent = "Correct — word cleared.";
+            feedbackEl.classList.remove("word-quiz-feedback--error");
+            markFound(pendingWord, pendingCells);
+            closeQuiz();
+          } else {
+            feedbackEl.textContent = "Not quite — try another option.";
+            feedbackEl.classList.add("word-quiz-feedback--error");
+          }
+        });
+        choicesEl.appendChild(btn);
+      }
+
+      document.body.classList.add("word-quiz-open");
+      modalEl.hidden = false;
+      modalEl.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+
+      escapeHandler = (e) => {
+        if (e.key === "Escape") {
+          e.preventDefault();
+          closeQuiz();
+        }
+      };
+      document.addEventListener("keydown", escapeHandler);
+
+      const first = choicesEl.querySelector(".word-quiz-choice");
+      if (first) first.focus();
+    }
+
     function tryMatch(line) {
       const s = readString(line);
       const rev = s.split("").reverse().join("");
-      if (wordSet.has(s) && s.length >= 3) markFound(s, line);
-      else if (wordSet.has(rev) && rev.length >= 3) markFound(rev, line);
+      let word = null;
+      if (wordSet.has(s) && s.length >= 3) word = s;
+      else if (wordSet.has(rev) && rev.length >= 3) word = rev;
+      if (!word) return;
+      if (foundWords.has(word)) return;
+      openQuiz(word, line);
     }
 
     function pointerToCell(target) {
@@ -233,6 +423,7 @@
     }
 
     gridEl.addEventListener("pointerdown", (e) => {
+      if (quizOpen) return;
       const cell = pointerToCell(e.target);
       if (!cell) return;
       e.preventDefault();
@@ -242,7 +433,7 @@
     });
 
     gridEl.addEventListener("pointermove", (e) => {
-      if (dragStart === null) return;
+      if (quizOpen || dragStart === null) return;
       const cell = pointerToCell(document.elementFromPoint(e.clientX, e.clientY));
       if (!cell) return;
       const line = cellsOnLine(dragStart.r, dragStart.c, cell.r, cell.c);
@@ -251,7 +442,7 @@
 
     function endDrag() {
       if (dragStart === null) return;
-      if (selecting.length) tryMatch(selecting);
+      if (!quizOpen && selecting.length) tryMatch(selecting);
       clearSelectingClass();
       dragStart = null;
     }
