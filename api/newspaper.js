@@ -1,15 +1,20 @@
 require("./lib/loadEnv")();
 
-/** Used only if /v1/language-models fails or returns no text models. */
+/**
+ * Default chat models when XAI_MODEL is unset. Put reasoning + non-reasoning
+ * fast variants first — many restricted keys allow only one of them.
+ * Keys with "Restrict access" often have Chat only (no Models endpoint); see XAI_DISCOVER_MODELS.
+ */
 const DEFAULT_MODEL_FALLBACKS = [
+  "grok-4-1-fast-reasoning",
   "grok-4-1-fast-non-reasoning",
   "grok-3-mini",
   "grok-3",
 ];
 
 const PREFERRED_ORDER = [
-  "grok-4-1-fast-non-reasoning",
   "grok-4-1-fast-reasoning",
+  "grok-4-1-fast-non-reasoning",
   "grok-4.20-0309-non-reasoning",
   "grok-4.20-0309-reasoning",
   "grok-3-mini",
@@ -90,6 +95,11 @@ async function fetchChatModelCandidates(apiKey) {
   return { ok: true, ids, rawText };
 }
 
+function envTruthy(name) {
+  const v = (process.env[name] || "").trim().toLowerCase();
+  return v === "1" || v === "true" || v === "yes";
+}
+
 module.exports = async (req, res) => {
   res.setHeader("Content-Type", "application/json");
   if (req.method !== "POST") {
@@ -117,20 +127,22 @@ module.exports = async (req, res) => {
 
   if (process.env.XAI_MODEL) {
     modelsToTry = [process.env.XAI_MODEL.trim()];
-  } else {
+  } else if (envTruthy("XAI_DISCOVER_MODELS")) {
     discovery = await fetchChatModelCandidates(apiKey);
     if (discovery.ok && discovery.ids.length > 0) {
       modelsToTry = discovery.ids;
     } else {
       modelsToTry = DEFAULT_MODEL_FALLBACKS;
     }
+  } else {
+    modelsToTry = DEFAULT_MODEL_FALLBACKS;
   }
 
   let lastErr = "";
   let lastStatus = 0;
 
   const hint403 =
-    "403 means your xAI team or API key is not allowed to use this (see https://docs.x.ai/docs/debugging ). Fix: xAI Console → team admin grants inference access, or create a key under a team that has billing + model access. If /v1/language-models works locally but Vercel fails, confirm the same XAI_API_KEY is set for Production and redeploy.";
+    "403: Your key may use Restrict access — only checked models/endpoints work. Use XAI_MODEL set to an allowed model (e.g. grok-4-1-fast-reasoning). Listing models needs the Models endpoint enabled on the key, or set XAI_DISCOVER_MODELS=1 only after enabling it. See https://docs.x.ai/docs/debugging";
 
   try {
     for (const model of modelsToTry) {
