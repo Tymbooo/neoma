@@ -18,13 +18,8 @@
   <main class="game-shell game-shell--codenames">
     <div class="cn-wrap">
       <p class="cn-intro">
-        You are the <strong>blue</strong> operative. <strong>Gemini</strong> gives clues automatically each round. After a clue <strong>N</strong>, tap words: your turn ends when you’ve revealed <strong>N</strong> blue words, run out of guesses (<strong>N+1</strong> max), pick a non-blue, or tap <strong>End turn</strong> early.
+        You are the <strong>blue</strong> operative. <strong>Gemini</strong> gives clues automatically each round. After a clue <strong>N</strong>, tap words: your turn ends when you’ve revealed <strong>N</strong> blue words, run out of guesses (<strong>N+1</strong> max), or pick a non-blue. To play again, use <strong>← All games</strong> and open Codenames again.
       </p>
-      <div class="cn-toolbar">
-        <button type="button" class="cn-btn cn-btn--primary" id="cn-new">New game</button>
-        <button type="button" class="cn-btn" id="cn-get-clue" disabled>Retry clue</button>
-        <button type="button" class="cn-btn" id="cn-end-turn" disabled>End turn</button>
-      </div>
       <p class="cn-clue" id="cn-clue" aria-live="polite">—</p>
       <div id="cn-board" class="cn-board" role="grid" aria-label="Codenames board"></div>
       <p class="cn-status" id="cn-status" aria-live="polite"></p>
@@ -40,7 +35,7 @@
   <div id="cn-overlay" class="cn-overlay" hidden>
     <div class="cn-overlay-card">
       <p id="cn-overlay-text"></p>
-      <p class="cn-overlay-hint">Tap outside to close</p>
+      <p class="cn-overlay-hint">Tap outside to close. For a new board, go back to All games and re-enter.</p>
     </div>
   </div>
 

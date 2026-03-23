@@ -17,9 +17,6 @@
     board: document.getElementById("cn-board"),
     status: document.getElementById("cn-status"),
     clueLine: document.getElementById("cn-clue"),
-    btnNew: document.getElementById("cn-new"),
-    btnClue: document.getElementById("cn-get-clue"),
-    btnEnd: document.getElementById("cn-end-turn"),
     overlay: document.getElementById("cn-overlay"),
     overlayText: document.getElementById("cn-overlay-text"),
   };
@@ -147,8 +144,6 @@
 
   async function finishHumanTurn() {
     phase = "aiTurn";
-    els.btnEnd.disabled = true;
-    els.btnClue.disabled = true;
     setClue("—");
     setStatus("<strong>AI (red)</strong> is thinking…");
     renderBoard();
@@ -168,23 +163,20 @@
         return;
       }
       phase = "needClue";
-      els.btnClue.disabled = true;
       setStatus(msg + "<br/><em>Fetching your clue…</em>");
       renderBoard();
       scheduleAutoClue();
     } catch (err) {
-      setStatus(`<span class="cn-err">${String(err.message)}</span>`);
+      setStatus(
+        `<span class="cn-err">${String(err.message)}</span><br/><small>Go back to <strong>All games</strong> and open Codenames again to retry.</small>`
+      );
       phase = "needClue";
-      els.btnClue.disabled = false;
       renderBoard();
     }
   }
 
   function endGame(winner) {
     phase = "over";
-    els.btnClue.disabled = true;
-    els.btnEnd.disabled = true;
-    els.btnNew.disabled = false;
     renderBoard();
     showOverlay(
       winner === "blue"
@@ -196,19 +188,17 @@
     );
     setStatus(
       winner === "blue"
-        ? "<strong>You won.</strong> Start a new game anytime."
-        : "<strong>AI won.</strong> New game?"
+        ? "<strong>You won.</strong> Use <strong>← All games</strong> and open Codenames again for a new board."
+        : "<strong>AI won.</strong> Use <strong>← All games</strong> and open Codenames again for a new board."
     );
   }
 
-  async function newGame() {
+  async function startSession() {
     hideOverlay();
-    els.btnNew.disabled = true;
-    els.btnClue.disabled = true;
-    els.btnEnd.disabled = true;
     phase = "loading";
     setClue("—");
-    setStatus("Starting new game…");
+    setStatus("Starting game…");
+    renderBoard();
     try {
       const res = await fetch("/api/codenames/new", { method: "POST" });
       const j = await res.json();
@@ -221,22 +211,19 @@
       setStatus(
         "You are <span class=\"cn-tag cn-tag--blue\">blue</span>; AI is <span class=\"cn-tag cn-tag--red\">red</span>. <em>Fetching your first clue…</em>"
       );
-      els.btnNew.disabled = false;
       renderBoard();
       scheduleAutoClue();
     } catch (e) {
       setStatus(
-        `<span class="cn-err">${String(e.message)}</span><br/><small>If you opened this file locally, run <code>vercel dev</code> or deploy to Vercel — the API runs on the server.</small>`
+        `<span class="cn-err">${String(e.message)}</span><br/><small>If you opened this file locally, run <code>vercel dev</code> or deploy to Vercel — the API runs on the server. Then use <strong>← All games</strong> and return here to retry.</small>`
       );
       phase = "idle";
-      els.btnNew.disabled = false;
     }
     renderBoard();
   }
 
   async function getBlueClue() {
     if (!token || phase !== "needClue") return;
-    els.btnClue.disabled = true;
     setStatus("Asking Gemini for a blue clue…");
     try {
       const res = await api("/api/codenames/clue", {
@@ -260,30 +247,22 @@
         `Your clue: <strong>${res.clue} ${res.number}</strong>. Reveal up to <strong>${currentNumber}</strong> blue words for this clue (turn ends then), or use at most <strong>${guessesLeft}</strong> guesses total. Wrong color ends the turn.`
       );
       phase = "humanGuess";
-      els.btnEnd.disabled = false;
     } catch (e) {
-      setStatus(`<span class="cn-err">${String(e.message)}</span>`);
-      els.btnClue.disabled = false;
+      setStatus(
+        `<span class="cn-err">${String(e.message)}</span><br/><small>Go back to <strong>All games</strong> and open Codenames again to retry.</small>`
+      );
     }
     renderBoard();
-  }
-
-  async function endTurnEarly() {
-    if (phase !== "humanGuess") return;
-    guessesLeft = 0;
-    await finishHumanTurn();
   }
 
   function init() {
     if (!els.board) return;
     bindBoardClicks();
-    els.btnNew.addEventListener("click", newGame);
-    els.btnClue.addEventListener("click", getBlueClue);
-    els.btnEnd.addEventListener("click", () => endTurnEarly());
     els.overlay.addEventListener("click", () => {
       if (els.overlay.classList.contains("cn-overlay--dismiss")) hideOverlay();
     });
     renderBoard();
+    startSession();
   }
 
   if (document.readyState === "loading") {
