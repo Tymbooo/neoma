@@ -32,6 +32,8 @@
   let currentClue = null;
   let currentNumber = 0;
   let guessesLeft = 0;
+  /** Successful blue reveals this operative turn (matches spymaster count N) */
+  let bluesThisTurn = 0;
 
   function setStatus(html) {
     els.status.innerHTML = html;
@@ -59,6 +61,13 @@
       if (i >= 0 && i < 25) out[i] = v;
     }
     return out;
+  }
+
+  /** Fetch blue clue when phase is needClue (after new game or after AI turn). */
+  function scheduleAutoClue() {
+    queueMicrotask(() => {
+      if (phase === "needClue" && token) getBlueClue();
+    });
   }
 
   function renderBoard() {
@@ -114,12 +123,21 @@
         await finishHumanTurn();
         return;
       }
+      bluesThisTurn += 1;
+      if (bluesThisTurn >= currentNumber) {
+        setStatus(
+          `<strong>Your guess:</strong> ${res.word} was <span class="cn-tag cn-tag--blue">blue</span> — that’s <strong>${currentNumber}</strong> for this clue. Ending your turn.`
+        );
+        renderBoard();
+        await finishHumanTurn();
+        return;
+      }
       if (guessesLeft <= 0) {
         await finishHumanTurn();
         return;
       }
       setStatus(
-        `<strong>Your guess:</strong> ${res.word} was <span class="cn-tag cn-tag--blue">blue</span>. Guesses left this turn: ${guessesLeft}.`
+        `<strong>Your guess:</strong> ${res.word} was <span class="cn-tag cn-tag--blue">blue</span>. Blues for this clue: <strong>${bluesThisTurn}/${currentNumber}</strong>. Guesses left: ${guessesLeft}.`
       );
       renderBoard();
     } catch (err) {
@@ -150,14 +168,16 @@
         return;
       }
       phase = "needClue";
-      els.btnClue.disabled = false;
-      setStatus(msg + "<br/><em>Get your next clue.</em>");
+      els.btnClue.disabled = true;
+      setStatus(msg + "<br/><em>Fetching your clue…</em>");
+      renderBoard();
+      scheduleAutoClue();
     } catch (err) {
       setStatus(`<span class="cn-err">${String(err.message)}</span>`);
       phase = "needClue";
       els.btnClue.disabled = false;
+      renderBoard();
     }
-    renderBoard();
   }
 
   function endGame(winner) {
@@ -196,12 +216,14 @@
       token = j.token;
       words = j.words;
       revealed = {};
+      bluesThisTurn = 0;
       phase = "needClue";
       setStatus(
-        "You are <span class=\"cn-tag cn-tag--blue\">blue</span>. The AI is <span class=\"cn-tag cn-tag--red\">red</span>. Blue goes first. Get your clue from the AI spymaster."
+        "You are <span class=\"cn-tag cn-tag--blue\">blue</span>; AI is <span class=\"cn-tag cn-tag--red\">red</span>. <em>Fetching your first clue…</em>"
       );
-      els.btnClue.disabled = false;
       els.btnNew.disabled = false;
+      renderBoard();
+      scheduleAutoClue();
     } catch (e) {
       setStatus(
         `<span class="cn-err">${String(e.message)}</span><br/><small>If you opened this file locally, run <code>vercel dev</code> or deploy to Vercel — the API runs on the server.</small>`
@@ -225,15 +247,17 @@
       if (res.clue === "PASS" || res.number === 0) {
         setClue("PASS");
         setStatus("No blue words left — ending your turn.");
+        bluesThisTurn = 0;
         await finishHumanTurn();
         return;
       }
       currentClue = res.clue;
       currentNumber = res.number;
+      bluesThisTurn = 0;
       guessesLeft = res.number + 1;
       setClue(`${res.clue} · ${res.number}`);
       setStatus(
-        `Your clue: <strong>${res.clue} ${res.number}</strong>. You may make up to <strong>${guessesLeft}</strong> guesses. Tap words. Wrong color ends your turn.`
+        `Your clue: <strong>${res.clue} ${res.number}</strong>. Reveal up to <strong>${currentNumber}</strong> blue words for this clue (turn ends then), or use at most <strong>${guessesLeft}</strong> guesses total. Wrong color ends the turn.`
       );
       phase = "humanGuess";
       els.btnEnd.disabled = false;
