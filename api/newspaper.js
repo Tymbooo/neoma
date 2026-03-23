@@ -154,13 +154,13 @@ module.exports = async (req, res) => {
         },
         body: JSON.stringify({
           model,
-          temperature: 0.4,
+          temperature: 0.2,
           max_tokens: 2500,
           messages: [
             {
               role: "system",
               content:
-                "You are a tech news editor. Be concise and factual. If you cannot verify items against live data for the exact 12-hour window, still give five plausible major tech stories and add one brief sentence at the end noting any time or sourcing limits.",
+                "You are a tech news editor. Be concise and honest.\n\nThis request has no live web or X access—you cannot verify what happened in the user's time window.\n\nDo NOT invent specific news (no fake launches, fines, deals, stock moves, or events presented as if they were confirmed in the last hours). Do not write wire-style headlines to fill five slots.\n\nIf you cannot substantiate five real items for that window, say so clearly in a short reply. You may mention that real headlines would need browsing/search outside this chat endpoint.",
             },
             {
               role: "user",
