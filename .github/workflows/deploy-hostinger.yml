@@ -1,0 +1,48 @@
+# Deploy static site to Hostinger over FTP when you push to GitHub.
+#
+# One-time: create a GitHub repo, push this project, then in the repo go to
+# Settings → Secrets and variables → Actions → New repository secret:
+#   FTP_SERVER      → Hostinger FTP hostname (hPanel → Files → FTP Accounts)
+#   FTP_USERNAME    → FTP username
+#   FTP_PASSWORD    → FTP password
+#   FTP_REMOTE_DIR  → Usually public_html/  (trailing slash; addon domains may use domains/exprobable.com/public_html/)
+#
+# If upload fails, open this file and set `protocol` to ftps and `port` to the
+# value shown in hPanel → Files → FTP Accounts (Hostinger sometimes requires FTPS).
+
+name: Deploy to Hostinger
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-hostinger
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: ${{ secrets.FTP_REMOTE_DIR }}
+          port: 21
+          protocol: ftp
+          local-dir: ./
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            **/.github/**
+            **/.DS_Store
+            **/.cursor/**
