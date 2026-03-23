@@ -25,11 +25,8 @@ const PREFERRED_ORDER = [
   "grok-3-latest",
 ];
 
-const NEWSPAPER_SYSTEM_PROMPT =
-  "You are a tech news editor. Be concise and honest.\n\nThis request has no live web or X access—you cannot verify what happened in the user's time window.\n\nDo NOT invent specific news (no fake launches, fines, deals, stock moves, or events presented as if they were confirmed in the last hours). Do not write wire-style headlines to fill five slots.\n\nIf you cannot substantiate five real items for that window, say so clearly in a short reply. You may mention that real headlines would need browsing/search outside this chat endpoint.";
-
 const NEWSPAPER_USER_TASK =
-  "What are the 5 biggest tech related news items of the previous 12 hours. answer with 5 shorts paragraphs";
+  "What are the 5 biggest tech news stories of the last 12 hours, answer in 5 concise pretty short articles.";
 
 const NEWSPAPER_TEMPERATURE = 0.2;
 const NEWSPAPER_MAX_TOKENS = 2500;
@@ -129,10 +126,7 @@ module.exports = async (req, res) => {
   const nowUtc = new Date().toISOString();
   const userMessageContent = `Current UTC time: ${nowUtc}\n\n${NEWSPAPER_USER_TASK}`;
 
-  const grokMessages = [
-    { role: "system", content: NEWSPAPER_SYSTEM_PROMPT },
-    { role: "user", content: userMessageContent },
-  ];
+  const grokMessages = [{ role: "user", content: userMessageContent }];
 
   let modelsToTry;
   let discovery = null;
