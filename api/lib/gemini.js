@@ -5,13 +5,12 @@ function getModel() {
   if (!key) throw new Error("GEMINI_API_KEY is not set");
   const genAI = new GoogleGenerativeAI(key);
   const name =
-    process.env.GEMINI_MODEL || "gemini-1.5-flash";
+    process.env.GEMINI_MODEL || "gemini-2.5-flash";
   return genAI.getGenerativeModel({
     model: name,
     generationConfig: {
       temperature: 0.4,
-      maxOutputTokens: 512,
-      responseMimeType: "application/json",
+      maxOutputTokens: 1024,
     },
   });
 }
@@ -31,7 +30,15 @@ async function generateJsonPrompt(prompt) {
   const result = await model.generateContent(prompt);
   const text = result.response.text();
   const raw = stripJson(text);
-  return JSON.parse(raw);
+  try {
+    return JSON.parse(raw);
+  } catch {
+    const clueMatch = text.match(/\{[^{}]*"clue"\s*:\s*"[^"]*"\s*,\s*"number"\s*:\s*\d+\s*\}/);
+    if (clueMatch) return JSON.parse(clueMatch[0]);
+    const guessMatch = text.match(/\{[^{}]*"guesses"\s*:\s*\[[^\]]*\]\s*\}/);
+    if (guessMatch) return JSON.parse(guessMatch[0]);
+    throw new Error("Could not parse model JSON");
+  }
 }
 
 /**
