@@ -1,13 +1,16 @@
 /**
  * Vercel `vercel dev` does not always expose `.env.local` to Node serverless
- * handlers. Load it explicitly from the repo root when needed.
- * Put `GEMINI_API_KEY` and optional `XAI_API_KEY` in `.env.local` (see `.gitignore`).
+ * handlers. Load it once from the repo root when the file exists.
+ * Use `GEMINI_API_KEY`, `XAI_API_KEY`, etc. in `.env.local` (see `.gitignore`).
  */
 const fs = require("fs");
 const path = require("path");
 
+let attempted = false;
+
 module.exports = function loadEnv() {
-  if (process.env.GEMINI_API_KEY) return;
+  if (attempted) return;
+  attempted = true;
   const candidates = [
     path.join(process.cwd(), ".env.local"),
     path.join(__dirname, "..", "..", ".env.local"),

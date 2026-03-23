@@ -2,6 +2,9 @@
   "functions": {
     "api/codenames/*.js": {
       "maxDuration": 60
+    },
+    "api/newspaper.js": {
+      "maxDuration": 120
     }
   }
 }

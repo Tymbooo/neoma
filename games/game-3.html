@@ -3,23 +3,33 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Game Three — Exprobable</title>
+  <title>Tech newspaper — Exprobable</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700&family=Newsreader:ital,opsz,wght@0,6..60,400;0,6..60,600;1,6..60,400&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../css/styles.css" />
 </head>
-<body class="game-page">
+<body class="game-page game-page--newspaper">
   <div class="home-bg" aria-hidden="true"></div>
   <header class="game-topbar">
     <a class="back-link" href="../index.html">← All games</a>
-    <h1 class="game-title">Game Three</h1>
+    <h1 class="game-title">The tech desk</h1>
   </header>
-  <main class="game-shell">
-    <div class="placeholder-card">
-      <h2>Coming soon</h2>
-      <p>This game is not built yet. Head back to choose another card.</p>
+  <main class="game-shell game-shell--newspaper">
+    <div class="np-wrap">
+      <p class="np-lede">
+        Grok summarizes what it considers the biggest tech stories from roughly the <strong>last 12 hours</strong> (plus current UTC time in the prompt). Results depend on your xAI plan and model.
+      </p>
+      <button type="button" class="np-btn" id="np-request">
+        Request the newspaper
+      </button>
+      <p class="np-status" id="np-status" aria-live="polite"></p>
+      <article id="np-output" class="np-article" aria-live="polite"></article>
+      <p class="np-foot">
+        Needs <code>XAI_API_KEY</code> on the server (Vercel env or <code>.env.local</code> with <code>vercel dev</code>). Optional: <code>XAI_MODEL</code> (default <code>grok-4-1-fast-non-reasoning</code>).
+      </p>
     </div>
   </main>
+  <script src="../js/newspaper.js"></script>
 </body>
 </html>
