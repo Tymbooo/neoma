@@ -1,3 +1,4 @@
+require("../lib/loadEnv")();
 const { verifyToken, parseRevealed } = require("../lib/state");
 
 function winnerFromState(assignment, revealed) {

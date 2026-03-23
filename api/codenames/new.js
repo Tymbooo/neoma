@@ -1,3 +1,4 @@
+require("../lib/loadEnv")();
 const { pickWords, randomAssignment, sign } = require("../lib/state");
 
 module.exports = async (req, res) => {

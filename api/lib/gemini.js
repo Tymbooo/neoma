@@ -5,7 +5,7 @@ function getModel() {
   if (!key) throw new Error("GEMINI_API_KEY is not set");
   const genAI = new GoogleGenerativeAI(key);
   const name =
-    process.env.GEMINI_MODEL || "gemini-2.0-flash";
+    process.env.GEMINI_MODEL || "gemini-1.5-flash";
   return genAI.getGenerativeModel({
     model: name,
     generationConfig: {

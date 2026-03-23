@@ -1,3 +1,4 @@
+require("../lib/loadEnv")();
 const { verifyToken, parseRevealed } = require("../lib/state");
 const { buildSpymasterPrompt, buildOperativePrompt, generateJsonPrompt } = require("../lib/gemini");
 const { clueValid } = require("../lib/clueValidate");
