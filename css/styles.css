@@ -409,6 +409,203 @@ body.game-page--wordsearch {
   display: block;
 }
 
+/* --- Codenames --- */
+body.game-page--codenames {
+  padding: clamp(0.65rem, 2vw, 1rem) clamp(0.5rem, 2vw, 1rem);
+}
+
+.game-shell--codenames {
+  align-items: stretch;
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.cn-wrap {
+  width: 100%;
+}
+
+.cn-intro {
+  margin: 0 0 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.cn-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.65rem;
+}
+
+.cn-btn {
+  font-family: var(--font);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  padding: 0.45rem 0.85rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.cn-btn:hover:not(:disabled) {
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+.cn-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.cn-btn--primary {
+  border-color: rgba(147, 197, 253, 0.35);
+  background: rgba(147, 197, 253, 0.12);
+}
+
+.cn-clue {
+  margin: 0 0 0.65rem;
+  font-family: var(--mono);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--accent-2);
+  min-height: 1.35em;
+}
+
+.cn-board {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: clamp(4px, 1.2vw, 8px);
+  margin-bottom: 0.75rem;
+}
+
+.cn-cell {
+  font-family: var(--mono);
+  font-size: clamp(0.55rem, 2.8vw, 0.7rem);
+  font-weight: 600;
+  line-height: 1.15;
+  aspect-ratio: 1.6;
+  min-height: 0;
+  padding: 0.2rem 0.15rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: rgba(12, 14, 20, 0.9);
+  color: var(--text);
+  cursor: pointer;
+  transition: transform 0.1s, border-color 0.15s;
+  word-break: break-word;
+  hyphens: auto;
+}
+
+.cn-cell:hover:not(:disabled) {
+  border-color: rgba(147, 197, 253, 0.4);
+}
+
+.cn-cell:disabled {
+  cursor: default;
+}
+
+.cn-cell--blue {
+  background: rgba(59, 130, 246, 0.35);
+  border-color: rgba(96, 165, 250, 0.5);
+  color: #dbeafe;
+}
+
+.cn-cell--red {
+  background: rgba(239, 68, 68, 0.35);
+  border-color: rgba(248, 113, 113, 0.5);
+  color: #fecaca;
+}
+
+.cn-cell--neutral {
+  background: rgba(148, 163, 184, 0.25);
+  border-color: rgba(148, 163, 184, 0.4);
+  color: var(--muted);
+}
+
+.cn-cell--assassin {
+  background: rgba(15, 23, 42, 0.95);
+  border-color: rgba(248, 250, 252, 0.25);
+  color: #f1f5f9;
+}
+
+.cn-status {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.cn-status .cn-err {
+  color: #fca5a5;
+}
+
+.cn-tag {
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+  font-weight: 700;
+}
+
+.cn-tag--blue {
+  background: rgba(59, 130, 246, 0.25);
+  color: #93c5fd;
+}
+
+.cn-tag--red {
+  background: rgba(239, 68, 68, 0.25);
+  color: #fca5a5;
+}
+
+.cn-footnote {
+  margin: 1rem 0 0;
+  font-size: 0.75rem;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.cn-footnote code {
+  font-size: 0.7rem;
+}
+
+.cn-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(4, 6, 12, 0.75);
+  backdrop-filter: blur(6px);
+}
+
+.cn-overlay[hidden] {
+  display: none !important;
+}
+
+.cn-overlay-card {
+  max-width: 360px;
+  padding: 1.25rem;
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  text-align: center;
+}
+
+.cn-overlay-card p {
+  margin: 0;
+  line-height: 1.45;
+}
+
+.cn-overlay-hint {
+  margin-top: 0.75rem !important;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
 /* Word quiz modal */
 .word-quiz-modal {
   position: fixed;

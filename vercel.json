@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "api/codenames/*.js": {
+      "maxDuration": 60
+    }
+  }
+}

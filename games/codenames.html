@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Codenames vs AI — Exprobable</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/styles.css" />
+</head>
+<body class="game-page game-page--codenames">
+  <div class="home-bg" aria-hidden="true"></div>
+  <header class="game-topbar">
+    <a class="back-link" href="../index.html">← All games</a>
+    <h1 class="game-title">Codenames vs AI</h1>
+  </header>
+  <main class="game-shell game-shell--codenames">
+    <div class="cn-wrap">
+      <p class="cn-intro">
+        You are the <strong>blue</strong> operative. <strong>Gemini</strong> is the blue spymaster (clues) and runs the whole <strong>red</strong> team. Find all blue words before the AI finds all red words. Avoid the assassin.
+      </p>
+      <div class="cn-toolbar">
+        <button type="button" class="cn-btn cn-btn--primary" id="cn-new">New game</button>
+        <button type="button" class="cn-btn" id="cn-get-clue" disabled>Get clue</button>
+        <button type="button" class="cn-btn" id="cn-end-turn" disabled>End turn</button>
+      </div>
+      <p class="cn-clue" id="cn-clue" aria-live="polite">—</p>
+      <div id="cn-board" class="cn-board" role="grid" aria-label="Codenames board"></div>
+      <p class="cn-status" id="cn-status" aria-live="polite"></p>
+      <p class="cn-footnote">
+        Requires <code>GEMINI_API_KEY</code> on the server (Vercel env). Uses Gemini free tier. Run locally with <code>vercel dev</code>.
+      </p>
+    </div>
+  </main>
+
+  <div id="cn-overlay" class="cn-overlay" hidden>
+    <div class="cn-overlay-card">
+      <p id="cn-overlay-text"></p>
+      <p class="cn-overlay-hint">Tap outside to close</p>
+    </div>
+  </div>
+
+  <script src="../js/codenames.js"></script>
+</body>
+</html>
