@@ -187,6 +187,12 @@ body.game-page .home-bg {
   position: fixed;
 }
 
+body.game-page--wordsearch {
+  padding: clamp(0.65rem, 2vw, 1rem) clamp(0.35rem, 1.5vw, 0.75rem);
+  padding-left: max(clamp(0.35rem, 1.5vw, 0.75rem), env(safe-area-inset-left));
+  padding-right: max(clamp(0.35rem, 1.5vw, 0.75rem), env(safe-area-inset-right));
+}
+
 .game-topbar {
   position: relative;
   z-index: 2;
@@ -234,6 +240,13 @@ body.game-page .home-bg {
   min-height: 0;
 }
 
+.game-shell--wordsearch {
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 100%;
+  max-width: 100%;
+}
+
 .placeholder-card {
   max-width: 420px;
   padding: 2rem;
@@ -258,15 +271,17 @@ body.game-page .home-bg {
 /* --- Word search --- */
 .wordsearch-layout {
   width: 100%;
-  max-width: 960px;
+  max-width: none;
   display: grid;
-  gap: clamp(1rem, 3vw, 1.5rem);
+  gap: clamp(0.75rem, 2vw, 1.25rem);
   align-items: start;
+  flex: 1;
+  min-height: 0;
 }
 
 @media (min-width: 720px) {
   .wordsearch-layout {
-    grid-template-columns: 1fr minmax(200px, 240px);
+    grid-template-columns: minmax(0, 1fr) minmax(160px, min(22vw, 220px));
   }
 }
 
@@ -278,6 +293,13 @@ body.game-page .home-bg {
   padding: clamp(1rem, 2.5vw, 1.25rem);
   overflow: auto;
   max-width: 100%;
+  min-width: 0;
+}
+
+.wordsearch-panel--grid {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
 .wordsearch-hint {
@@ -288,24 +310,30 @@ body.game-page .home-bg {
 }
 
 .word-grid {
-  display: inline-grid;
-  gap: 2px;
-  padding: 4px;
+  display: grid;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  gap: clamp(2px, 0.5vw, 4px);
+  padding: clamp(3px, 0.75vw, 5px);
   background: rgba(0, 0, 0, 0.35);
   border-radius: 12px;
   user-select: none;
   touch-action: none;
   font-family: var(--mono);
-  font-size: clamp(0.7rem, 2.2vw, 0.85rem);
+  font-size: clamp(0.6rem, min(3.9vw, 5.2vh), 1.05rem);
   font-weight: 500;
+  min-width: 0;
 }
 
 .word-cell {
-  width: clamp(26px, 7vw, 34px);
-  height: clamp(26px, 7vw, 34px);
   display: flex;
   align-items: center;
   justify-content: center;
+  min-width: 0;
+  aspect-ratio: 1;
+  width: 100%;
+  height: auto;
   border-radius: 6px;
   background: rgba(12, 14, 20, 0.85);
   color: var(--text);

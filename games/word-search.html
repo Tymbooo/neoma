@@ -9,15 +9,15 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../css/styles.css" />
 </head>
-<body class="game-page">
+<body class="game-page game-page--wordsearch">
   <div class="home-bg" aria-hidden="true"></div>
   <header class="game-topbar">
     <a class="back-link" href="../index.html">← All games</a>
     <h1 class="game-title">Word Search</h1>
   </header>
-  <main class="game-shell">
+  <main class="game-shell game-shell--wordsearch">
     <div class="wordsearch-layout">
-      <div class="wordsearch-panel">
+      <div class="wordsearch-panel wordsearch-panel--grid">
         <p class="wordsearch-hint">Click and drag in a straight line — horizontally, vertically, or diagonally — to highlight a word. Release to submit.</p>
         <div id="word-grid" class="word-grid" role="application" aria-label="Letter grid"></div>
       </div>

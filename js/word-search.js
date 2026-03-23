@@ -10,8 +10,8 @@
     "DOMAIN",
   ];
 
-  const ROWS = 14;
-  const COLS = 14;
+  const ROWS = 12;
+  const COLS = 12;
 
   const DIRS = [
     [0, 1],
