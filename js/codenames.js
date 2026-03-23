@@ -6,7 +6,10 @@
       body: JSON.stringify(body),
     });
     const j = await r.json().catch(() => ({}));
-    if (!r.ok) throw new Error(j.error || r.statusText || String(r.status));
+    if (!r.ok) {
+      const msg = [j.error, j.hint].filter(Boolean).join(" — ");
+      throw new Error(msg || r.statusText || String(r.status));
+    }
     return j;
   };
 

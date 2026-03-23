@@ -29,7 +29,10 @@
       <div id="cn-board" class="cn-board" role="grid" aria-label="Codenames board"></div>
       <p class="cn-status" id="cn-status" aria-live="polite"></p>
       <p class="cn-footnote">
-        Requires <code>GEMINI_API_KEY</code> on the server (Vercel env). Uses Gemini free tier. Run locally with <code>vercel dev</code>.
+        <strong>Live site (exprobable / Vercel):</strong> add <code>GEMINI_API_KEY</code> in
+        <strong>Vercel → Project → Settings → Environment Variables</strong> (check <strong>Production</strong>), paste your Google AI Studio key, Save, then <strong>Redeploy</strong>.
+        <code>.env.local</code> is only for your computer — it is not deployed.
+        <strong>Local:</strong> <code>npx vercel dev</code> reads <code>.env.local</code>.
       </p>
     </div>
   </main>

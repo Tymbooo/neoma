@@ -78,6 +78,8 @@ module.exports = async (req, res) => {
   if (!process.env.GEMINI_API_KEY) {
     res.status(503).json({
       error: "GEMINI_API_KEY is not configured on the server",
+      hint:
+        "Vercel → your project → Settings → Environment Variables → add GEMINI_API_KEY (same value as .env.local), enable Production, Save → Deployments → Redeploy. .env.local only works on your PC with vercel dev.",
     });
     return;
   }
