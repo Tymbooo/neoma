@@ -2,11 +2,45 @@
   const btn = document.getElementById("np-request");
   const out = document.getElementById("np-output");
   const status = document.getElementById("np-status");
+  const promptEl = document.getElementById("np-prompt");
 
   function escapeHtml(s) {
     const d = document.createElement("div");
     d.textContent = s;
     return d.innerHTML;
+  }
+
+  function renderGrokRequest(gr, model) {
+    if (!promptEl || !gr || !Array.isArray(gr.messages)) return;
+    const esc = escapeHtml;
+    const blocks = gr.messages
+      .map(
+        (m) => `
+      <div class="np-prompt-block">
+        <span class="np-prompt-role">${esc(m.role || "?")}</span>
+        <pre class="np-prompt-pre" tabindex="0">${esc(m.content || "")}</pre>
+      </div>`
+      )
+      .join("");
+    promptEl.innerHTML = `
+      <details class="np-prompt-details" open>
+        <summary class="np-prompt-summary">Exact payload sent to Grok (this request)</summary>
+        <p class="np-prompt-meta">
+          <span><strong>Endpoint</strong> <code>${esc(gr.endpoint || "")}</code></span>
+          <span><strong>model</strong> <code>${esc(model || "")}</code></span>
+          <span><strong>temperature</strong> <code>${esc(String(gr.temperature))}</code></span>
+          <span><strong>max_tokens</strong> <code>${esc(String(gr.max_tokens))}</code></span>
+        </p>
+        <p class="np-prompt-note">The API key is sent only in the <code>Authorization</code> header (not shown).</p>
+        ${blocks}
+      </details>`;
+    promptEl.hidden = false;
+  }
+
+  function clearPrompt() {
+    if (!promptEl) return;
+    promptEl.hidden = true;
+    promptEl.innerHTML = "";
   }
 
   function renderContent(text) {
@@ -28,6 +62,7 @@
     status.textContent = "Fetching from Grok…";
     status.className = "np-status np-status--busy";
     out.innerHTML = "";
+    clearPrompt();
     try {
       const r = await fetch("/api/newspaper", {
         method: "POST",
@@ -44,6 +79,7 @@
         throw new Error(parts.join(" — ") || r.statusText);
       }
       renderContent(j.content);
+      if (j.grokRequest) renderGrokRequest(j.grokRequest, j.model);
       status.textContent = j.model ? `Edition ready (${j.model})` : "Edition ready";
       status.className = "np-status";
     } catch (e) {

@@ -24,6 +24,12 @@
         Request the newspaper
       </button>
       <p class="np-status" id="np-status" aria-live="polite"></p>
+      <section
+        id="np-prompt"
+        class="np-prompt"
+        aria-label="Prompt sent to Grok"
+        hidden
+      ></section>
       <article id="np-output" class="np-article" aria-live="polite"></article>
       <p class="np-foot">
         Needs <code>XAI_API_KEY</code> (Vercel or <code>.env.local</code>). If the key uses <strong>Restrict access</strong>, allow <strong>Chat</strong> and tick the exact model you use, or set <code>XAI_MODEL</code> to that id (e.g. <code>grok-4-1-fast-reasoning</code>).

@@ -25,6 +25,15 @@ const PREFERRED_ORDER = [
   "grok-3-latest",
 ];
 
+const NEWSPAPER_SYSTEM_PROMPT =
+  "You are a tech news editor. Be concise and honest.\n\nThis request has no live web or X access—you cannot verify what happened in the user's time window.\n\nDo NOT invent specific news (no fake launches, fines, deals, stock moves, or events presented as if they were confirmed in the last hours). Do not write wire-style headlines to fill five slots.\n\nIf you cannot substantiate five real items for that window, say so clearly in a short reply. You may mention that real headlines would need browsing/search outside this chat endpoint.";
+
+const NEWSPAPER_USER_TASK =
+  "What are the 5 biggest tech related news items of the previous 12 hours. answer with 5 shorts paragraphs";
+
+const NEWSPAPER_TEMPERATURE = 0.2;
+const NEWSPAPER_MAX_TOKENS = 2500;
+
 function parseJsonBody(rawText) {
   if (!rawText || !rawText.trim()) return {};
   try {
@@ -117,10 +126,13 @@ module.exports = async (req, res) => {
     return;
   }
 
-  const userPrompt =
-    "What are the 5 biggest tech related news items of the previous 12 hours. answer with 5 shorts paragraphs";
-
   const nowUtc = new Date().toISOString();
+  const userMessageContent = `Current UTC time: ${nowUtc}\n\n${NEWSPAPER_USER_TASK}`;
+
+  const grokMessages = [
+    { role: "system", content: NEWSPAPER_SYSTEM_PROMPT },
+    { role: "user", content: userMessageContent },
+  ];
 
   let modelsToTry;
   let discovery = null;
@@ -154,19 +166,9 @@ module.exports = async (req, res) => {
         },
         body: JSON.stringify({
           model,
-          temperature: 0.2,
-          max_tokens: 2500,
-          messages: [
-            {
-              role: "system",
-              content:
-                "You are a tech news editor. Be concise and honest.\n\nThis request has no live web or X access—you cannot verify what happened in the user's time window.\n\nDo NOT invent specific news (no fake launches, fines, deals, stock moves, or events presented as if they were confirmed in the last hours). Do not write wire-style headlines to fill five slots.\n\nIf you cannot substantiate five real items for that window, say so clearly in a short reply. You may mention that real headlines would need browsing/search outside this chat endpoint.",
-            },
-            {
-              role: "user",
-              content: `Current UTC time: ${nowUtc}\n\n${userPrompt}`,
-            },
-          ],
+          temperature: NEWSPAPER_TEMPERATURE,
+          max_tokens: NEWSPAPER_MAX_TOKENS,
+          messages: grokMessages,
         }),
       });
 
@@ -179,7 +181,16 @@ module.exports = async (req, res) => {
           res.status(502).json({ error: "Empty response from Grok", model });
           return;
         }
-        res.status(200).json({ content: content.trim(), model });
+        res.status(200).json({
+          content: content.trim(),
+          model,
+          grokRequest: {
+            endpoint: "POST https://api.x.ai/v1/chat/completions",
+            temperature: NEWSPAPER_TEMPERATURE,
+            max_tokens: NEWSPAPER_MAX_TOKENS,
+            messages: grokMessages,
+          },
+        });
         return;
       }
 
