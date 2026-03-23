@@ -36,8 +36,12 @@
       });
       const j = await r.json().catch(() => ({}));
       if (!r.ok) {
-        const msg = [j.error, j.hint].filter(Boolean).join(" — ");
-        throw new Error(msg || r.statusText);
+        const parts = [j.error, j.hint].filter(Boolean);
+        if (Array.isArray(j.tried) && j.tried.length) {
+          parts.push(`Tried models: ${j.tried.join(", ")}`);
+        }
+        if (j.status) parts.push(`HTTP ${j.status}`);
+        throw new Error(parts.join(" — ") || r.statusText);
       }
       renderContent(j.content);
       status.textContent = j.model ? `Edition ready (${j.model})` : "Edition ready";
