@@ -1,5 +1,5 @@
 require("../../lib/loadEnv")();
-const { verifyGame, BOT_NAMES } = require("../../lib/imposterState");
+const { verifyGame, BOT_NAMES, signRedeemTicket } = require("../../lib/imposterState");
 const { buildBotVotePrompt } = require("../../lib/imposterPrompts");
 const {
   generateJsonPrompt,
@@ -138,7 +138,28 @@ module.exports = async (req, res) => {
     botDetails.sort((a, b) => a.seat - b.seat);
 
     const eliminated = tallyWinner(counts);
-    const innocentsWin = eliminated === imposterSeat;
+    const imposterCaught = eliminated === imposterSeat;
+
+    if (imposterCaught) {
+      const redeemTicket = signRedeemTicket({
+        token,
+        clues,
+        imposterSeat,
+        eliminated,
+      });
+      res.status(200).json({
+        redemptionNeeded: true,
+        redeemTicket,
+        voteCounts: counts,
+        userVote: uv,
+        botVotes: botDetails,
+        eliminated,
+        eliminatedName: BOT_NAMES[eliminated],
+        imposterSeat,
+        imposterName: BOT_NAMES[imposterSeat],
+      });
+      return;
+    }
 
     res.status(200).json({
       voteCounts: counts,
@@ -149,7 +170,7 @@ module.exports = async (req, res) => {
       imposterSeat,
       imposterName: BOT_NAMES[imposterSeat],
       secretWord,
-      innocentsWin,
+      innocentsWin: false,
     });
   } catch (e) {
     res.status(502).json({ error: e.message || "Vote resolution failed" });

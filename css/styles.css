@@ -922,6 +922,26 @@ body.game-page--imposter {
   color: var(--muted);
 }
 
+.imp-redeem-lede {
+  margin: 0 0 1rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+.imp-result-redeem {
+  margin: 0.65rem 0 0;
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.imp-result-redeem-reason {
+  margin: 0.35rem 0 0;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
 .imp-result-details {
   margin-top: 1rem;
   padding-top: 0.75rem;

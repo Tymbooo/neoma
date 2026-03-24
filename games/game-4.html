@@ -19,7 +19,7 @@
     <div class="imp-wrap">
       <section id="imp-screen-start" class="imp-screen">
         <p class="imp-lede">
-          You and three bots play <strong>Imposter</strong>: three players know one secret word; one <strong>Imposter</strong> does not. Each player says <strong>exactly one English word</strong> per turn (letters only, not the secret word, not containing it). After <strong>round 1</strong> (four clues), you may <strong>vote immediately</strong> or play <strong>round 2</strong> for four more clues—then vote. Everyone votes once for the Imposter; majority eliminates one player; if that player was the Imposter, the Innocents win.
+          You and three bots play <strong>Imposter</strong>: three players know one secret word; one <strong>Imposter</strong> does not. Each player says <strong>exactly one English word</strong> per turn (letters only, not the secret word, not containing it). After <strong>round 1</strong> (four clues), you may <strong>vote immediately</strong> or play <strong>round 2</strong> for four more clues—then vote. Everyone votes once for the Imposter; majority eliminates one player. If an <strong>innocent</strong> is eliminated, the Imposter wins. If the <strong>Imposter</strong> is eliminated, they get <strong>one guess</strong> at the word—correct guess steals the win.
         </p>
         <button type="button" class="imp-btn imp-btn--primary" id="imp-btn-start">Start new game</button>
         <p class="imp-status" id="imp-status-start" aria-live="polite"></p>
@@ -59,6 +59,23 @@
         <p class="imp-status" id="imp-status-vote" aria-live="polite"></p>
       </section>
 
+      <section id="imp-screen-redeem" class="imp-screen" hidden>
+        <h2 class="imp-h2">Imposter caught — one guess</h2>
+        <p class="imp-redeem-lede" id="imp-redeem-lede"></p>
+        <div class="imp-vote-history-wrap">
+          <h3 class="imp-vote-history-title">Clue history</h3>
+          <ul class="imp-clue-log imp-clue-log--vote" id="imp-redeem-clue-history" aria-label="Clues for redemption"></ul>
+        </div>
+        <div class="imp-input-row" id="imp-redeem-input-row" hidden>
+          <label class="imp-label" for="imp-redeem-input">Your one-word guess (secret is a common noun from the game’s word pool)</label>
+          <div class="imp-input-wrap">
+            <input type="text" id="imp-redeem-input" class="imp-input" maxlength="32" autocomplete="off" />
+            <button type="button" class="imp-btn imp-btn--primary" id="imp-btn-redeem-submit">Submit guess</button>
+          </div>
+        </div>
+        <p class="imp-status" id="imp-status-redeem" aria-live="polite"></p>
+      </section>
+
       <section id="imp-screen-result" class="imp-screen" hidden>
         <div class="imp-result-card" id="imp-result-card"></div>
         <button type="button" class="imp-btn" id="imp-btn-again">Play again</button>
@@ -69,6 +86,6 @@
       </p>
     </div>
   </main>
-  <script src="../js/imposter.js?v=2"></script>
+  <script src="../js/imposter.js?v=3"></script>
 </body>
 </html>

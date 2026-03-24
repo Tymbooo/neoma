@@ -2,6 +2,7 @@
   const startScreen = document.getElementById("imp-screen-start");
   const playScreen = document.getElementById("imp-screen-play");
   const voteScreen = document.getElementById("imp-screen-vote");
+  const redeemScreen = document.getElementById("imp-screen-redeem");
   const resultScreen = document.getElementById("imp-screen-result");
 
   const statusStart = document.getElementById("imp-status-start");
@@ -19,6 +20,12 @@
   const voteGrid = document.getElementById("imp-vote-grid");
   const voteClueHistory = document.getElementById("imp-vote-clue-history");
   const btnSubmitVote = document.getElementById("imp-btn-submit-vote");
+  const redeemLede = document.getElementById("imp-redeem-lede");
+  const redeemClueHistory = document.getElementById("imp-redeem-clue-history");
+  const redeemInputRow = document.getElementById("imp-redeem-input-row");
+  const redeemInput = document.getElementById("imp-redeem-input");
+  const btnRedeemSubmit = document.getElementById("imp-btn-redeem-submit");
+  const statusRedeem = document.getElementById("imp-status-redeem");
   const resultCard = document.getElementById("imp-result-card");
   const round1Choice = document.getElementById("imp-round1-choice");
   const btnRound2 = document.getElementById("imp-btn-round2");
@@ -27,6 +34,8 @@
   /** @type {{token:string,order:number[],youAreImposter:boolean,secretWord:string|null,botNames:string[],clues:{seat:number,word:string,round:number,reasoning?:string}[],round2Started:boolean} | null} */
   let state = null;
   let selectedVote = null;
+  /** @type {Record<string, unknown> | null} */
+  let pendingRedeemVote = null;
 
   function escapeHtml(s) {
     const d = document.createElement("div");
@@ -39,6 +48,14 @@
       .trim()
       .toUpperCase()
       .replace(/[^A-Z]/g, "");
+    return w.length >= 2 && w.length <= 32 ? w : null;
+  }
+
+  function normalizeRedeemGuess(raw) {
+    const w = String(raw || "")
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z]/g, "");
     return w.length >= 2 && w.length <= 32 ? w : null;
   }
 
@@ -65,6 +82,7 @@
     startScreen.hidden = which !== "start";
     playScreen.hidden = which !== "play";
     voteScreen.hidden = which !== "vote";
+    if (redeemScreen) redeemScreen.hidden = which !== "redeem";
     resultScreen.hidden = which !== "result";
   }
 
@@ -239,21 +257,131 @@
       return;
     }
 
-    const win = j.innocentsWin;
+    if (j.redemptionNeeded) {
+      pendingRedeemVote = j;
+      openRedeemPhase(j);
+      return;
+    }
+
+    showFinalResults(j, null);
+  }
+
+  function openRedeemPhase(voteJ) {
+    showScreen("redeem");
+    statusRedeem.textContent = "";
+    redeemInput.value = "";
+    if (redeemClueHistory && state) {
+      renderCluesInto(redeemClueHistory, state.clues);
+    }
+
+    const impName = voteJ.imposterName;
+    const isHumanImposter = state.youAreImposter && voteJ.imposterSeat === 0;
+
+    if (isHumanImposter) {
+      redeemLede.innerHTML = `You were voted out as <strong>${escapeHtml(impName)}</strong> (the Imposter). Guess the secret word in <strong>one</strong> try — if you’re right, you still win.`;
+      redeemInputRow.hidden = false;
+      redeemInput.disabled = false;
+      btnRedeemSubmit.disabled = false;
+      redeemInput.focus();
+    } else {
+      redeemLede.innerHTML = `<strong>${escapeHtml(impName)}</strong> was the Imposter and has one chance to guess the word from the clues.`;
+      redeemInputRow.hidden = true;
+      redeemInput.disabled = true;
+      btnRedeemSubmit.disabled = true;
+      runBotRedeem();
+    }
+  }
+
+  async function runBotRedeem() {
+    if (!pendingRedeemVote || !state) return;
+    statusRedeem.textContent = `${state.botNames[pendingRedeemVote.imposterSeat]} is thinking of their best guess…`;
+    const { ok, j } = await apiPost("/api/imposter/redeem", {
+      redeemTicket: pendingRedeemVote.redeemTicket,
+      token: state.token,
+      clues: state.clues,
+    });
+    if (!ok) {
+      statusRedeem.textContent = j.error || "Redemption failed";
+      return;
+    }
+    statusRedeem.textContent = "";
+    showFinalResults(pendingRedeemVote, j);
+  }
+
+  async function submitHumanRedeem() {
+    if (!pendingRedeemVote || !state) return;
+    const g = normalizeRedeemGuess(redeemInput.value);
+    if (!g) {
+      statusRedeem.textContent = "Enter one word (letters only, 2–32 characters).";
+      return;
+    }
+    btnRedeemSubmit.disabled = true;
+    redeemInput.disabled = true;
+    statusRedeem.textContent = "Checking…";
+    const { ok, j } = await apiPost("/api/imposter/redeem", {
+      redeemTicket: pendingRedeemVote.redeemTicket,
+      token: state.token,
+      clues: state.clues,
+      guess: g,
+    });
+    if (!ok) {
+      statusRedeem.textContent = j.error || "Redemption failed";
+      btnRedeemSubmit.disabled = false;
+      redeemInput.disabled = false;
+      return;
+    }
+    statusRedeem.textContent = "";
+    showFinalResults(pendingRedeemVote, j);
+  }
+
+  /**
+   * @param {Record<string, unknown>} voteJ
+   * @param {Record<string, unknown> | null} redeemJ
+   */
+  function showFinalResults(voteJ, redeemJ) {
+    const secretWord = redeemJ
+      ? redeemJ.secretWord
+      : voteJ.secretWord;
+    let lead;
+    if (redeemJ) {
+      lead = redeemJ.imposterStoleWin
+        ? "Imposter stole the win!"
+        : "Innocents win!";
+    } else {
+      lead = voteJ.innocentsWin ? "Innocents win!" : "Imposter wins!";
+    }
+
     const lines = [
-      `<p class="imp-result-lead">${win ? "Innocents win!" : "Imposter wins!"}</p>`,
-      `<p>The secret word was <strong>${escapeHtml(j.secretWord)}</strong>.</p>`,
-      `<p>The Imposter was <strong>${escapeHtml(j.imposterName)}</strong>.</p>`,
-      `<p>Eliminated: <strong>${escapeHtml(j.eliminatedName)}</strong>.</p>`,
-      `<p class="imp-result-votes">Votes: You → ${escapeHtml(state.botNames[selectedVote])}. ` +
-        j.botVotes.map((b) => `${escapeHtml(b.name)} → ${escapeHtml(state.botNames[b.vote])}`).join(". ") +
-        `</p>`,
+      `<p class="imp-result-lead">${lead}</p>`,
+      `<p>The secret word was <strong>${escapeHtml(String(secretWord || ""))}</strong>.</p>`,
+      `<p>The Imposter was <strong>${escapeHtml(String(voteJ.imposterName || ""))}</strong>.</p>`,
+      `<p>Eliminated: <strong>${escapeHtml(String(voteJ.eliminatedName || ""))}</strong>.</p>`,
     ];
+
+    if (redeemJ) {
+      const correct = redeemJ.redemptionCorrect;
+      const g = redeemJ.redemptionGuess;
+      const who = voteJ.imposterName;
+      lines.push(
+        `<p class="imp-result-redeem">${escapeHtml(String(who))} guessed <strong>${escapeHtml(String(g || ""))}</strong> — ${correct ? "correct; imposter wins." : "wrong; innocents take the round."}</p>`
+      );
+      if (redeemJ.redemptionReasoning && voteJ.imposterSeat !== 0) {
+        lines.push(
+          `<p class="imp-result-redeem-reason"><em>${escapeHtml(String(redeemJ.redemptionReasoning))}</em></p>`
+        );
+      }
+    }
+
+    lines.push(
+      `<p class="imp-result-votes">Votes: You → ${escapeHtml(state.botNames[selectedVote])}. ` +
+        voteJ.botVotes.map((b) => `${escapeHtml(b.name)} → ${escapeHtml(state.botNames[b.vote])}`).join(". ") +
+        `</p>`
+    );
 
     const details = document.createElement("div");
     details.className = "imp-result-details";
     details.innerHTML = "<p class=\"imp-result-sub\">How bots voted (reasoning):</p>";
-    j.botVotes.forEach((b) => {
+    voteJ.botVotes.forEach((b) => {
       const p = document.createElement("p");
       p.className = "imp-bot-vote-reason";
       p.innerHTML = `<strong>${escapeHtml(b.name)}</strong> voted ${escapeHtml(state.botNames[b.vote])}: ${escapeHtml(b.reasoning || "")}`;
@@ -262,6 +390,7 @@
 
     resultCard.innerHTML = lines.join("");
     resultCard.appendChild(details);
+    pendingRedeemVote = null;
     showScreen("result");
   }
 
@@ -333,6 +462,18 @@
 
   btnSubmitVote.addEventListener("click", submitVote);
 
+  if (redeemInput && btnRedeemSubmit) {
+    redeemInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        btnRedeemSubmit.click();
+      }
+    });
+    btnRedeemSubmit.addEventListener("click", () => {
+      submitHumanRedeem();
+    });
+  }
+
   btnRound2.addEventListener("click", async () => {
     if (!state || state.clues.length !== 4 || state.round2Started) return;
     state.round2Started = true;
@@ -353,11 +494,14 @@
 
   document.getElementById("imp-btn-again").addEventListener("click", () => {
     state = null;
+    pendingRedeemVote = null;
     clueLog.innerHTML = "";
     if (voteClueHistory) voteClueHistory.innerHTML = "";
+    if (redeemClueHistory) redeemClueHistory.innerHTML = "";
     hideRound1Choice();
     resultCard.innerHTML = "";
     showScreen("start");
     statusStart.textContent = "";
+    if (statusRedeem) statusRedeem.textContent = "";
   });
 })();
