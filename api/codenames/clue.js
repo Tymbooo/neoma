@@ -151,6 +151,8 @@ module.exports = async (req, res) => {
       const teamLabel = team === "blue" ? "BLUE" : "RED";
       const verifyPrompt = buildClueDominanceVerifyPrompt(
         words,
+        assignment,
+        team,
         revealed,
         clue,
         targets.indices,
@@ -158,7 +160,8 @@ module.exports = async (req, res) => {
       );
       const dom = await generateJsonPrompt(verifyPrompt, SCHEMA_CODENAMES_CLUE_DOMINANCE);
       if (dom.ok !== true) {
-        lastErr = "Clue failed dominance check — another unrevealed word ties or beats a target";
+        lastErr =
+          "Clue failed dominance check — a non-team unrevealed word ties or beats a target";
         continue;
       }
       const spoilerWords = targets.indices.map((i) => words[i]);
