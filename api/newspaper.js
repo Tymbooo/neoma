@@ -6,9 +6,6 @@ require("./lib/loadEnv")();
  * Keys with "Restrict access" often have Chat only (no Models endpoint); see XAI_DISCOVER_MODELS.
  * For X search, use a model your key allows on POST /v1/responses (see xAI console).
  */
-/** Bumped when changing search/live behavior — shown in UI to verify deploy. */
-const NEWSPAPER_API_BUILD = "search-x-web-2026-03-24";
-
 const DEFAULT_MODEL_FALLBACKS = [
   "grok-4-1-fast-reasoning",
   "grok-4-1-fast-non-reasoning",
@@ -211,7 +208,6 @@ module.exports = async (req, res) => {
   if (!apiKey) {
     res.status(503).json({
       error: "XAI_API_KEY is not configured on the server",
-      apiBuild: NEWSPAPER_API_BUILD,
       hint:
         "Add XAI_API_KEY in Vercel → Environment Variables (Production) and Redeploy. Locally, add it to .env.local.",
     });
@@ -296,27 +292,12 @@ module.exports = async (req, res) => {
               lastResponsesErr = `Responses OK but empty text (${bundle.label})`;
               continue;
             }
-            const u = rr.data?.usage || {};
             res.status(200).json({
               content: rr.text,
               model,
-              apiBuild: NEWSPAPER_API_BUILD,
               usedLiveSearch: true,
-              searchToolBundle: bundle.label,
               usedWebSearch: bundle.label.includes("web"),
               usedXSearch: bundle.label.includes("x_search"),
-              xSearchDateRange: xDates,
-              grokRequest: {
-                apiKind: "responses",
-                endpoint: "POST https://api.x.ai/v1/responses (poll GET until completed)",
-                searchToolBundle: bundle.label,
-                ...responsesBody,
-              },
-              usage: u,
-              searchCalls: {
-                web: u.server_side_tool_usage_details?.web_search_calls ?? u.web_search_calls,
-                x: u.server_side_tool_usage_details?.x_search_calls ?? u.x_search_calls,
-              },
             });
             return;
           }
@@ -360,22 +341,13 @@ module.exports = async (req, res) => {
         res.status(200).json({
           content: content.trim(),
           model,
-          apiBuild: NEWSPAPER_API_BUILD,
           usedLiveSearch: false,
           usedXSearch: false,
           usedWebSearch: false,
-          fallbackPlainChat: !chatOnly && Boolean(lastResponsesErr),
           notice:
             !chatOnly && lastResponsesErr
               ? "Plain chat only: Responses + live search failed for every model/tool combo (enable /v1/responses, Web Search, and X Search on your API key). This answer is NOT from live web/X."
               : undefined,
-          grokRequest: {
-            apiKind: "chat.completions",
-            endpoint: "POST https://api.x.ai/v1/chat/completions",
-            temperature: NEWSPAPER_TEMPERATURE,
-            max_tokens: NEWSPAPER_MAX_TOKENS_CHAT,
-            messages: grokChatMessages,
-          },
         });
         return;
       }
@@ -406,7 +378,6 @@ module.exports = async (req, res) => {
     res.status(502).json({
       error: lastErr || lastResponsesErr || `xAI rejected all models (${lastStatus})`,
       status: lastStatus,
-      apiBuild: NEWSPAPER_API_BUILD,
       tried: modelsToTry,
       hint:
         hint403 +
@@ -416,9 +387,6 @@ module.exports = async (req, res) => {
           : ""),
     });
   } catch (e) {
-    res.status(502).json({
-      error: e.message || "Request failed",
-      apiBuild: NEWSPAPER_API_BUILD,
-    });
+    res.status(502).json({ error: e.message || "Request failed" });
   }
 };

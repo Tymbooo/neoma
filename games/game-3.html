@@ -18,25 +18,18 @@
   <main class="game-shell game-shell--newspaper">
     <div class="np-wrap">
       <p class="np-lede">
-        Uses xAI <strong>Responses API</strong> with <strong>web_search</strong> + <strong>x_search</strong> (X uses a UTC date window for the last ~12h). Then five short articles from what was actually retrieved. If your key blocks tools, the server falls back to plain chat (not live). Env: <code>XAI_NEWSPAPER_CHAT_ONLY=1</code> skips search; <code>XAI_NEWSPAPER_X_ONLY=1</code> / <code>XAI_NEWSPAPER_WEB_ONLY=1</code> limit tools.
+        Live <strong>web</strong> and <strong>X</strong> search for tech news (last ~12 hours; X uses a UTC date window), then five short articles via xAI Responses. If your key blocks tools, the app falls back to plain chat (not live).
       </p>
-      <p class="np-build" id="np-build" hidden aria-live="polite"></p>
       <button type="button" class="np-btn" id="np-request">
         Request the newspaper
       </button>
       <p class="np-status" id="np-status" aria-live="polite"></p>
-      <section
-        id="np-prompt"
-        class="np-prompt"
-        aria-label="Prompt sent to Grok"
-        hidden
-      ></section>
       <article id="np-output" class="np-article" aria-live="polite"></article>
       <p class="np-foot">
-        Needs <code>XAI_API_KEY</code>. For live news, allow <strong>Responses</strong> (<code>/v1/responses</code>), <strong>Web Search</strong>, and <strong>X Search</strong> on the key, plus your model. <code>XAI_MODEL</code> pins the model id. The line above shows <strong>API build</strong> after each request so you can confirm the deploy.
+        Needs <code>XAI_API_KEY</code>. For live results: enable <strong>Responses</strong>, <strong>Web Search</strong>, and <strong>X Search</strong> on the key, plus your model. Optional <code>XAI_MODEL</code> pins the model id.
       </p>
     </div>
   </main>
-  <script src="../js/newspaper.js?v=search-x-web-1"></script>
+  <script src="../js/newspaper.js?v=2"></script>
 </body>
 </html>
