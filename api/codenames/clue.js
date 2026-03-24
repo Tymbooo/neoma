@@ -2,8 +2,10 @@ require("../../lib/loadEnv")();
 const { verifyToken, parseRevealed } = require("../../lib/state");
 const {
   buildSpymasterPrompt,
+  buildClueDominanceVerifyPrompt,
   generateJsonPrompt,
   SCHEMA_CODENAMES_CLUE,
+  SCHEMA_CODENAMES_CLUE_DOMINANCE,
 } = require("../../lib/gemini");
 const { clueValid } = require("../../lib/clueValidate");
 
@@ -117,7 +119,7 @@ module.exports = async (req, res) => {
   }
 
   let lastErr = "Could not get a valid clue";
-  for (let attempt = 0; attempt < 4; attempt++) {
+  for (let attempt = 0; attempt < 6; attempt++) {
     try {
       const prompt = buildSpymasterPrompt(team, words, assignment, revealed);
       const out = await generateJsonPrompt(prompt, SCHEMA_CODENAMES_CLUE);
@@ -144,6 +146,19 @@ module.exports = async (req, res) => {
       const targets = validateTargetIndices(assignment, revealed, team, number, clue, out.targetIndices);
       if (!targets.ok) {
         lastErr = "Model targetIndices must match number and unrevealed team cards";
+        continue;
+      }
+      const teamLabel = team === "blue" ? "BLUE" : "RED";
+      const verifyPrompt = buildClueDominanceVerifyPrompt(
+        words,
+        revealed,
+        clue,
+        targets.indices,
+        teamLabel
+      );
+      const dom = await generateJsonPrompt(verifyPrompt, SCHEMA_CODENAMES_CLUE_DOMINANCE);
+      if (dom.ok !== true) {
+        lastErr = "Clue failed dominance check — another unrevealed word ties or beats a target";
         continue;
       }
       const spoilerWords = targets.indices.map((i) => words[i]);
