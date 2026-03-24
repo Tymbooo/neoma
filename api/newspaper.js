@@ -6,9 +6,13 @@ require("./lib/loadEnv")();
  * Keys with "Restrict access" often have Chat only (no Models endpoint); see XAI_DISCOVER_MODELS.
  * For X search, use a model your key allows on POST /v1/responses (see xAI console).
  */
+/** Bumped when changing search/live behavior — shown in UI to verify deploy. */
+const NEWSPAPER_API_BUILD = "search-x-web-2026-03-24";
+
 const DEFAULT_MODEL_FALLBACKS = [
   "grok-4-1-fast-reasoning",
   "grok-4-1-fast-non-reasoning",
+  "grok-4-0709",
   "grok-3-mini",
   "grok-3",
 ];
@@ -16,6 +20,7 @@ const DEFAULT_MODEL_FALLBACKS = [
 const PREFERRED_ORDER = [
   "grok-4-1-fast-reasoning",
   "grok-4-1-fast-non-reasoning",
+  "grok-4-0709",
   "grok-4.20-0309-non-reasoning",
   "grok-4.20-0309-reasoning",
   "grok-3-mini",
@@ -27,7 +32,7 @@ const PREFERRED_ORDER = [
 ];
 
 const NEWSPAPER_USER_TASK =
-  "What are the 5 biggest tech news stories of the last 12 hours, answer in 5 concise pretty short articles.";
+  "Search the web and X in real time for the biggest technology news from roughly the last 12 hours (relative to the UTC time above). Summarize the top storylines you actually find — not guesses. Then answer in 5 concise, short articles (one per story). Mention that reporting is based on live search when you used it.";
 
 const NEWSPAPER_TEMPERATURE = 0.2;
 const NEWSPAPER_MAX_OUTPUT_TOKENS = 2500;
@@ -35,7 +40,7 @@ const NEWSPAPER_MAX_OUTPUT_TOKENS = 2500;
 const NEWSPAPER_MAX_TOKENS_CHAT = 2500;
 
 const RESPONSES_INSTRUCTIONS =
-  "Use the x_search tool to find recent tech-related posts and discussion on X within the search date range and the user's UTC time. Then write five concise short articles summarizing the biggest tech stories grounded in what you found on X. Prefer topics with clear traction on X. Say that reporting is based on X when appropriate. If X returns little relevant tech signal, say so briefly instead of inventing off-platform news.";
+  "You MUST use the available server-side search tools before answering — do not rely on training memory for recency.\n\n1) Use web_search to find current tech news from reputable sources within the user's timeframe.\n2) Use x_search (date range is set on the tool) to find what is trending on X about tech in that window.\n\nThen synthesize the five biggest tech stories you actually retrieved. Each article should reflect real results from search. If search returns weak or conflicting signal, say so honestly instead of inventing product launches, fines, or stock moves. Prefer topics with multiple independent mentions.";
 
 const RESPONSES_POLL_MS = 1500;
 const RESPONSES_MAX_WAIT_MS = 110_000;
@@ -206,6 +211,7 @@ module.exports = async (req, res) => {
   if (!apiKey) {
     res.status(503).json({
       error: "XAI_API_KEY is not configured on the server",
+      apiBuild: NEWSPAPER_API_BUILD,
       hint:
         "Add XAI_API_KEY in Vercel → Environment Variables (Production) and Redeploy. Locally, add it to .env.local.",
     });
@@ -241,57 +247,88 @@ module.exports = async (req, res) => {
   let lastResponsesErr = "";
 
   const hint403 =
-    "403: Your key may use Restrict access — allow Responses + x_search (and the model), or set XAI_MODEL. See https://docs.x.ai/docs/debugging";
+    "403: Your key may use Restrict access — allow Responses + Web Search + X Search (and the model). See https://docs.x.ai/docs/debugging";
+
+  /** Try richer tool sets first, then degrade if the key disallows one tool. */
+  function toolBundlesForNewspaper(dates) {
+    const xTool = {
+      type: "x_search",
+      from_date: dates.from_date,
+      to_date: dates.to_date,
+    };
+    const bundles = [
+      {
+        label: "web_search+x_search",
+        tools: [{ type: "web_search" }, xTool],
+      },
+      { label: "x_search_only", tools: [xTool] },
+      { label: "web_search_only", tools: [{ type: "web_search" }] },
+    ];
+    if (envTruthy("XAI_NEWSPAPER_X_ONLY")) {
+      return [{ label: "x_search_only", tools: [xTool] }];
+    }
+    if (envTruthy("XAI_NEWSPAPER_WEB_ONLY")) {
+      return [{ label: "web_search_only", tools: [{ type: "web_search" }] }];
+    }
+    return bundles;
+  }
 
   try {
     if (!chatOnly) {
+      const bundles = toolBundlesForNewspaper(xDates);
       for (const model of modelsToTry) {
-        const responsesBody = {
-          model,
-          instructions: RESPONSES_INSTRUCTIONS,
-          input: [{ role: "user", content: userMessageContent }],
-          tools: [
-            {
-              type: "x_search",
-              from_date: xDates.from_date,
-              to_date: xDates.to_date,
-            },
-          ],
-          tool_choice: "auto",
-          temperature: NEWSPAPER_TEMPERATURE,
-          max_output_tokens: NEWSPAPER_MAX_OUTPUT_TOKENS,
-          max_turns: 12,
-        };
-
-        const rr = await postResponsesAndPoll(apiKey, responsesBody);
-
-        if (rr.ok) {
-          if (!rr.text) {
-            lastResponsesErr = "Responses API completed but returned no text output";
-            continue;
-          }
-          res.status(200).json({
-            content: rr.text,
+        for (const bundle of bundles) {
+          const responsesBody = {
             model,
-            usedXSearch: true,
-            xSearchDateRange: xDates,
-            grokRequest: {
-              apiKind: "responses",
-              endpoint: "POST https://api.x.ai/v1/responses (poll GET until completed)",
-              ...responsesBody,
-            },
-            usage: rr.data?.usage || null,
-          });
-          return;
-        }
+            instructions: RESPONSES_INSTRUCTIONS,
+            input: [{ role: "user", content: userMessageContent }],
+            tools: bundle.tools,
+            tool_choice: "auto",
+            temperature: NEWSPAPER_TEMPERATURE,
+            max_output_tokens: NEWSPAPER_MAX_OUTPUT_TOKENS,
+            max_turns: 16,
+          };
 
-        lastResponsesErr = rr.err || xaiErrorMessage(rr.status || 502, rr.data, "");
-        lastStatus = rr.status || lastStatus;
-        if (rr.status === 403 || rr.status === 404) {
-          continue;
-        }
-        if (rr.status && rr.status !== 502) {
-          lastErr = lastResponsesErr;
+          const rr = await postResponsesAndPoll(apiKey, responsesBody);
+
+          if (rr.ok) {
+            if (!rr.text) {
+              lastResponsesErr = `Responses OK but empty text (${bundle.label})`;
+              continue;
+            }
+            const u = rr.data?.usage || {};
+            res.status(200).json({
+              content: rr.text,
+              model,
+              apiBuild: NEWSPAPER_API_BUILD,
+              usedLiveSearch: true,
+              searchToolBundle: bundle.label,
+              usedWebSearch: bundle.label.includes("web"),
+              usedXSearch: bundle.label.includes("x_search"),
+              xSearchDateRange: xDates,
+              grokRequest: {
+                apiKind: "responses",
+                endpoint: "POST https://api.x.ai/v1/responses (poll GET until completed)",
+                searchToolBundle: bundle.label,
+                ...responsesBody,
+              },
+              usage: u,
+              searchCalls: {
+                web: u.server_side_tool_usage_details?.web_search_calls ?? u.web_search_calls,
+                x: u.server_side_tool_usage_details?.x_search_calls ?? u.x_search_calls,
+              },
+            });
+            return;
+          }
+
+          lastResponsesErr = `${bundle.label}: ${rr.err || xaiErrorMessage(rr.status || 502, rr.data, "")}`;
+          lastStatus = rr.status || lastStatus;
+          if (rr.status === 403 || rr.status === 404) {
+            break;
+          }
+          if (rr.status && rr.status !== 502) {
+            lastErr = lastResponsesErr;
+          }
         }
       }
     }
@@ -323,11 +360,14 @@ module.exports = async (req, res) => {
         res.status(200).json({
           content: content.trim(),
           model,
+          apiBuild: NEWSPAPER_API_BUILD,
+          usedLiveSearch: false,
           usedXSearch: false,
+          usedWebSearch: false,
           fallbackPlainChat: !chatOnly && Boolean(lastResponsesErr),
           notice:
             !chatOnly && lastResponsesErr
-              ? "Plain chat only: Responses/x_search failed for every model tried (check API key allows /v1/responses and X Search). This answer is not grounded in live X."
+              ? "Plain chat only: Responses + live search failed for every model/tool combo (enable /v1/responses, Web Search, and X Search on your API key). This answer is NOT from live web/X."
               : undefined,
           grokRequest: {
             apiKind: "chat.completions",
@@ -366,15 +406,19 @@ module.exports = async (req, res) => {
     res.status(502).json({
       error: lastErr || lastResponsesErr || `xAI rejected all models (${lastStatus})`,
       status: lastStatus,
+      apiBuild: NEWSPAPER_API_BUILD,
       tried: modelsToTry,
       hint:
         hint403 +
         discoveryNote +
         (lastResponsesErr
-          ? ` Responses/x_search last error: ${lastResponsesErr}. Enable Responses + X Search on the API key, or set XAI_NEWSPAPER_CHAT_ONLY=1 for chat-only.`
+          ? ` Last: ${lastResponsesErr}. Enable Responses + Web Search + X Search on the key, or set XAI_NEWSPAPER_CHAT_ONLY=1 for chat-only.`
           : ""),
     });
   } catch (e) {
-    res.status(502).json({ error: e.message || "Request failed" });
+    res.status(502).json({
+      error: e.message || "Request failed",
+      apiBuild: NEWSPAPER_API_BUILD,
+    });
   }
 };
