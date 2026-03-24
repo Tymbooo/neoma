@@ -5,6 +5,9 @@
     },
     "api/newspaper.js": {
       "maxDuration": 180
+    },
+    "api/imposter/*.js": {
+      "maxDuration": 60
     }
   }
 }

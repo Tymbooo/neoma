@@ -678,6 +678,235 @@ body.game-page--newspaper {
   font-size: 0.68rem;
 }
 
+/* --- Imposter (game 4) --- */
+body.game-page--imposter {
+  padding: clamp(0.65rem, 2vw, 1rem) clamp(0.5rem, 2vw, 1rem);
+}
+
+.game-shell--imposter {
+  width: 100%;
+  max-width: 36rem;
+  margin: 0 auto;
+}
+
+.imp-wrap {
+  width: 100%;
+}
+
+.imp-screen {
+  margin-bottom: 1rem;
+}
+
+.imp-lede {
+  margin: 0 0 1rem;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+.imp-role-card {
+  margin: 0 0 1rem;
+  padding: 1rem;
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+
+.imp-order,
+.imp-turn {
+  margin: 0 0 0.65rem;
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+
+.imp-turn {
+  font-weight: 600;
+  color: var(--accent-2);
+}
+
+.imp-clue-log {
+  margin: 0 0 1rem;
+  padding: 0;
+  list-style: none;
+}
+
+.imp-clue-item {
+  margin: 0 0 0.65rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--border);
+}
+
+.imp-clue-head {
+  font-size: 0.875rem;
+}
+
+.imp-clue-word {
+  font-family: var(--mono);
+  font-weight: 700;
+  color: var(--accent-3);
+}
+
+.imp-clue-reason {
+  margin: 0.4rem 0 0;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+.imp-input-row {
+  margin: 0 0 1rem;
+}
+
+.imp-label {
+  display: block;
+  margin: 0 0 0.35rem;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.imp-input-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.imp-input {
+  flex: 1 1 10rem;
+  min-width: 0;
+  padding: 0.55rem 0.75rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.25);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 0.95rem;
+}
+
+.imp-btn {
+  font-family: var(--font);
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.55rem 1rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.imp-btn--primary {
+  border-color: rgba(129, 140, 248, 0.5);
+  background: rgba(129, 140, 248, 0.15);
+  color: #c7d2fe;
+}
+
+.imp-btn:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.imp-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.imp-status {
+  min-height: 1.25em;
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+
+.imp-h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+}
+
+.imp-vote-hint {
+  margin: 0 0 0.75rem;
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+
+.imp-vote-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0 0 1rem;
+}
+
+.imp-vote-btn {
+  padding: 0.65rem 1.1rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.25);
+  color: var(--text);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.imp-vote-btn--on {
+  border-color: rgba(129, 140, 248, 0.65);
+  background: rgba(129, 140, 248, 0.2);
+  color: #e0e7ff;
+}
+
+.imp-result-card {
+  margin: 0 0 1rem;
+  padding: 1rem;
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.imp-result-lead {
+  margin: 0 0 0.75rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--accent-2);
+}
+
+.imp-result-votes {
+  margin-top: 0.75rem;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.imp-result-details {
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
+}
+
+.imp-result-sub {
+  margin: 0 0 0.5rem;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.imp-bot-vote-reason {
+  margin: 0 0 0.45rem;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+.imp-foot {
+  margin: 1.25rem 0 0;
+  font-size: 0.72rem;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+.imp-foot code {
+  font-size: 0.65rem;
+}
+
 /* Word quiz modal */
 .word-quiz-modal {
   position: fixed;

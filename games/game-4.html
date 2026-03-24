@@ -3,23 +3,61 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Game Four — Exprobable</title>
+  <title>Imposter — Exprobable</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../css/styles.css" />
 </head>
-<body class="game-page">
+<body class="game-page game-page--imposter">
   <div class="home-bg" aria-hidden="true"></div>
   <header class="game-topbar">
     <a class="back-link" href="../index.html">← All games</a>
-    <h1 class="game-title">Game Four</h1>
+    <h1 class="game-title">Imposter</h1>
   </header>
-  <main class="game-shell">
-    <div class="placeholder-card">
-      <h2>Coming soon</h2>
-      <p>This game is not built yet. Head back to choose another card.</p>
+  <main class="game-shell game-shell--imposter">
+    <div class="imp-wrap">
+      <section id="imp-screen-start" class="imp-screen">
+        <p class="imp-lede">
+          You and three bots play <strong>Imposter</strong>: three players know one secret word; one <strong>Imposter</strong> does not. Two full rounds — each player says <strong>exactly one English word</strong> per turn (letters only, not the secret word, not containing it). Then everyone votes once for who is the Imposter. Majority eliminates one player; if that player was the Imposter, the Innocents win.
+        </p>
+        <button type="button" class="imp-btn imp-btn--primary" id="imp-btn-start">Start new game</button>
+        <p class="imp-status" id="imp-status-start" aria-live="polite"></p>
+      </section>
+
+      <section id="imp-screen-play" class="imp-screen" hidden>
+        <div class="imp-role-card" id="imp-role-card" aria-live="polite"></div>
+        <p class="imp-order" id="imp-order-line"></p>
+        <p class="imp-turn" id="imp-turn-line" aria-live="polite"></p>
+        <ul class="imp-clue-log" id="imp-clue-log" aria-label="Clues so far"></ul>
+        <div class="imp-input-row" id="imp-input-row" hidden>
+          <label class="imp-label" for="imp-clue-input">Your clue (one word)</label>
+          <div class="imp-input-wrap">
+            <input type="text" id="imp-clue-input" class="imp-input" maxlength="32" autocomplete="off" />
+            <button type="button" class="imp-btn imp-btn--primary" id="imp-btn-submit-clue">Submit clue</button>
+          </div>
+        </div>
+        <p class="imp-status" id="imp-status-play" aria-live="polite"></p>
+      </section>
+
+      <section id="imp-screen-vote" class="imp-screen" hidden>
+        <h2 class="imp-h2">Vote for the Imposter</h2>
+        <p class="imp-vote-hint">You cannot vote for yourself. Pick one bot.</p>
+        <div class="imp-vote-grid" id="imp-vote-grid"></div>
+        <button type="button" class="imp-btn imp-btn--primary" id="imp-btn-submit-vote" disabled>Submit vote</button>
+        <p class="imp-status" id="imp-status-vote" aria-live="polite"></p>
+      </section>
+
+      <section id="imp-screen-result" class="imp-screen" hidden>
+        <div class="imp-result-card" id="imp-result-card"></div>
+        <button type="button" class="imp-btn" id="imp-btn-again">Play again</button>
+      </section>
+
+      <p class="imp-foot">
+        Bots use <strong>Gemini</strong> with the same clue and vote rules as a human. Add <code>GEMINI_API_KEY</code> on Vercel (or <code>.env.local</code> with <code>vercel dev</code>).
+      </p>
     </div>
   </main>
+  <script src="../js/imposter.js?v=1"></script>
 </body>
 </html>
