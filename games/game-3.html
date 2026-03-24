@@ -18,7 +18,7 @@
   <main class="game-shell game-shell--newspaper">
     <div class="np-wrap">
       <p class="np-lede">
-        Sends a short user prompt: five biggest tech stories from the <strong>last 12 hours</strong>, as five concise articles (current UTC is included). Plain chat has <strong>no live web or X feed</strong> unless you add search tools on the API side.
+        Uses xAI <strong>Responses API</strong> with <strong>x_search</strong> (X posts in a UTC date window covering the last ~12h), then five short articles. If your key blocks that, the server falls back to plain chat (no live X). Optional env: <code>XAI_NEWSPAPER_CHAT_ONLY=1</code> to skip search.
       </p>
       <button type="button" class="np-btn" id="np-request">
         Request the newspaper
@@ -32,7 +32,7 @@
       ></section>
       <article id="np-output" class="np-article" aria-live="polite"></article>
       <p class="np-foot">
-        Needs <code>XAI_API_KEY</code> (Vercel or <code>.env.local</code>). If the key uses <strong>Restrict access</strong>, allow <strong>Chat</strong> and tick the exact model you use, or set <code>XAI_MODEL</code> to that id (e.g. <code>grok-4-1-fast-reasoning</code>).
+        Needs <code>XAI_API_KEY</code>. For live X, allow <strong>Responses</strong> (<code>/v1/responses</code>) and <strong>X Search</strong> on the key, plus your model. <code>XAI_MODEL</code> pins the model id.
       </p>
     </div>
   </main>

@@ -11,8 +11,32 @@
   }
 
   function renderGrokRequest(gr, model) {
-    if (!promptEl || !gr || !Array.isArray(gr.messages)) return;
+    if (!promptEl || !gr) return;
     const esc = escapeHtml;
+    if (gr.apiKind === "responses") {
+      const payload = {
+        instructions: gr.instructions,
+        input: gr.input,
+        tools: gr.tools,
+        tool_choice: gr.tool_choice,
+        temperature: gr.temperature,
+        max_output_tokens: gr.max_output_tokens,
+        max_turns: gr.max_turns,
+      };
+      promptEl.innerHTML = `
+      <details class="np-prompt-details" open>
+        <summary class="np-prompt-summary">Exact payload sent to Grok (Responses API + x_search)</summary>
+        <p class="np-prompt-meta">
+          <span><strong>Endpoint</strong> <code>${esc(gr.endpoint || "")}</code></span>
+          <span><strong>model</strong> <code>${esc(model || "")}</code></span>
+        </p>
+        <p class="np-prompt-note">The API key is sent only in the <code>Authorization</code> header (not shown).</p>
+        <pre class="np-prompt-pre np-prompt-pre--json" tabindex="0">${esc(JSON.stringify(payload, null, 2))}</pre>
+      </details>`;
+      promptEl.hidden = false;
+      return;
+    }
+    if (!Array.isArray(gr.messages)) return;
     const blocks = gr.messages
       .map(
         (m) => `
@@ -24,7 +48,7 @@
       .join("");
     promptEl.innerHTML = `
       <details class="np-prompt-details" open>
-        <summary class="np-prompt-summary">Exact payload sent to Grok (this request)</summary>
+        <summary class="np-prompt-summary">Exact payload sent to Grok (chat completions — no x_search)</summary>
         <p class="np-prompt-meta">
           <span><strong>Endpoint</strong> <code>${esc(gr.endpoint || "")}</code></span>
           <span><strong>model</strong> <code>${esc(model || "")}</code></span>
@@ -80,7 +104,13 @@
       }
       renderContent(j.content);
       if (j.grokRequest) renderGrokRequest(j.grokRequest, j.model);
-      status.textContent = j.model ? `Edition ready (${j.model})` : "Edition ready";
+      let base = j.model ? `Edition ready (${j.model})` : "Edition ready";
+      if (j.usedXSearch) base += " · X search";
+      if (j.notice) {
+        status.innerHTML = `${escapeHtml(base)}<br/><span class="np-status--sub">${escapeHtml(j.notice)}</span>`;
+      } else {
+        status.textContent = base;
+      }
       status.className = "np-status";
     } catch (e) {
       status.textContent = String(e.message);
