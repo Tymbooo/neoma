@@ -17,10 +17,14 @@
   const btnSubmitClue = document.getElementById("imp-btn-submit-clue");
 
   const voteGrid = document.getElementById("imp-vote-grid");
+  const voteClueHistory = document.getElementById("imp-vote-clue-history");
   const btnSubmitVote = document.getElementById("imp-btn-submit-vote");
   const resultCard = document.getElementById("imp-result-card");
+  const round1Choice = document.getElementById("imp-round1-choice");
+  const btnRound2 = document.getElementById("imp-btn-round2");
+  const btnVoteEarly = document.getElementById("imp-btn-vote-early");
 
-  /** @type {{token:string,order:number[],youAreImposter:boolean,secretWord:string|null,botNames:string[],clues:{seat:number,word:string,round:number,reasoning?:string}[]} | null} */
+  /** @type {{token:string,order:number[],youAreImposter:boolean,secretWord:string|null,botNames:string[],clues:{seat:number,word:string,round:number,reasoning?:string}[],round2Started:boolean} | null} */
   let state = null;
   let selectedVote = null;
 
@@ -73,12 +77,19 @@
   function currentTurn() {
     const i = state.clues.length;
     if (i >= 8) return null;
+    if (i === 4 && !state.round2Started) return null;
     const seat = state.order[i % 4];
     const round = i < 4 ? 1 : 2;
     return { seat, round, name: state.botNames[seat] };
   }
 
   function renderTurnLine() {
+    if (!state) return;
+    if (state.clues.length === 4 && !state.round2Started) {
+      turnLine.textContent =
+        "Round 1 complete — play a second round of clues, or vote now.";
+      return;
+    }
     const t = currentTurn();
     if (!t) {
       turnLine.textContent = "";
@@ -87,9 +98,9 @@
     turnLine.textContent = `Round ${t.round} — ${t.name}'s turn.`;
   }
 
-  function renderClueLog() {
-    clueLog.innerHTML = "";
-    state.clues.forEach((c) => {
+  function renderCluesInto(ul, clues) {
+    ul.innerHTML = "";
+    clues.forEach((c) => {
       const li = document.createElement("li");
       li.className = "imp-clue-item";
       const head = document.createElement("div");
@@ -102,8 +113,25 @@
         sub.textContent = c.reasoning;
         li.appendChild(sub);
       }
-      clueLog.appendChild(li);
+      ul.appendChild(li);
     });
+  }
+
+  function renderClueLog() {
+    renderCluesInto(clueLog, state.clues);
+  }
+
+  function hideRound1Choice() {
+    round1Choice.hidden = true;
+  }
+
+  function showRound1Choice() {
+    round1Choice.hidden = false;
+    renderTurnLine();
+    inputRow.hidden = true;
+    clueInput.disabled = true;
+    btnSubmitClue.disabled = true;
+    statusPlay.textContent = "";
   }
 
   function updatePlayUi() {
@@ -127,6 +155,11 @@
 
   async function runBotChain() {
     while (state.clues.length < 8) {
+      if (state.clues.length === 4 && !state.round2Started) {
+        showRound1Choice();
+        return;
+      }
+
       const next = state.order[state.clues.length % 4];
       if (next === 0) break;
 
@@ -156,6 +189,7 @@
 
     statusPlay.textContent = "";
     if (state.clues.length === 8) {
+      hideRound1Choice();
       openVote();
     } else {
       updatePlayUi();
@@ -163,10 +197,14 @@
   }
 
   function openVote() {
+    hideRound1Choice();
     showScreen("vote");
     selectedVote = null;
     btnSubmitVote.disabled = true;
     statusVote.textContent = "";
+    if (voteClueHistory && state) {
+      renderCluesInto(voteClueHistory, state.clues);
+    }
     voteGrid.innerHTML = "";
     [1, 2, 3].forEach((seat) => {
       const btn = document.createElement("button");
@@ -239,6 +277,7 @@
         secretWord: j.secretWord,
         botNames: j.botNames,
         clues: [],
+        round2Started: false,
       };
       roleCard.innerHTML = state.youAreImposter
         ? "<p><strong>You are the Imposter.</strong> You do <em>not</em> know the secret word. Listen to the clues and blend in.</p>"
@@ -294,9 +333,29 @@
 
   btnSubmitVote.addEventListener("click", submitVote);
 
+  btnRound2.addEventListener("click", async () => {
+    if (!state || state.clues.length !== 4 || state.round2Started) return;
+    state.round2Started = true;
+    hideRound1Choice();
+    statusPlay.textContent = "";
+    updatePlayUi();
+    try {
+      await runBotChain();
+    } catch (e) {
+      statusPlay.textContent = String(e.message);
+    }
+  });
+
+  btnVoteEarly.addEventListener("click", () => {
+    if (!state || state.clues.length !== 4) return;
+    openVote();
+  });
+
   document.getElementById("imp-btn-again").addEventListener("click", () => {
     state = null;
     clueLog.innerHTML = "";
+    if (voteClueHistory) voteClueHistory.innerHTML = "";
+    hideRound1Choice();
     resultCard.innerHTML = "";
     showScreen("start");
     statusStart.textContent = "";

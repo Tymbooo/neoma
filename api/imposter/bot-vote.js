@@ -72,12 +72,15 @@ module.exports = async (req, res) => {
 
     const { word: secretWord, imposterSeat, order } = game;
 
-    if (!Array.isArray(clues) || clues.length !== 8) {
-      res.status(400).json({ error: "Exactly 8 clues required before voting" });
+    const n = Array.isArray(clues) ? clues.length : 0;
+    if (n !== 4 && n !== 8) {
+      res.status(400).json({
+        error: "Need exactly 4 clues (vote after round 1) or 8 clues (after round 2)",
+      });
       return;
     }
 
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < n; i++) {
       const c = clues[i];
       if (!c || typeof c.seat !== "number" || c.seat !== order[i % 4]) {
         res.status(400).json({ error: "Clue sequence does not match turn order" });

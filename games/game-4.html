@@ -19,7 +19,7 @@
     <div class="imp-wrap">
       <section id="imp-screen-start" class="imp-screen">
         <p class="imp-lede">
-          You and three bots play <strong>Imposter</strong>: three players know one secret word; one <strong>Imposter</strong> does not. Two full rounds — each player says <strong>exactly one English word</strong> per turn (letters only, not the secret word, not containing it). Then everyone votes once for who is the Imposter. Majority eliminates one player; if that player was the Imposter, the Innocents win.
+          You and three bots play <strong>Imposter</strong>: three players know one secret word; one <strong>Imposter</strong> does not. Each player says <strong>exactly one English word</strong> per turn (letters only, not the secret word, not containing it). After <strong>round 1</strong> (four clues), you may <strong>vote immediately</strong> or play <strong>round 2</strong> for four more clues—then vote. Everyone votes once for the Imposter; majority eliminates one player; if that player was the Imposter, the Innocents win.
         </p>
         <button type="button" class="imp-btn imp-btn--primary" id="imp-btn-start">Start new game</button>
         <p class="imp-status" id="imp-status-start" aria-live="polite"></p>
@@ -30,6 +30,13 @@
         <p class="imp-order" id="imp-order-line"></p>
         <p class="imp-turn" id="imp-turn-line" aria-live="polite"></p>
         <ul class="imp-clue-log" id="imp-clue-log" aria-label="Clues so far"></ul>
+        <div class="imp-round1-choice" id="imp-round1-choice" hidden>
+          <p class="imp-round1-choice-lede">Round 1 complete — everyone has given one clue.</p>
+          <div class="imp-round1-choice-btns">
+            <button type="button" class="imp-btn imp-btn--primary" id="imp-btn-round2">Play round 2</button>
+            <button type="button" class="imp-btn" id="imp-btn-vote-early">Vote now</button>
+          </div>
+        </div>
         <div class="imp-input-row" id="imp-input-row" hidden>
           <label class="imp-label" for="imp-clue-input">Your clue (one word)</label>
           <div class="imp-input-wrap">
@@ -43,6 +50,10 @@
       <section id="imp-screen-vote" class="imp-screen" hidden>
         <h2 class="imp-h2">Vote for the Imposter</h2>
         <p class="imp-vote-hint">You cannot vote for yourself. Pick one bot.</p>
+        <div class="imp-vote-history-wrap">
+          <h3 class="imp-vote-history-title">Clue history</h3>
+          <ul class="imp-clue-log imp-clue-log--vote" id="imp-vote-clue-history" aria-label="All clues this game"></ul>
+        </div>
         <div class="imp-vote-grid" id="imp-vote-grid"></div>
         <button type="button" class="imp-btn imp-btn--primary" id="imp-btn-submit-vote" disabled>Submit vote</button>
         <p class="imp-status" id="imp-status-vote" aria-live="polite"></p>
@@ -58,6 +69,6 @@
       </p>
     </div>
   </main>
-  <script src="../js/imposter.js?v=1"></script>
+  <script src="../js/imposter.js?v=2"></script>
 </body>
 </html>
