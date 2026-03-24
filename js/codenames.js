@@ -33,6 +33,9 @@
 
   let token = null;
   let words = [];
+  /** Spymaster-only: server sends team per cell (operative never receives this). */
+  /** @type {string[] | null} */
+  let keyAssignment = null;
   /** @type {Record<number,string>} */
   let revealed = {};
   let phase = "idle";
@@ -96,9 +99,22 @@
     );
   }
 
+  function validateKeyAssignment(a) {
+    if (!Array.isArray(a) || a.length !== 25) return false;
+    const ok = new Set(["blue", "red", "neutral", "assassin"]);
+    return a.every((x) => ok.has(x));
+  }
+
   function renderBoard() {
     if (!els.board) return;
     els.board.innerHTML = "";
+    const spymasterKey =
+      humanRole === "spymaster" &&
+      keyAssignment &&
+      validateKeyAssignment(keyAssignment);
+
+    els.board.classList.toggle("cn-board--spymaster-key", !!spymasterKey);
+
     for (let i = 0; i < 25; i++) {
       const btn = document.createElement("button");
       btn.type = "button";
@@ -106,6 +122,17 @@
       btn.dataset.index = String(i);
       const w = words[i] || "?";
       const r = revealed[i];
+
+      if (spymasterKey) {
+        const team = keyAssignment[i];
+        btn.classList.add("cn-sm-" + team);
+        btn.textContent = w;
+        btn.disabled = true;
+        if (r) btn.classList.add("cn-cell--revealed-public");
+        els.board.appendChild(btn);
+        continue;
+      }
+
       if (r) {
         btn.classList.add("cn-cell--" + r);
         btn.textContent = w;
@@ -218,6 +245,7 @@
   function endGame(winner) {
     phase = "over";
     hideHumanCluePanel();
+    /* Spymaster keeps seeing the key after game over. */
     renderBoard();
     showOverlay(
       winner === "blue"
@@ -242,13 +270,27 @@
     setStatus("Starting game…");
     renderBoard();
     try {
-      const res = await fetch("/api/codenames/new", { method: "POST" });
+      const res = await fetch("/api/codenames/new", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ humanRole: humanRole || "operative" }),
+      });
       const j = await res.json();
       if (!res.ok) throw new Error(j.error || res.statusText);
       token = j.token;
       words = j.words;
       revealed = {};
       bluesThisTurn = 0;
+      if (humanRole === "spymaster") {
+        if (!validateKeyAssignment(j.assignment)) {
+          throw new Error(
+            "Spymaster key missing from server — deploy the latest API (POST /api/codenames/new with humanRole)."
+          );
+        }
+        keyAssignment = j.assignment;
+      } else {
+        keyAssignment = null;
+      }
 
       if (humanRole === "operative") {
         phase = "needClue";
@@ -268,6 +310,7 @@
         renderBoard();
       }
     } catch (e) {
+      keyAssignment = null;
       setStatus(
         `<span class="cn-err">${String(e.message)}</span><br/><small>If you opened this file locally, run <code>vercel dev</code> or deploy to Vercel — the API runs on the server.</small>`
       );
@@ -378,10 +421,10 @@
     if (!els.intro) return;
     if (humanRole === "operative") {
       els.intro.innerHTML =
-        "You are the <strong>blue operative</strong>. After a clue <strong>N</strong>, tap words: your turn ends when you’ve revealed <strong>N</strong> blue words, run out of guesses (<strong>N+1</strong> max), or pick a non-blue. <strong>Red</strong> is simulated on the server (random clue + random guess order) — no Gemini calls for red.";
+        "You are the <strong>blue operative</strong>. You only see words until they’re revealed (no spymaster key). After clue <strong>N</strong>, tap words: turn ends after <strong>N</strong> blues, <strong>N+1</strong> guesses max, or a wrong color. <strong>Red</strong> is simulated on the server — no Gemini for red.";
     } else {
       els.intro.innerHTML =
-        "You are the <strong>blue spymaster</strong>. Submit a legal one-word clue and a number (or <strong>PASS</strong> + <strong>0</strong>). <strong>Gemini</strong> plays the blue operative. <strong>Red</strong> is simulated locally (no API). For a new board, use <strong>← All games</strong> and re-enter.";
+        "You are the <strong>blue spymaster</strong>. The grid shows the <strong>key</strong>: blue, red, tan (neutral), and dark (assassin). A gold ring marks words already revealed on the table. Submit a legal clue and number (or <strong>PASS</strong> + <strong>0</strong>). <strong>Gemini</strong> plays blue operative (they do not see this key). <strong>Red</strong> is simulated locally.";
     }
   }
 
