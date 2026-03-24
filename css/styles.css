@@ -15,6 +15,10 @@
   --accent-2: #93c5fd;
   --accent-3: #fcd34d;
   --accent-4: #f0abfc;
+  --accent-5: #fb923c;
+  --accent-6: #2dd4bf;
+  --accent-7: #c4b5fd;
+  --accent-8: #fb7185;
   --glow-1: rgba(110, 231, 183, 0.35);
   --glow-2: rgba(147, 197, 253, 0.3);
   --radius: 20px;
@@ -146,6 +150,22 @@ body.home {
   box-shadow: 0 20px 50px -20px rgba(240, 171, 252, 0.3);
 }
 
+.game-card--5:hover {
+  box-shadow: 0 20px 50px -20px rgba(251, 146, 60, 0.32);
+}
+
+.game-card--6:hover {
+  box-shadow: 0 20px 50px -20px rgba(45, 212, 191, 0.3);
+}
+
+.game-card--7:hover {
+  box-shadow: 0 20px 50px -20px rgba(196, 181, 253, 0.32);
+}
+
+.game-card--8:hover {
+  box-shadow: 0 20px 50px -20px rgba(251, 113, 133, 0.32);
+}
+
 .game-card__icon {
   font-size: 1.75rem;
   line-height: 1;
@@ -157,6 +177,10 @@ body.home {
 .game-card--2 .game-card__icon { color: var(--accent-2); }
 .game-card--3 .game-card__icon { color: var(--accent-3); }
 .game-card--4 .game-card__icon { color: var(--accent-4); }
+.game-card--5 .game-card__icon { color: var(--accent-5); }
+.game-card--6 .game-card__icon { color: var(--accent-6); }
+.game-card--7 .game-card__icon { color: var(--accent-7); }
+.game-card--8 .game-card__icon { color: var(--accent-8); }
 
 .game-card__title {
   margin: 0;
