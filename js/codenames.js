@@ -29,6 +29,8 @@
     humanClue: document.getElementById("cn-human-clue"),
     humanNumber: document.getElementById("cn-human-number"),
     btnHumanClue: document.getElementById("cn-btn-human-clue"),
+    spoilerPanel: document.getElementById("cn-spoiler"),
+    spoilerWords: document.getElementById("cn-spoiler-words"),
   };
 
   let token = null;
@@ -103,6 +105,21 @@
 
   function hideHumanCluePanel() {
     if (els.humanCluePanel) els.humanCluePanel.hidden = true;
+  }
+
+  function updateOperativeSpoiler(wordList) {
+    if (!els.spoilerPanel || !els.spoilerWords) return;
+    if (humanRole !== "operative") {
+      els.spoilerPanel.hidden = true;
+      return;
+    }
+    if (!wordList || !wordList.length) {
+      els.spoilerPanel.hidden = true;
+      els.spoilerWords.textContent = "";
+      return;
+    }
+    els.spoilerPanel.hidden = false;
+    els.spoilerWords.textContent = wordList.map((w) => String(w).toUpperCase()).join(" · ");
   }
 
   function scheduleAutoClue() {
@@ -279,6 +296,7 @@
 
   function endGame(winner) {
     phase = "over";
+    updateOperativeSpoiler(null);
     hideHumanCluePanel();
     /* Spymaster keeps seeing the key after game over. */
     renderBoard();
@@ -298,6 +316,7 @@
   }
 
   async function startSession() {
+    updateOperativeSpoiler(null);
     hideOverlay();
     phase = "loading";
     setClue("—");
@@ -366,6 +385,7 @@
       });
       if (res.clue === "PASS" || res.number === 0) {
         setClue("PASS");
+        updateOperativeSpoiler(null);
         setStatus("No blue words left — ending your turn.");
         bluesThisTurn = 0;
         await runRedTurnAfterBlue("");
@@ -376,11 +396,13 @@
       bluesThisTurn = 0;
       guessesLeft = res.number + 1;
       setClue(`${res.clue} · ${res.number}`);
+      updateOperativeSpoiler(Array.isArray(res.spoilerWords) ? res.spoilerWords : null);
       setStatus(
         `Your clue: <strong>${res.clue} ${res.number}</strong>. <strong>Official rule:</strong> you may use up to <strong>${guessesLeft}</strong> guesses total (number <strong>+ 1</strong>, e.g. <strong>2 → 3</strong> taps). Turn also ends after <strong>${currentNumber}</strong> correct blues or on a wrong color.`
       );
       phase = "humanGuess";
     } catch (e) {
+      updateOperativeSpoiler(null);
       setStatus(
         `<span class="cn-err">${String(e.message)}</span><br/><small>Go back to <strong>All games</strong> and open Codenames again to retry.</small>`
       );

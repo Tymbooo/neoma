@@ -25,6 +25,34 @@ function teamWordsLeft(assignment, revealed, team) {
   return n;
 }
 
+/**
+ * @param {string[]} assignment
+ * @param {Record<number,string>} revealed
+ * @param {'blue'|'red'} team
+ * @param {number} number
+ * @param {string} clue
+ * @param {unknown} targetIndices
+ */
+function validateTargetIndices(assignment, revealed, team, number, clue, targetIndices) {
+  if (clue === "PASS" && number === 0) {
+    if (Array.isArray(targetIndices) && targetIndices.length > 0) return { ok: false };
+    return { ok: true, indices: [] };
+  }
+  if (!Array.isArray(targetIndices) || targetIndices.length !== number) {
+    return { ok: false };
+  }
+  const seen = new Set();
+  for (const raw of targetIndices) {
+    const i = Number(raw);
+    if (!Number.isInteger(i) || i < 0 || i > 24) return { ok: false };
+    if (seen.has(i)) return { ok: false };
+    seen.add(i);
+    if (revealed[i]) return { ok: false };
+    if (assignment[i] !== team) return { ok: false };
+  }
+  return { ok: true, indices: Array.from(seen) };
+}
+
 async function readBody(req) {
   if (req.body && typeof req.body === "object" && !Buffer.isBuffer(req.body)) {
     return req.body;
@@ -75,7 +103,7 @@ module.exports = async (req, res) => {
   }
 
   if (teamWordsLeft(assignment, revealed, team) === 0) {
-    res.status(200).json({ clue: "PASS", number: 0 });
+    res.status(200).json({ clue: "PASS", number: 0, spoilerWords: [] });
     return;
   }
 
@@ -98,7 +126,7 @@ module.exports = async (req, res) => {
         .replace(/[^A-Z]/g, "");
       const number = parseInt(out.number, 10);
       if (clue === "PASS" && number === 0) {
-        res.status(200).json({ clue: "PASS", number: 0 });
+        res.status(200).json({ clue: "PASS", number: 0, spoilerWords: [] });
         return;
       }
       if (!/^[A-Z]{2,24}$/.test(clue)) {
@@ -113,7 +141,13 @@ module.exports = async (req, res) => {
         lastErr = "Clue violates Codenames word rules";
         continue;
       }
-      res.status(200).json({ clue, number });
+      const targets = validateTargetIndices(assignment, revealed, team, number, clue, out.targetIndices);
+      if (!targets.ok) {
+        lastErr = "Model targetIndices must match number and unrevealed team cards";
+        continue;
+      }
+      const spoilerWords = targets.indices.map((i) => words[i]);
+      res.status(200).json({ clue, number, spoilerWords });
       return;
     } catch (e) {
       lastErr = e.message || String(e);
