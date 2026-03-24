@@ -38,6 +38,9 @@
   let keyAssignment = null;
   /** @type {Record<number,string>} */
   let revealed = {};
+  /** Which side flipped the tile (client-only; for borders). */
+  /** @type {Record<number, "blue" | "red">} */
+  let revealedBy = {};
   let phase = "idle";
   let currentClue = null;
   let currentNumber = 0;
@@ -70,6 +73,28 @@
       if (i >= 0 && i < 25) out[i] = v;
     }
     return out;
+  }
+
+  /** API / JSON may send index as string; steps must still drive guesser borders. */
+  function stepBoardIndex(s) {
+    const n = Number(s && s.index);
+    return Number.isInteger(n) && n >= 0 && n < 25 ? n : null;
+  }
+
+  function applyStepsToRevealedBy(steps, team) {
+    if (!steps || !steps.length) return;
+    for (const s of steps) {
+      const ix = stepBoardIndex(s);
+      if (ix !== null) revealedBy[ix] = team;
+    }
+  }
+
+  /** If steps omit indices, infer who flipped each newly revealed tile this response. */
+  function fillRevealedByForNewTiles(prev, next, team) {
+    for (let i = 0; i < 25; i++) {
+      if (prev[i] || !next[i]) continue;
+      if (revealedBy[i] == null) revealedBy[i] = team;
+    }
   }
 
   function showHumanCluePanel() {
@@ -128,7 +153,11 @@
         btn.classList.add("cn-sm-" + team);
         btn.textContent = w;
         btn.disabled = true;
-        if (r) btn.classList.add("cn-cell--revealed-public");
+        if (r) {
+          btn.classList.add("cn-cell--revealed-public");
+          if (revealedBy[i] === "blue") btn.classList.add("cn-cell--guessed-blue");
+          else if (revealedBy[i] === "red") btn.classList.add("cn-cell--guessed-red");
+        }
         els.board.appendChild(btn);
         continue;
       }
@@ -137,6 +166,8 @@
         btn.classList.add("cn-cell--" + r);
         btn.textContent = w;
         btn.disabled = true;
+        if (revealedBy[i] === "blue") btn.classList.add("cn-cell--guessed-blue");
+        else if (revealedBy[i] === "red") btn.classList.add("cn-cell--guessed-red");
       } else {
         btn.textContent = w;
         btn.disabled = boardPickDisabled();
@@ -164,6 +195,7 @@
         byTeam: "blue",
       });
       revealed = normalizeRevealed(res.revealed);
+      revealedBy[index] = "blue";
       guessesLeft -= 1;
       if (res.gameOver) {
         endGame(res.winner);
@@ -206,8 +238,11 @@
     setStatus(`${pre}<strong>AI (red)</strong> is playing…`);
     renderBoard();
     try {
+      const prevRevealed = { ...revealed };
       const res = await api("/api/codenames/red-turn", { token, revealed });
       revealed = normalizeRevealed(res.revealed);
+      applyStepsToRevealedBy(res.steps, "red");
+      fillRevealedByForNewTiles(prevRevealed, revealed, "red");
       let msg = pre;
       msg += res.clue === "PASS" ? "Red passes." : `Red clue: <strong>${res.clue} ${res.number}</strong>`;
       if (res.steps && res.steps.length) {
@@ -280,6 +315,7 @@
       token = j.token;
       words = j.words;
       revealed = {};
+      revealedBy = {};
       bluesThisTurn = 0;
       if (humanRole === "spymaster") {
         if (!validateKeyAssignment(j.assignment)) {
@@ -341,7 +377,7 @@
       guessesLeft = res.number + 1;
       setClue(`${res.clue} · ${res.number}`);
       setStatus(
-        `Your clue: <strong>${res.clue} ${res.number}</strong>. Reveal up to <strong>${currentNumber}</strong> blue words for this clue (turn ends then), or use at most <strong>${guessesLeft}</strong> guesses total. Wrong color ends the turn.`
+        `Your clue: <strong>${res.clue} ${res.number}</strong>. <strong>Official rule:</strong> you may use up to <strong>${guessesLeft}</strong> guesses total (number <strong>+ 1</strong>, e.g. <strong>2 → 3</strong> taps). Turn also ends after <strong>${currentNumber}</strong> correct blues or on a wrong color.`
       );
       phase = "humanGuess";
     } catch (e) {
@@ -377,6 +413,7 @@
     renderBoard();
 
     try {
+      const prevRevealed = { ...revealed };
       const res = await api("/api/codenames/blue-operate", {
         token,
         revealed,
@@ -384,6 +421,8 @@
         number: num,
       });
       revealed = normalizeRevealed(res.revealed);
+      applyStepsToRevealedBy(res.steps, "blue");
+      fillRevealedByForNewTiles(prevRevealed, revealed, "blue");
 
       let prefix = "";
       if (res.clue === "PASS" || res.number === 0) {
@@ -421,10 +460,10 @@
     if (!els.intro) return;
     if (humanRole === "operative") {
       els.intro.innerHTML =
-        "You are the <strong>blue operative</strong>. You only see words until they’re revealed (no spymaster key). After clue <strong>N</strong>, tap words: turn ends after <strong>N</strong> blues, <strong>N+1</strong> guesses max, or a wrong color. <strong>Red</strong> is simulated on the server — no Gemini for red.";
+        "You are the <strong>blue operative</strong>. No spymaster key. <strong>Bright blue border</strong> = blue guessed that card; <strong>bright red border</strong> = red guessed it. After clue <strong>N</strong>, you may guess up to <strong>N+1</strong> times (official Codenames). Red is simulated and never picks the assassin.";
     } else {
       els.intro.innerHTML =
-        "You are the <strong>blue spymaster</strong>. The grid shows the <strong>key</strong>: blue, red, tan (neutral), and dark (assassin). A gold ring marks words already revealed on the table. Submit a legal clue and number (or <strong>PASS</strong> + <strong>0</strong>). <strong>Gemini</strong> plays blue operative (they do not see this key). <strong>Red</strong> is simulated locally.";
+        "You are the <strong>blue spymaster</strong>. The key: blue, red, tan (neutral), dark (assassin). A revealed word has a <strong>bright blue border</strong> if blue flipped it or <strong>bright red</strong> if red flipped it. Your number <strong>N</strong> allows up to <strong>N+1</strong> guesses (official rule). Submit clue + number (or <strong>PASS</strong> + <strong>0</strong>). Gemini plays blue operative. Red sim never picks the assassin.";
     }
   }
 

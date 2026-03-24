@@ -592,8 +592,26 @@ body.game-page--codenames {
   color: #f1f5f9;
 }
 
-.cn-board--spymaster-key .cn-cell.cn-cell--revealed-public {
-  box-shadow: inset 0 0 0 2px rgba(250, 204, 21, 0.75);
+/* Spymaster key: who flipped the card = border color (no gold ring). */
+.cn-board--spymaster-key .cn-cell.cn-cell--revealed-public.cn-cell--guessed-blue {
+  border-width: 3px !important;
+  border-style: solid !important;
+  border-color: #00d4ff !important;
+  box-shadow: 0 0 18px rgba(0, 212, 255, 0.45);
+}
+
+.cn-board--spymaster-key .cn-cell.cn-cell--revealed-public.cn-cell--guessed-red {
+  border-width: 3px !important;
+  border-style: solid !important;
+  border-color: #ff3355 !important;
+  box-shadow: 0 0 18px rgba(255, 51, 85, 0.45);
+}
+
+.cn-board--spymaster-key
+  .cn-cell.cn-cell--revealed-public:not(.cn-cell--guessed-blue):not(.cn-cell--guessed-red) {
+  border-width: 2px !important;
+  border-style: dashed !important;
+  border-color: rgba(148, 163, 184, 0.6) !important;
 }
 
 .cn-cell {
@@ -644,6 +662,21 @@ body.game-page--codenames {
   background: rgba(15, 23, 42, 0.95);
   border-color: rgba(248, 250, 252, 0.25);
   color: #f1f5f9;
+}
+
+/* Who guessed — thick border (operative board; spymaster uses rules above) */
+.cn-board:not(.cn-board--spymaster-key) .cn-cell.cn-cell--guessed-blue {
+  border: 3px solid #00d4ff !important;
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.55);
+  position: relative;
+  z-index: 1;
+}
+
+.cn-board:not(.cn-board--spymaster-key) .cn-cell.cn-cell--guessed-red {
+  border: 3px solid #ff3355 !important;
+  box-shadow: 0 0 20px rgba(255, 51, 85, 0.55);
+  position: relative;
+  z-index: 1;
 }
 
 .cn-status {
