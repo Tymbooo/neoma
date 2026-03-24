@@ -1,5 +1,5 @@
-require("../lib/loadEnv")();
-const { verifyToken, parseRevealed } = require("../lib/state");
+require("../../lib/loadEnv")();
+const { verifyToken, parseRevealed } = require("../../lib/state");
 
 function winnerFromState(assignment, revealed) {
   let blueLeft = 0;

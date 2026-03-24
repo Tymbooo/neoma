@@ -1,7 +1,7 @@
-require("../lib/loadEnv")();
-const { verifyToken, parseRevealed } = require("../lib/state");
-const { buildSpymasterPrompt, generateJsonPrompt } = require("../lib/gemini");
-const { clueValid } = require("../lib/clueValidate");
+require("../../lib/loadEnv")();
+const { verifyToken, parseRevealed } = require("../../lib/state");
+const { buildSpymasterPrompt, generateJsonPrompt } = require("../../lib/gemini");
+const { clueValid } = require("../../lib/clueValidate");
 
 function verifyRevealedMap(assignment, revealed) {
   for (const [k, r] of Object.entries(revealed)) {

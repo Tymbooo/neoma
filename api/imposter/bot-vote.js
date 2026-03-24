@@ -1,7 +1,7 @@
-require("../lib/loadEnv")();
-const { verifyGame, BOT_NAMES } = require("../lib/imposterState");
-const { buildBotVotePrompt } = require("../lib/imposterPrompts");
-const { generateJsonPrompt } = require("../lib/gemini");
+require("../../lib/loadEnv")();
+const { verifyGame, BOT_NAMES } = require("../../lib/imposterState");
+const { buildBotVotePrompt } = require("../../lib/imposterPrompts");
+const { generateJsonPrompt } = require("../../lib/gemini");
 
 async function readBody(req) {
   if (req.body && typeof req.body === "object" && !Buffer.isBuffer(req.body)) {

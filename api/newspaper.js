@@ -1,4 +1,4 @@
-require("./lib/loadEnv")();
+require("../lib/loadEnv")();
 
 /**
  * Default chat models when XAI_MODEL is unset. Put reasoning + non-reasoning

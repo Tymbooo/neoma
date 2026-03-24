@@ -1,5 +1,5 @@
-require("../lib/loadEnv")();
-const { createSignedGame, BOT_NAMES } = require("../lib/imposterState");
+require("../../lib/loadEnv")();
+const { createSignedGame, BOT_NAMES } = require("../../lib/imposterState");
 
 module.exports = async (req, res) => {
   res.setHeader("Content-Type", "application/json");
