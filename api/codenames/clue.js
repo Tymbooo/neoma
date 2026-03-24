@@ -161,7 +161,7 @@ module.exports = async (req, res) => {
       const dom = await generateJsonPrompt(verifyPrompt, SCHEMA_CODENAMES_CLUE_DOMINANCE);
       if (dom.ok !== true) {
         lastErr =
-          "Clue failed dominance check — a non-team unrevealed word ties or beats a target";
+          "Clue failed dominance check — strongest danger word ties or beats weakest target link";
         continue;
       }
       const spoilerWords = targets.indices.map((i) => words[i]);
