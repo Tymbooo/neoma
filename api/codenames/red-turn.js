@@ -1,6 +1,12 @@
 require("../../lib/loadEnv")();
 const { verifyToken, parseRevealed } = require("../../lib/state");
-const { buildSpymasterPrompt, buildOperativePrompt, generateJsonPrompt } = require("../../lib/gemini");
+const {
+  buildSpymasterPrompt,
+  buildOperativePrompt,
+  generateJsonPrompt,
+  SCHEMA_CODENAMES_CLUE,
+  SCHEMA_CODENAMES_GUESSES,
+} = require("../../lib/gemini");
 const { clueValid } = require("../../lib/clueValidate");
 
 function verifyRevealedMap(assignment, revealed) {
@@ -134,7 +140,7 @@ module.exports = async (req, res) => {
   for (let attempt = 0; attempt < 4; attempt++) {
     try {
       const prompt = buildSpymasterPrompt("red", words, assignment, revealed);
-      const out = await generateJsonPrompt(prompt);
+      const out = await generateJsonPrompt(prompt, SCHEMA_CODENAMES_CLUE);
       const c = String(out.clue || "")
         .toUpperCase()
         .replace(/[^A-Z]/g, "");
@@ -181,7 +187,7 @@ module.exports = async (req, res) => {
       number,
       redIndices(assignment)
     );
-    const opOut = await generateJsonPrompt(opPrompt);
+    const opOut = await generateJsonPrompt(opPrompt, SCHEMA_CODENAMES_GUESSES);
     const raw = Array.isArray(opOut.guesses) ? opOut.guesses : [];
     const guesses = [];
     const seen = new Set();

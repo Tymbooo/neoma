@@ -1,6 +1,10 @@
 require("../../lib/loadEnv")();
 const { verifyToken, parseRevealed } = require("../../lib/state");
-const { buildSpymasterPrompt, generateJsonPrompt } = require("../../lib/gemini");
+const {
+  buildSpymasterPrompt,
+  generateJsonPrompt,
+  SCHEMA_CODENAMES_CLUE,
+} = require("../../lib/gemini");
 const { clueValid } = require("../../lib/clueValidate");
 
 function verifyRevealedMap(assignment, revealed) {
@@ -88,7 +92,7 @@ module.exports = async (req, res) => {
   for (let attempt = 0; attempt < 4; attempt++) {
     try {
       const prompt = buildSpymasterPrompt(team, words, assignment, revealed);
-      const out = await generateJsonPrompt(prompt);
+      const out = await generateJsonPrompt(prompt, SCHEMA_CODENAMES_CLUE);
       const clue = String(out.clue || "")
         .toUpperCase()
         .replace(/[^A-Z]/g, "");

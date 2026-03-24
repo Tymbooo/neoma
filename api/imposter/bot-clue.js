@@ -1,7 +1,10 @@
 require("../../lib/loadEnv")();
 const { verifyGame, BOT_NAMES } = require("../../lib/imposterState");
 const { buildBotCluePrompt } = require("../../lib/imposterPrompts");
-const { generateJsonPrompt } = require("../../lib/gemini");
+const {
+  generateJsonPrompt,
+  SCHEMA_IMPOSTER_CLUE,
+} = require("../../lib/gemini");
 
 async function readBody(req) {
   if (req.body && typeof req.body === "object" && !Buffer.isBuffer(req.body)) {
@@ -97,7 +100,7 @@ module.exports = async (req, res) => {
       clues,
     });
 
-    let parsed = await generateJsonPrompt(prompt);
+    let parsed = await generateJsonPrompt(prompt, SCHEMA_IMPOSTER_CLUE);
     let word = normalizeClueWord(typeof parsed.word === "string" ? parsed.word : String(parsed.word || ""));
     const innocent = nextSeat !== imposterSeat;
 
@@ -105,7 +108,7 @@ module.exports = async (req, res) => {
       const bad = clueViolatesRules(word, secretWord);
       if (bad) {
         prompt += `\n\nIMPORTANT: Your previous answer was rejected (${bad}). Reply again with JSON only, with a different single word that obeys all rules.`;
-        parsed = await generateJsonPrompt(prompt);
+        parsed = await generateJsonPrompt(prompt, SCHEMA_IMPOSTER_CLUE);
         word = normalizeClueWord(typeof parsed.word === "string" ? parsed.word : String(parsed.word || ""));
       }
     }

@@ -1,7 +1,10 @@
 require("../../lib/loadEnv")();
 const { verifyGame, BOT_NAMES } = require("../../lib/imposterState");
 const { buildBotVotePrompt } = require("../../lib/imposterPrompts");
-const { generateJsonPrompt } = require("../../lib/gemini");
+const {
+  generateJsonPrompt,
+  SCHEMA_IMPOSTER_VOTE,
+} = require("../../lib/gemini");
 
 async function readBody(req) {
   if (req.body && typeof req.body === "object" && !Buffer.isBuffer(req.body)) {
@@ -107,7 +110,7 @@ module.exports = async (req, res) => {
           clues,
         });
         try {
-          const parsed = await generateJsonPrompt(prompt);
+          const parsed = await generateJsonPrompt(prompt, SCHEMA_IMPOSTER_VOTE);
           let v = parseVote(parsed.vote, botSeat);
           let reasoning = typeof parsed.reasoning === "string" ? parsed.reasoning : "";
           if (v === null) {
