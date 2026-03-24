@@ -17,18 +17,47 @@
   </header>
   <main class="game-shell game-shell--codenames">
     <div class="cn-wrap">
-      <p class="cn-intro">
-        You are the <strong>blue</strong> operative. <strong>Gemini</strong> gives clues automatically each round. After a clue <strong>N</strong>, tap words: your turn ends when you’ve revealed <strong>N</strong> blue words, run out of guesses (<strong>N+1</strong> max), or pick a non-blue. To play again, use <strong>← All games</strong> and open Codenames again.
-      </p>
-      <p class="cn-clue" id="cn-clue" aria-live="polite">—</p>
-      <div id="cn-board" class="cn-board" role="grid" aria-label="Codenames board"></div>
-      <p class="cn-status" id="cn-status" aria-live="polite"></p>
-      <p class="cn-footnote">
-        <strong>Live site (exprobable / Vercel):</strong> add <code>GEMINI_API_KEY</code> in
-        <strong>Vercel → Project → Settings → Environment Variables</strong> (check <strong>Production</strong>), paste your Google AI Studio key, Save, then <strong>Redeploy</strong>.
-        <code>.env.local</code> is only for your computer — it is not deployed.
-        <strong>Local:</strong> <code>npx vercel dev</code> reads <code>.env.local</code>.
-      </p>
+      <section id="cn-role-picker" class="cn-role-picker" aria-label="Choose role">
+        <p class="cn-role-title">You are on the <span class="cn-tag cn-tag--blue">blue</span> team. AI is <span class="cn-tag cn-tag--red">red</span>. Choose your role:</p>
+        <div class="cn-role-btns">
+          <button type="button" class="cn-btn cn-btn--role" id="cn-role-operative">
+            <strong>Operative</strong>
+            <span class="cn-role-desc">Gemini gives you clues; you tap words on the board.</span>
+          </button>
+          <button type="button" class="cn-btn cn-btn--role" id="cn-role-spymaster">
+            <strong>Spymaster</strong>
+            <span class="cn-role-desc">You type clue + number; Gemini plays blue operative. Red uses a fast local sim (no API).</span>
+          </button>
+        </div>
+      </section>
+
+      <div id="cn-game-main" class="cn-game-main" hidden>
+        <p class="cn-intro" id="cn-intro"></p>
+        <p class="cn-clue" id="cn-clue" aria-live="polite">—</p>
+
+        <div id="cn-human-clue-panel" class="cn-human-clue-panel" hidden>
+          <p class="cn-human-clue-title">Your clue for blue</p>
+          <div class="cn-human-clue-row">
+            <label class="cn-label" for="cn-human-clue">Word</label>
+            <input type="text" id="cn-human-clue" class="cn-input" maxlength="24" autocomplete="off" placeholder="e.g. OCEAN" />
+          </div>
+          <div class="cn-human-clue-row">
+            <label class="cn-label" for="cn-human-number">Number</label>
+            <input type="number" id="cn-human-number" class="cn-input cn-input--num" min="0" max="9" value="1" />
+            <span class="cn-human-clue-hint">Use <strong>0</strong> with word <strong>PASS</strong> to pass.</span>
+          </div>
+          <button type="button" class="cn-btn cn-btn--primary" id="cn-btn-human-clue">Submit clue</button>
+        </div>
+
+        <div id="cn-board" class="cn-board" role="grid" aria-label="Codenames board"></div>
+        <p class="cn-status" id="cn-status" aria-live="polite"></p>
+        <p class="cn-footnote">
+          <strong>Live site (exprobable / Vercel):</strong> add <code>GEMINI_API_KEY</code> in
+          <strong>Vercel → Project → Settings → Environment Variables</strong> (check <strong>Production</strong>), paste your Google AI Studio key, Save, then <strong>Redeploy</strong>.
+          <code>.env.local</code> is only for your computer — it is not deployed.
+          <strong>Local:</strong> <code>npx vercel dev</code> reads <code>.env.local</code>.
+        </p>
+      </div>
     </div>
   </main>
 
@@ -39,6 +68,6 @@
     </div>
   </div>
 
-  <script src="../js/codenames.js"></script>
+  <script src="../js/codenames.js?v=2"></script>
 </body>
 </html>

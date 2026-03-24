@@ -425,6 +425,121 @@ body.game-page--codenames {
   width: 100%;
 }
 
+.cn-role-picker {
+  margin-bottom: 1rem;
+}
+
+.cn-role-title {
+  margin: 0 0 0.75rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+.cn-role-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.cn-btn {
+  font-family: var(--font);
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.55rem 1rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
+  cursor: pointer;
+  text-align: left;
+}
+
+.cn-btn:hover {
+  filter: brightness(1.06);
+}
+
+.cn-btn--role {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+  padding: 0.75rem 1rem;
+}
+
+.cn-btn--role strong {
+  font-size: 1rem;
+}
+
+.cn-role-desc {
+  font-weight: 400;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+.cn-btn--primary {
+  border-color: rgba(129, 140, 248, 0.5);
+  background: rgba(129, 140, 248, 0.15);
+  color: #c7d2fe;
+}
+
+.cn-game-main {
+  width: 100%;
+}
+
+.cn-human-clue-panel {
+  margin: 0 0 0.85rem;
+  padding: 0.75rem 0.85rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.cn-human-clue-title {
+  margin: 0 0 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--accent-2);
+}
+
+.cn-human-clue-row {
+  margin: 0 0 0.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.cn-label {
+  font-size: 0.72rem;
+  color: var(--muted);
+  min-width: 3.5rem;
+}
+
+.cn-input {
+  flex: 1 1 8rem;
+  min-width: 0;
+  padding: 0.45rem 0.6rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.25);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 0.9rem;
+}
+
+.cn-input--num {
+  flex: 0 0 4rem;
+  max-width: 5rem;
+}
+
+.cn-human-clue-hint {
+  font-size: 0.7rem;
+  color: var(--muted);
+  width: 100%;
+}
+
 .cn-intro {
   margin: 0 0 0.75rem;
   font-size: 0.875rem;
