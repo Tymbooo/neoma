@@ -19,7 +19,7 @@
     <div class="imp-wrap">
       <section id="imp-screen-start" class="imp-screen">
         <p class="imp-lede">
-          You and three bots play <strong>Imposter</strong>: three players know one secret word; one <strong>Imposter</strong> does not. Each player says <strong>exactly one English word</strong> per turn (letters only, not the secret word, not containing it). After <strong>round 1</strong> (four clues), you may <strong>vote immediately</strong> or play <strong>round 2</strong> for four more clues—then vote. Everyone votes once for the Imposter; majority eliminates one player. If an <strong>innocent</strong> is eliminated, the Imposter wins. If the <strong>Imposter</strong> is eliminated, they get <strong>one guess</strong> at the word—correct guess steals the win.
+          You and three bots play <strong>Imposter</strong>: three players know one secret word; one <strong>Imposter</strong> does not. Each player says <strong>exactly one English word</strong> per turn (letters only, not the secret word, not containing it). If you are the Imposter and your clue is <strong>exactly</strong> the secret word (lucky guess), you <strong>win immediately</strong>. After <strong>round 1</strong> (four clues), you may <strong>vote immediately</strong> or play <strong>round 2</strong> for four more clues—then vote. Everyone votes once for the Imposter; majority eliminates one player. If an <strong>innocent</strong> is eliminated, the Imposter wins. If the <strong>Imposter</strong> is eliminated, they get <strong>one guess</strong> at the word—correct guess steals the win.
         </p>
         <button type="button" class="imp-btn imp-btn--primary" id="imp-btn-start">Start new game</button>
         <p class="imp-status" id="imp-status-start" aria-live="polite"></p>
@@ -82,10 +82,10 @@
       </section>
 
       <p class="imp-foot">
-        Bots use <strong>Gemini</strong> with the same clue and vote rules as a human. Add <code>GEMINI_API_KEY</code> on Vercel (or <code>.env.local</code> with <code>vercel dev</code>).
+        Bots use <strong>Gemini</strong> for clues and votes. When a bot Imposter is eliminated, their steal guess uses <strong>xAI Grok</strong> (same Innocents-only clues as before). Set <code>GEMINI_API_KEY</code> and <code>XAI_API_KEY</code> on Vercel (or <code>.env.local</code> with <code>vercel dev</code>). Optional: <code>XAI_REDEEM_MODEL</code> (defaults to <code>grok-3-mini</code>).
       </p>
     </div>
   </main>
-  <script src="../js/imposter.js?v=3"></script>
+  <script src="../js/imposter.js?v=4"></script>
 </body>
 </html>

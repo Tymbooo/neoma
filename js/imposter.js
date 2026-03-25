@@ -78,6 +78,20 @@
     return { ok: r.ok, j, r };
   }
 
+  function showInstantImposterWin(secretWord) {
+    hideRound1Choice();
+    resultCard.innerHTML = [
+      `<p class="imp-result-lead">You said the secret word as your clue — Imposter wins!</p>`,
+      `<p>The secret word was <strong>${escapeHtml(secretWord)}</strong>.</p>`,
+    ].join("");
+    pendingRedeemVote = null;
+    showScreen("result");
+    statusPlay.textContent = "";
+    inputRow.hidden = true;
+    clueInput.disabled = true;
+    btnSubmitClue.disabled = true;
+  }
+
   function showScreen(which) {
     startScreen.hidden = which !== "start";
     playScreen.hidden = which !== "play";
@@ -409,7 +423,7 @@
         round2Started: false,
       };
       roleCard.innerHTML = state.youAreImposter
-        ? "<p><strong>You are the Imposter.</strong> You do <em>not</em> know the secret word. Listen to the clues and blend in.</p>"
+        ? "<p><strong>You are the Imposter.</strong> You do <em>not</em> know the secret word. Listen to the clues and blend in.</p><p class=\"imp-role-note\">If your one-word clue is <em>exactly</em> the secret word, you win on the spot (pure luck).</p>"
         : `<p><strong>You are Innocent.</strong> The secret word is <strong>${escapeHtml(state.secretWord || "")}</strong>.</p>`;
       renderOrderLine();
       showScreen("play");
@@ -443,6 +457,27 @@
       const bad = clueViolates(w, state.secretWord);
       if (bad) {
         statusPlay.textContent = `Invalid clue: ${bad}.`;
+        return;
+      }
+    }
+
+    if (state.youAreImposter) {
+      const { ok, j } = await apiPost("/api/imposter/imposter-strike", {
+        token: state.token,
+        word: w,
+        clues: state.clues,
+        round2Started: state.round2Started,
+      });
+      if (!ok) {
+        statusPlay.textContent = j.error || "Could not verify clue";
+        return;
+      }
+      if (j.hit) {
+        state.clues.push({ seat: 0, word: w, round: t.round });
+        renderClueLog();
+        renderTurnLine();
+        clueInput.value = "";
+        showInstantImposterWin(String(j.secretWord || ""));
         return;
       }
     }

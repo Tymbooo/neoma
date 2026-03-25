@@ -1,9 +1,9 @@
 require("../../lib/loadEnv")();
 const { verifyGame, BOT_NAMES, signRedeemTicket } = require("../../lib/imposterState");
-const { buildBotVotePrompt } = require("../../lib/imposterPrompts");
+const { buildBotVotesBatchPrompt } = require("../../lib/imposterPrompts");
 const {
   generateJsonPrompt,
-  SCHEMA_IMPOSTER_VOTE,
+  SCHEMA_IMPOSTER_VOTES_BATCH,
 } = require("../../lib/gemini");
 
 async function readBody(req) {
@@ -103,37 +103,49 @@ module.exports = async (req, res) => {
     counts[uv] += 1;
 
     const botDetails = [];
+    const batchPrompt = buildBotVotesBatchPrompt({
+      secretWord,
+      imposterSeat,
+      clues,
+    });
 
-    await Promise.all(
-      [1, 2, 3].map(async (botSeat) => {
-        const prompt = buildBotVotePrompt({
-          secretWord,
-          imposterSeat,
-          botSeat,
-          clues,
-        });
-        try {
-          const parsed = await generateJsonPrompt(prompt, SCHEMA_IMPOSTER_VOTE);
-          let v = parseVote(parsed.vote, botSeat);
-          let reasoning = typeof parsed.reasoning === "string" ? parsed.reasoning : "";
-          if (v === null) {
-            v = randomVoteNotSelf(botSeat);
-            reasoning = reasoning ? `${reasoning} (adjusted: invalid vote)` : "Adjusted: invalid vote";
-          }
-          counts[v] += 1;
-          botDetails.push({ seat: botSeat, name: BOT_NAMES[botSeat], vote: v, reasoning });
-        } catch (e) {
-          const v = randomVoteNotSelf(botSeat);
-          counts[v] += 1;
-          botDetails.push({
-            seat: botSeat,
-            name: BOT_NAMES[botSeat],
-            vote: v,
-            reasoning: `Fallback vote after error: ${e.message || "model error"}`,
-          });
+    try {
+      const parsed = await generateJsonPrompt(batchPrompt, SCHEMA_IMPOSTER_VOTES_BATCH);
+      const rows = Array.isArray(parsed.votes) ? parsed.votes : [];
+      const bySeat = new Map();
+      for (const row of rows) {
+        const seat = typeof row.seat === "number" ? row.seat : parseInt(String(row.seat), 10);
+        if (seat >= 1 && seat <= 3 && !bySeat.has(seat)) bySeat.set(seat, row);
+      }
+      for (const botSeat of [1, 2, 3]) {
+        const row = bySeat.get(botSeat);
+        let v = null;
+        let reasoning = "";
+        if (row) {
+          v = parseVote(row.vote, botSeat);
+          reasoning = typeof row.reasoning === "string" ? row.reasoning : "";
         }
-      })
-    );
+        if (v === null) {
+          v = randomVoteNotSelf(botSeat);
+          reasoning = reasoning
+            ? `${reasoning} (adjusted: invalid or missing vote)`
+            : "Adjusted: invalid or missing vote";
+        }
+        counts[v] += 1;
+        botDetails.push({ seat: botSeat, name: BOT_NAMES[botSeat], vote: v, reasoning });
+      }
+    } catch (e) {
+      for (const botSeat of [1, 2, 3]) {
+        const v = randomVoteNotSelf(botSeat);
+        counts[v] += 1;
+        botDetails.push({
+          seat: botSeat,
+          name: BOT_NAMES[botSeat],
+          vote: v,
+          reasoning: `Fallback vote after error: ${e.message || "model error"}`,
+        });
+      }
+    }
 
     botDetails.sort((a, b) => a.seat - b.seat);
 

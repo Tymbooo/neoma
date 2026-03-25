@@ -196,6 +196,153 @@ body.home {
   line-height: 1.45;
 }
 
+/* --- Home: world map game picker --- */
+body.home--world-map {
+  justify-content: flex-start;
+  padding-top: clamp(0.75rem, 3vw, 1.5rem);
+  padding-bottom: clamp(1.5rem, 5vw, 2.5rem);
+}
+
+.world-map-main {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: min(440px, 100%);
+  margin-inline: auto;
+}
+
+.world-map {
+  position: relative;
+  width: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow:
+    0 4px 0 rgba(0, 0, 0, 0.2),
+    0 24px 48px -16px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.world-map__img {
+  display: block;
+  width: 100%;
+  height: auto;
+  vertical-align: middle;
+}
+
+.map-plate {
+  position: absolute;
+  z-index: 2;
+  left: var(--plate-x, 50%);
+  top: var(--plate-y, 50%);
+  transform: translate(-50%, -50%);
+  max-width: min(46%, 11.5rem);
+  padding: 0.32rem 0.45rem;
+  font-size: clamp(0.58rem, 2.6vw, 0.75rem);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  text-align: center;
+  line-height: 1.2;
+  color: #2a1f14;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.35);
+  background: linear-gradient(165deg, #fff8e8 0%, #edd9b8 38%, #d9c49a 100%);
+  border: 2px solid #6b4e1e;
+  border-radius: 5px;
+  box-shadow:
+    0 2px 0 #4a3a22,
+    0 5px 14px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  transition: transform 0.18s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  cursor: pointer;
+}
+
+a.map-plate:hover {
+  transform: translate(-50%, -50%) scale(1.05);
+  border-color: rgba(255, 255, 255, 0.35);
+  box-shadow:
+    0 2px 0 #4a3a22,
+    0 10px 28px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.65);
+}
+
+a.map-plate:focus-visible {
+  outline: 2px solid var(--accent-2);
+  outline-offset: 3px;
+  z-index: 4;
+}
+
+.map-plate__label {
+  display: block;
+}
+
+.map-plate--accent-2:hover { box-shadow: 0 2px 0 #4a3a22, 0 10px 28px var(--glow-2), inset 0 1px 0 rgba(255, 255, 255, 0.65); }
+.map-plate--accent-1:hover { box-shadow: 0 2px 0 #4a3a22, 0 10px 28px var(--glow-1), inset 0 1px 0 rgba(255, 255, 255, 0.65); }
+.map-plate--accent-3:hover { box-shadow: 0 2px 0 #4a3a22, 0 10px 28px rgba(252, 211, 77, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.65); }
+.map-plate--accent-4:hover { box-shadow: 0 2px 0 #4a3a22, 0 10px 28px rgba(240, 171, 252, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.65); }
+.map-plate--accent-5:hover { box-shadow: 0 2px 0 #4a3a22, 0 10px 28px rgba(251, 146, 60, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.65); }
+.map-plate--accent-6:hover { box-shadow: 0 2px 0 #4a3a22, 0 10px 28px rgba(45, 212, 191, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.65); }
+.map-plate--accent-7:hover { box-shadow: 0 2px 0 #4a3a22, 0 10px 28px rgba(196, 181, 253, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.65); }
+.map-plate--accent-8:hover { box-shadow: 0 2px 0 #4a3a22, 0 10px 28px rgba(251, 113, 133, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.65); }
+
+.map-plate--soon {
+  cursor: default;
+  opacity: 0.88;
+  color: var(--muted);
+  background: linear-gradient(165deg, rgba(40, 44, 58, 0.92) 0%, rgba(28, 31, 42, 0.95) 100%);
+  border-color: rgba(255, 255, 255, 0.12);
+  text-shadow: none;
+}
+
+.map-plate--soon .map-plate__label {
+  font-weight: 600;
+  font-size: 0.9em;
+}
+
+/* Landmark positions (% of map box) */
+.map-plate--castle { --plate-x: 16%; --plate-y: 7%; }
+.map-plate--palace { --plate-x: 22%; --plate-y: 22%; }
+.map-plate--farmland { --plate-x: 82%; --plate-y: 9%; }
+.map-plate--saloon { --plate-x: 78%; --plate-y: 31%; }
+.map-plate--arena { --plate-x: 28%; --plate-y: 41%; }
+.map-plate--temple { --plate-x: 56%; --plate-y: 39%; }
+.map-plate--cathedral { --plate-x: 71%; --plate-y: 51%; }
+.map-plate--market { --plate-x: 34%; --plate-y: 71%; }
+.map-plate--beach { --plate-x: 76%; --plate-y: 89%; }
+
+@media (min-width: 480px) {
+  .world-map-main {
+    max-width: min(400px, 100%);
+  }
+
+  .map-plate {
+    padding: 0.38rem 0.55rem;
+    font-size: clamp(0.65rem, 1.9vw, 0.8rem);
+    max-width: min(42%, 10rem);
+  }
+}
+
+@media (max-width: 380px) {
+  .map-plate--farmland {
+    --plate-x: 78%;
+    --plate-y: 11%;
+  }
+
+  .map-plate--saloon {
+    --plate-x: 74%;
+    --plate-y: 33%;
+  }
+}
+
+/* Mobile landing: comfortable tap targets for map nameplates */
+@media (max-width: 900px) {
+  body.home--mobile-map-landing .map-plate {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.4rem 0.5rem;
+  }
+}
+
 /* --- Game pages --- */
 body.game-page {
   min-height: 100vh;

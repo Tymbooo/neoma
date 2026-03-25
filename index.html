@@ -3,59 +3,65 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0c0e14" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#0c0e14" media="(prefers-color-scheme: light)" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Exprobable" />
+  <meta name="mobile-web-app-capable" content="yes" />
   <title>Exprobable — Games</title>
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="preload" as="image" href="assets/game-world-map.png" media="(max-width: 900px)" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/styles.css" />
 </head>
-<body class="home">
+<body class="home home--world-map home--mobile-map-landing">
   <div class="home-bg" aria-hidden="true"></div>
   <header class="site-header">
     <p class="site-name">exprobable.com</p>
-    <p class="site-tagline">Pick a game</p>
+    <p class="site-tagline">Pick a game on the map</p>
   </header>
-  <main class="cards-grid" role="navigation" aria-label="Games">
-    <a class="game-card game-card--1" href="games/word-search.html">
-      <span class="game-card__icon" aria-hidden="true">⌕</span>
-      <h2 class="game-card__title">Word Search</h2>
-      <p class="game-card__desc">Find hidden words in the grid</p>
-    </a>
-    <a class="game-card game-card--2" href="games/codenames.html">
-      <span class="game-card__icon" aria-hidden="true">◇</span>
-      <h2 class="game-card__title">Codenames vs AI</h2>
-      <p class="game-card__desc">Gemini-powered 1v1 on a shared board</p>
-    </a>
-    <a class="game-card game-card--3" href="games/game-3.html">
-      <span class="game-card__icon" aria-hidden="true">◎</span>
-      <h2 class="game-card__title">Tech newspaper</h2>
-      <p class="game-card__desc">Grok live web + X search, ~12h tech</p>
-    </a>
-    <a class="game-card game-card--4" href="games/game-4.html">
-      <span class="game-card__icon" aria-hidden="true">✦</span>
-      <h2 class="game-card__title">Imposter</h2>
-      <p class="game-card__desc">You vs 3 Gemini bots — word clues & vote</p>
-    </a>
-    <a class="game-card game-card--5" href="games/game-5.html">
-      <span class="game-card__icon" aria-hidden="true">◈</span>
-      <h2 class="game-card__title">Spaceline</h2>
-      <p class="game-card__desc">Plot a route through orbital hazards</p>
-    </a>
-    <a class="game-card game-card--6" href="games/game-6.html">
-      <span class="game-card__icon" aria-hidden="true">▣</span>
-      <h2 class="game-card__title">Cipher drop</h2>
-      <p class="game-card__desc">Catch symbols before they stack</p>
-    </a>
-    <a class="game-card game-card--7" href="games/game-7.html">
-      <span class="game-card__icon" aria-hidden="true">☆</span>
-      <h2 class="game-card__title">Lumen path</h2>
-      <p class="game-card__desc">Mirror beams to light every goal</p>
-    </a>
-    <a class="game-card game-card--8" href="games/game-8.html">
-      <span class="game-card__icon" aria-hidden="true">?</span>
-      <h2 class="game-card__title">Trivia blitz</h2>
-      <p class="game-card__desc">Speed round — pick before time runs out</p>
-    </a>
+  <main class="world-map-main" role="navigation" aria-label="Games">
+    <div class="world-map">
+      <img
+        class="world-map__img"
+        src="assets/game-world-map.png"
+        width="571"
+        height="1024"
+        alt="Illustrated fantasy island with a castle, town, arena, temple, market, and shore—each marker opens a game."
+        decoding="async"
+        fetchpriority="high"
+      />
+      <!-- Positions are % of map box (centered on each landmark) -->
+      <a class="map-plate map-plate--castle map-plate--accent-2" href="games/codenames.html" data-spot="castle">
+        <span class="map-plate__label">Codenames vs AI</span>
+      </a>
+      <a class="map-plate map-plate--palace map-plate--accent-7" href="games/game-7.html" data-spot="palace">
+        <span class="map-plate__label">Lumen path</span>
+      </a>
+      <a class="map-plate map-plate--farmland map-plate--accent-1" href="games/word-search.html" data-spot="farmland">
+        <span class="map-plate__label">Word Search</span>
+      </a>
+      <a class="map-plate map-plate--saloon map-plate--accent-3" href="games/game-3.html" data-spot="saloon">
+        <span class="map-plate__label">Tech newspaper</span>
+      </a>
+      <a class="map-plate map-plate--arena map-plate--accent-8" href="games/game-8.html" data-spot="arena">
+        <span class="map-plate__label">Trivia blitz</span>
+      </a>
+      <a class="map-plate map-plate--temple map-plate--accent-6" href="games/game-6.html" data-spot="temple">
+        <span class="map-plate__label">Cipher drop</span>
+      </a>
+      <a class="map-plate map-plate--cathedral map-plate--accent-4" href="games/game-4.html" data-spot="cathedral">
+        <span class="map-plate__label">Imposter</span>
+      </a>
+      <a class="map-plate map-plate--market map-plate--accent-5" href="games/game-5.html" data-spot="market">
+        <span class="map-plate__label">Spaceline</span>
+      </a>
+      <span class="map-plate map-plate--beach map-plate--soon" data-spot="beach" aria-label="Coming soon — no game yet">
+        <span class="map-plate__label">Coming soon</span>
+      </span>
+    </div>
   </main>
 </body>
 </html>

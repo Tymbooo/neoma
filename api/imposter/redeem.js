@@ -6,10 +6,7 @@ const {
   IMPOSTER_WORDS,
 } = require("../../lib/imposterState");
 const { buildRedeemGuessPrompt } = require("../../lib/imposterPrompts");
-const {
-  generateJsonPrompt,
-  SCHEMA_IMPOSTER_REDEEM,
-} = require("../../lib/gemini");
+const { grokRedeemGuess } = require("../../lib/xaiRedeem");
 
 const WORD_SET = new Set(IMPOSTER_WORDS);
 
@@ -37,6 +34,12 @@ function normalizeGuessWord(raw) {
     .trim()
     .toLowerCase()
     .replace(/[^a-z]/g, "");
+}
+
+/** First token, letters only — bot freeform guess from Gemini. */
+function normalizeBotRedeemWord(raw) {
+  const first = String(raw || "").trim().split(/\s+/)[0] || "";
+  return first.toLowerCase().replace(/[^a-z]/g, "");
 }
 
 function resolvePoolWord(normalized) {
@@ -109,34 +112,31 @@ module.exports = async (req, res) => {
         return;
       }
     } else {
-      if (!process.env.GEMINI_API_KEY) {
+      if (!process.env.XAI_API_KEY) {
         res.status(503).json({
-          error: "GEMINI_API_KEY is not configured (required for bot redemption guess)",
+          error:
+            "XAI_API_KEY is not configured (required for bot Imposter redemption; set on Vercel or .env.local)",
         });
         return;
       }
-      const prompt = buildRedeemGuessPrompt(clues);
-      let parsed = await generateJsonPrompt(prompt, SCHEMA_IMPOSTER_REDEEM);
-      guessNorm = resolvePoolWord(normalizeGuessWord(parsed.word));
+      const prompt = buildRedeemGuessPrompt(clues, imposterSeat);
+      let parsed = await grokRedeemGuess(prompt);
+      guessNorm = normalizeBotRedeemWord(parsed.word);
       redemptionReasoning =
         typeof parsed.reasoning === "string" ? parsed.reasoning : "";
-      if (!guessNorm) {
-        const retry =
-          `${prompt}\n\nYour previous "word" was not exactly from the list. Reply again with JSON only; "word" must be one list entry exactly (lowercase).`;
-        parsed = await generateJsonPrompt(retry, SCHEMA_IMPOSTER_REDEEM);
-        guessNorm = resolvePoolWord(normalizeGuessWord(parsed.word));
+      if (!guessNorm || guessNorm.length < 2 || guessNorm.length > 32) {
+        const retry = `${prompt}\n\nYour previous "word" was invalid. Reply again with JSON only: one lowercase English noun, letters only, between 2 and 32 characters.`;
+        parsed = await grokRedeemGuess(retry);
+        guessNorm = normalizeBotRedeemWord(parsed.word);
         redemptionReasoning =
           typeof parsed.reasoning === "string" ? parsed.reasoning : "";
       }
-      if (!guessNorm) {
-        let h = 0;
-        for (const c of clues) {
-          h = (h * 31 + c.seat * 7 + c.round + String(c.word).charCodeAt(0)) | 0;
-        }
-        guessNorm = IMPOSTER_WORDS[Math.abs(h) % IMPOSTER_WORDS.length];
-        redemptionReasoning = redemptionReasoning
-          ? `${redemptionReasoning} (fallback: invalid pool word from model)`
-          : "Fallback guess after model returned an invalid pool word.";
+      if (!guessNorm || guessNorm.length < 2 || guessNorm.length > 32) {
+        res.status(502).json({
+          error: "Bot could not produce a valid one-word guess from clues",
+          reasoning: redemptionReasoning,
+        });
+        return;
       }
     }
 

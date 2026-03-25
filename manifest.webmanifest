@@ -1,0 +1,11 @@
+{
+  "name": "Exprobable — Games",
+  "short_name": "Exprobable",
+  "description": "Play word games, Imposter, Codenames vs AI, and more.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0c0e14",
+  "theme_color": "#0c0e14",
+  "orientation": "portrait-primary"
+}

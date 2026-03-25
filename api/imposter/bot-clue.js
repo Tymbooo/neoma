@@ -1,6 +1,9 @@
 require("../../lib/loadEnv")();
 const { verifyGame, BOT_NAMES } = require("../../lib/imposterState");
-const { buildBotCluePrompt } = require("../../lib/imposterPrompts");
+const {
+  buildBotCluePrompt,
+  isBotClueArtifactWord,
+} = require("../../lib/imposterPrompts");
 const {
   generateJsonPrompt,
   SCHEMA_IMPOSTER_CLUE,
@@ -104,6 +107,13 @@ module.exports = async (req, res) => {
     let word = normalizeClueWord(typeof parsed.word === "string" ? parsed.word : String(parsed.word || ""));
     const innocent = nextSeat !== imposterSeat;
 
+    if (isBotClueArtifactWord(word)) {
+      prompt +=
+        "\n\nIMPORTANT: Your \"word\" was rejected (template or placeholder, not a real clue). Reply with JSON only using a genuine single English clue word, uppercase A–Z only — not YOURWORD, PLACEHOLDER, or EXAMPLE.";
+      parsed = await generateJsonPrompt(prompt, SCHEMA_IMPOSTER_CLUE);
+      word = normalizeClueWord(typeof parsed.word === "string" ? parsed.word : String(parsed.word || ""));
+    }
+
     if (innocent && word) {
       const bad = clueViolatesRules(word, secretWord);
       if (bad) {
@@ -113,7 +123,7 @@ module.exports = async (req, res) => {
       }
     }
 
-    if (!word) {
+    if (!word || isBotClueArtifactWord(word)) {
       res.status(502).json({
         error: "Model returned an invalid clue word",
         reasoning: typeof parsed.reasoning === "string" ? parsed.reasoning : "",
