@@ -199,7 +199,7 @@ body.home {
 /* --- Home: world map game picker --- */
 body.home--world-map {
   justify-content: flex-start;
-  padding-top: clamp(0.75rem, 3vw, 1.5rem);
+  padding-top: max(clamp(0.5rem, 2vw, 1rem), env(safe-area-inset-top, 0px));
   padding-bottom: clamp(1.5rem, 5vw, 2.5rem);
 }
 
