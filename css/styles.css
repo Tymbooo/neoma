@@ -196,36 +196,132 @@ body.home {
   line-height: 1.45;
 }
 
-/* --- Home: Supabase auth --- */
-.home-auth-bar {
+/* --- Home: login gate + map overlay (Supabase) --- */
+.home-login-gate {
   position: relative;
-  z-index: 2;
+  z-index: 3;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
-  max-width: min(440px, 100%);
-  margin: 0 auto 0.65rem;
-  padding: 0.5rem 0.65rem;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-  border-radius: 12px;
-  background: rgba(22, 26, 38, 0.55);
-  border: 1px solid var(--border);
+  padding: clamp(1.5rem, 5vw, 2.5rem) clamp(1rem, 4vw, 1.5rem);
 }
 
-.home-auth-status {
-  font-size: 0.8rem;
+.home-login-gate[hidden] {
+  display: none !important;
+}
+
+.home-login-gate__card {
+  width: 100%;
+  max-width: 22.5rem;
+  padding: clamp(1.75rem, 4vw, 2.25rem) clamp(1.35rem, 4vw, 1.75rem);
+  border-radius: var(--radius);
+  background: linear-gradient(165deg, rgba(28, 32, 48, 0.92) 0%, rgba(18, 22, 34, 0.95) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 0 0 1px rgba(147, 197, 253, 0.08),
+    0 28px 64px rgba(0, 0, 0, 0.5),
+    0 0 80px rgba(147, 197, 253, 0.06);
+  text-align: center;
+}
+
+.home-login-gate__eyebrow {
+  margin: 0 0 0.35rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent-2);
+}
+
+.home-login-gate__title {
+  margin: 0 0 0.5rem;
+  font-size: clamp(1.65rem, 5vw, 2rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+
+.home-login-gate__lede {
+  margin: 0 0 1.35rem;
+  font-size: 0.92rem;
+  line-height: 1.5;
   color: var(--muted);
-  flex: 1 1 8rem;
-  min-width: 0;
 }
 
-.home-auth-actions {
+.home-login-gate__disabled {
+  margin: 1rem 0 0;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.home-map-app[hidden] {
+  display: none !important;
+}
+
+.home-map-app {
+  width: 100%;
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
+  flex-direction: column;
   align-items: center;
+}
+
+.world-map-main--with-overlay {
+  position: relative;
+}
+
+.home-map-auth-overlay {
+  position: absolute;
+  top: max(0.4rem, env(safe-area-inset-top, 0px));
+  right: max(0.4rem, env(safe-area-inset-right, 0px));
+  z-index: 12;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  max-width: min(calc(100% - 0.75rem), 18rem);
+  padding: 0.4rem 0.55rem;
+  border-radius: 12px;
+  background: rgba(10, 12, 18, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  pointer-events: auto;
+}
+
+.home-map-auth-overlay[hidden] {
+  display: none !important;
+}
+
+.home-map-auth-overlay__status {
+  font-size: 0.72rem;
+  line-height: 1.35;
+  color: var(--muted);
+  text-align: right;
+}
+
+.home-auth-btn--overlay-out {
+  font-size: 0.72rem;
+  padding: 0.32rem 0.55rem;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
+}
+
+.home-auth-btn--overlay-out:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.home-auth-btn--login-cta {
+  width: 100%;
+  max-width: 18rem;
+  margin-inline: auto;
+  padding: 0.75rem 1.15rem;
+  font-size: 0.95rem;
+  font-weight: 700;
 }
 
 .home-auth-btn {

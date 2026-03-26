@@ -14,21 +14,58 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/styles.css?v=homeauth2" />
 </head>
 <body class="home home--world-map home--mobile-map-landing">
   <div class="home-bg" aria-hidden="true"></div>
-  <header id="home-auth-bar" class="home-auth-bar" hidden>
-    <span id="home-auth-status" class="home-auth-status"></span>
-    <div class="home-auth-actions">
-      <button type="button" class="home-auth-btn home-auth-btn--google" id="home-auth-google">
+
+  <section id="home-login-gate" class="home-login-gate" aria-label="Sign in">
+    <div class="home-login-gate__card">
+      <p class="home-login-gate__eyebrow">Welcome</p>
+      <h1 class="home-login-gate__title">Exprobable</h1>
+      <p class="home-login-gate__lede">Sign in with Google to open the world map and play.</p>
+      <button type="button" class="home-auth-btn home-auth-btn--google home-auth-btn--login-cta" id="home-auth-google">
         Sign in with Google
       </button>
-      <button type="button" class="home-auth-btn home-auth-btn--ghost" id="home-auth-signout" hidden>
-        Sign out
-      </button>
+      <p id="home-login-disabled" class="home-login-gate__disabled" hidden>
+        Sign-in is not configured on this server. You can still open game links directly if you know the URL.
+      </p>
     </div>
-  </header>
+  </section>
+
+  <div id="home-map-app" class="home-map-app" hidden>
+  <main class="world-map-main world-map-main--with-overlay" role="navigation" aria-label="Games">
+    <div id="home-map-auth-overlay" class="home-map-auth-overlay" hidden>
+      <span id="home-auth-status" class="home-map-auth-overlay__status"></span>
+      <button type="button" class="home-auth-btn home-auth-btn--overlay-out" id="home-auth-signout">Sign out</button>
+    </div>
+    <div class="world-map">
+      <img
+        class="world-map__img"
+        src="assets/game-world-map.png"
+        width="571"
+        height="1024"
+        alt="Fantasy world map. Markers show the four playable games: castle, fields, saloon, and cathedral."
+        decoding="async"
+        fetchpriority="high"
+      />
+      <!-- Shipped games only (see games/game-*.html without placeholder-card) -->
+      <a class="map-plate map-plate--castle map-plate--accent-2" href="games/codenames.html" data-spot="castle">
+        <span class="map-plate__label">Codenames vs AI</span>
+      </a>
+      <a class="map-plate map-plate--farmland map-plate--accent-1" href="games/word-search.html" data-spot="farmland">
+        <span class="map-plate__label">Word Search</span>
+      </a>
+      <a class="map-plate map-plate--saloon map-plate--accent-3" href="games/game-3.html" data-spot="saloon">
+        <span class="map-plate__label">Tech newspaper</span>
+      </a>
+      <a class="map-plate map-plate--cathedral map-plate--accent-4" href="games/game-4.html" data-spot="cathedral">
+        <span class="map-plate__label">Imposter</span>
+      </a>
+    </div>
+  </main>
+  </div>
+
   <div
     id="auth-username-modal"
     class="auth-username-modal"
@@ -56,32 +93,7 @@
       </form>
     </div>
   </div>
-  <main class="world-map-main" role="navigation" aria-label="Games">
-    <div class="world-map">
-      <img
-        class="world-map__img"
-        src="assets/game-world-map.png"
-        width="571"
-        height="1024"
-        alt="Fantasy world map. Markers show the four playable games: castle, fields, saloon, and cathedral."
-        decoding="async"
-        fetchpriority="high"
-      />
-      <!-- Shipped games only (see games/game-*.html without placeholder-card) -->
-      <a class="map-plate map-plate--castle map-plate--accent-2" href="games/codenames.html" data-spot="castle">
-        <span class="map-plate__label">Codenames vs AI</span>
-      </a>
-      <a class="map-plate map-plate--farmland map-plate--accent-1" href="games/word-search.html" data-spot="farmland">
-        <span class="map-plate__label">Word Search</span>
-      </a>
-      <a class="map-plate map-plate--saloon map-plate--accent-3" href="games/game-3.html" data-spot="saloon">
-        <span class="map-plate__label">Tech newspaper</span>
-      </a>
-      <a class="map-plate map-plate--cathedral map-plate--accent-4" href="games/game-4.html" data-spot="cathedral">
-        <span class="map-plate__label">Imposter</span>
-      </a>
-    </div>
-  </main>
-  <script type="module" src="js/auth-home.js?v=1"></script>
+
+  <script type="module" src="js/auth-home.js?v=2"></script>
 </body>
 </html>

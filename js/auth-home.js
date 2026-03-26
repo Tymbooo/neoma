@@ -1,10 +1,13 @@
 /**
- * Home page: Google sign-in (Supabase) + username onboarding.
+ * Home page: login gate → map + overlay (Supabase Google + username).
  */
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
 
 const els = {
-  bar: document.getElementById("home-auth-bar"),
+  loginGate: document.getElementById("home-login-gate"),
+  loginDisabled: document.getElementById("home-login-disabled"),
+  mapApp: document.getElementById("home-map-app"),
+  overlay: document.getElementById("home-map-auth-overlay"),
   status: document.getElementById("home-auth-status"),
   btnGoogle: document.getElementById("home-auth-google"),
   btnOut: document.getElementById("home-auth-signout"),
@@ -46,27 +49,43 @@ async function loadConfig() {
   return j;
 }
 
-function renderSignedOut() {
-  if (!els.bar) return;
-  els.bar.hidden = false;
-  if (els.status) els.status.textContent = "";
-  if (els.btnGoogle) els.btnGoogle.hidden = false;
-  if (els.btnOut) els.btnOut.hidden = true;
+/** Map only, no auth (misconfigured or error). */
+function showGuestMap() {
+  if (els.loginGate) els.loginGate.hidden = true;
+  if (els.mapApp) els.mapApp.hidden = false;
+  if (els.overlay) els.overlay.hidden = true;
+  document.body.classList.add("home--map-visible");
   showModal(false);
 }
 
-function renderSignedIn(user, profile) {
-  if (!els.bar) return;
-  els.bar.hidden = false;
-  if (els.btnGoogle) els.btnGoogle.hidden = true;
-  if (els.btnOut) els.btnOut.hidden = false;
+/** Full-screen login; map hidden. */
+function showLoginScreen(showDisabledHint) {
+  if (els.loginGate) els.loginGate.hidden = false;
+  if (els.mapApp) els.mapApp.hidden = true;
+  if (els.overlay) els.overlay.hidden = true;
+  if (els.loginDisabled) els.loginDisabled.hidden = !showDisabledHint;
+  if (els.btnGoogle) els.btnGoogle.hidden = !!showDisabledHint;
+  document.body.classList.remove("home--map-visible");
+  showModal(false);
+}
 
+/** Map + top overlay; login hidden. */
+function showMapWithOverlay(statusText) {
+  if (els.loginGate) els.loginGate.hidden = true;
+  if (els.mapApp) els.mapApp.hidden = false;
+  if (els.overlay) els.overlay.hidden = false;
+  if (els.status) els.status.textContent = statusText;
+  document.body.classList.add("home--map-visible");
+}
+
+function renderSignedOut() {
+  showLoginScreen(false);
+}
+
+function renderSignedIn(user, profile) {
   const name = profile?.username;
-  if (els.status) {
-    els.status.textContent = name
-      ? `Signed in as ${name}`
-      : "Signed in — pick a username";
-  }
+  const statusText = name ? `Signed in as ${name}` : "Signed in — pick a username";
+  showMapWithOverlay(statusText);
 
   if (!name) {
     showModal(true);
@@ -99,11 +118,11 @@ async function handleSession(session) {
 }
 
 async function init() {
-  if (!els.bar) return;
+  if (!els.loginGate || !els.mapApp) return;
 
   const cfg = await loadConfig();
   if (!cfg || !cfg.url || !cfg.anonKey) {
-    els.bar.hidden = true;
+    showGuestMap();
     return;
   }
 
@@ -181,12 +200,12 @@ async function init() {
     }
 
     showModal(false);
-    if (els.status) els.status.textContent = `Signed in as ${u}`;
+    showMapWithOverlay(`Signed in as ${u}`);
     els.input.value = "";
   });
 }
 
 init().catch((e) => {
   console.error(e);
-  if (els.bar) els.bar.hidden = true;
+  showGuestMap();
 });
