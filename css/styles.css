@@ -196,6 +196,154 @@ body.home {
   line-height: 1.45;
 }
 
+/* --- Home: Supabase auth --- */
+.home-auth-bar {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: min(440px, 100%);
+  margin: 0 auto 0.65rem;
+  padding: 0.5rem 0.65rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  border-radius: 12px;
+  background: rgba(22, 26, 38, 0.55);
+  border: 1px solid var(--border);
+}
+
+.home-auth-status {
+  font-size: 0.8rem;
+  color: var(--muted);
+  flex: 1 1 8rem;
+  min-width: 0;
+}
+
+.home-auth-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+.home-auth-btn {
+  font-family: var(--font);
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.4rem 0.65rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.25);
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.home-auth-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+.home-auth-btn--google {
+  border-color: rgba(147, 197, 253, 0.35);
+  background: rgba(147, 197, 253, 0.1);
+}
+
+.home-auth-btn--google:hover {
+  border-color: rgba(147, 197, 253, 0.55);
+  background: rgba(147, 197, 253, 0.16);
+}
+
+.home-auth-btn--ghost {
+  background: transparent;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.home-auth-btn--primary {
+  width: 100%;
+  margin-top: 0.35rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(147, 197, 253, 0.2);
+  border-color: rgba(147, 197, 253, 0.4);
+}
+
+.home-auth-btn--primary:hover {
+  background: rgba(147, 197, 253, 0.28);
+}
+
+.auth-username-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(8, 10, 16, 0.72);
+  backdrop-filter: blur(6px);
+}
+
+.auth-username-modal[hidden] {
+  display: none !important;
+}
+
+.auth-username-card {
+  width: 100%;
+  max-width: 22rem;
+  padding: 1.15rem 1.25rem;
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.45);
+}
+
+.auth-username-title {
+  margin: 0 0 0.35rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.auth-username-desc {
+  margin: 0 0 0.85rem;
+  font-size: 0.8rem;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.auth-username-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.auth-username-label {
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.auth-username-input {
+  font-family: var(--mono);
+  font-size: 0.9rem;
+  padding: 0.5rem 0.6rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.3);
+  color: var(--text);
+}
+
+.auth-username-error {
+  margin: 0;
+  font-size: 0.75rem;
+  color: #fca5a5;
+}
+
+.auth-username-error[hidden] {
+  display: none !important;
+}
+
 /* --- Home: world map game picker --- */
 body.home--world-map {
   justify-content: flex-start;
@@ -684,6 +832,12 @@ body.game-page--codenames {
 .cn-input--num {
   flex: 0 0 4rem;
   max-width: 5rem;
+}
+
+select.cn-select.cn-input {
+  cursor: pointer;
+  appearance: auto;
+  min-height: 2.25rem;
 }
 
 .cn-human-clue-hint {

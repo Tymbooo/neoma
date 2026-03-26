@@ -18,6 +18,44 @@
 </head>
 <body class="home home--world-map home--mobile-map-landing">
   <div class="home-bg" aria-hidden="true"></div>
+  <header id="home-auth-bar" class="home-auth-bar" hidden>
+    <span id="home-auth-status" class="home-auth-status"></span>
+    <div class="home-auth-actions">
+      <button type="button" class="home-auth-btn home-auth-btn--google" id="home-auth-google">
+        Sign in with Google
+      </button>
+      <button type="button" class="home-auth-btn home-auth-btn--ghost" id="home-auth-signout" hidden>
+        Sign out
+      </button>
+    </div>
+  </header>
+  <div
+    id="auth-username-modal"
+    class="auth-username-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="auth-username-title"
+    hidden
+  >
+    <div class="auth-username-card">
+      <h2 id="auth-username-title" class="auth-username-title">Choose a username</h2>
+      <p class="auth-username-desc">3–20 characters: letters, numbers, underscores. Shown on this site when you’re signed in.</p>
+      <form id="auth-username-form" class="auth-username-form">
+        <label class="auth-username-label" for="auth-username-input">Username</label>
+        <input
+          id="auth-username-input"
+          class="auth-username-input"
+          type="text"
+          autocomplete="username"
+          maxlength="24"
+          placeholder="e.g. blue_player"
+          required
+        />
+        <p id="auth-username-error" class="auth-username-error" hidden></p>
+        <button type="submit" class="home-auth-btn home-auth-btn--primary">Save</button>
+      </form>
+    </div>
+  </div>
   <main class="world-map-main" role="navigation" aria-label="Games">
     <div class="world-map">
       <img
@@ -44,5 +82,6 @@
       </a>
     </div>
   </main>
+  <script type="module" src="js/auth-home.js?v=1"></script>
 </body>
 </html>
