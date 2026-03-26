@@ -2,6 +2,7 @@ require("../../lib/loadEnv")();
 const { verifyToken, parseRevealed } = require("../../lib/state");
 const {
   buildBlueOperativePrompt,
+  buildSchemaCodenamesGuessesExact,
   generateJsonPrompt,
   SCHEMA_CODENAMES_GUESSES,
 } = require("../../lib/gemini");
@@ -21,6 +22,28 @@ function blueIndices(assignment) {
   const r = [];
   for (let i = 0; i < 25; i++) if (assignment[i] === "blue") r.push(i);
   return r;
+}
+
+function countUnrevealed(revealed) {
+  let n = 0;
+  for (let i = 0; i < 25; i++) if (!revealed[i]) n++;
+  return n;
+}
+
+/** Dedupe, skip revealed/invalid; cap at maxLen. */
+function normalizeOperativeGuesses(raw, revealed, maxLen) {
+  const guesses = [];
+  const seen = new Set();
+  const arr = Array.isArray(raw) ? raw : [];
+  for (const g of arr) {
+    const i = parseInt(g, 10);
+    if (i >= 0 && i < 25 && !seen.has(i) && !revealed[i]) {
+      seen.add(i);
+      guesses.push(i);
+      if (guesses.length >= maxLen) break;
+    }
+  }
+  return guesses;
 }
 
 function simulateBlueGuesses(assignment, revealed, guesses, clueNumber) {
@@ -152,20 +175,34 @@ module.exports = async (req, res) => {
   let nextRevealed = { ...revealed };
   let gameOver = false;
   let winner = null;
+  let guesses = [];
+
+  const guessAllowance = number + 1;
+  const unrevealedCount = countUnrevealed(revealed);
+  const requiredLength = Math.min(guessAllowance, unrevealedCount);
 
   try {
-    const opPrompt = buildBlueOperativePrompt(words, revealed, clue, number);
-    const opOut = await generateJsonPrompt(opPrompt, SCHEMA_CODENAMES_GUESSES);
-    const raw = Array.isArray(opOut.guesses) ? opOut.guesses : [];
-    const guesses = [];
-    const seen = new Set();
-    for (const g of raw) {
-      const i = parseInt(g, 10);
-      if (i >= 0 && i < 25 && !seen.has(i) && !revealed[i]) {
-        seen.add(i);
-        guesses.push(i);
-      }
+    let lastCount = -1;
+    for (let attempt = 0; attempt < 4; attempt++) {
+      const schema =
+        requiredLength > 0
+          ? buildSchemaCodenamesGuessesExact(requiredLength)
+          : SCHEMA_CODENAMES_GUESSES;
+      const correctionNote =
+        attempt > 0
+          ? `FIX: Your last answer had ${lastCount} valid unrevealed guesses but the rules require EXACTLY ${requiredLength} distinct unrevealed indices in "guesses" (full tap order). Reply again with exactly ${requiredLength} integers.`
+          : undefined;
+      const opPrompt = buildBlueOperativePrompt(words, revealed, clue, number, {
+        requiredGuessCount: requiredLength,
+        correctionNote,
+      });
+      const opOut = await generateJsonPrompt(opPrompt, schema);
+      const raw = Array.isArray(opOut.guesses) ? opOut.guesses : [];
+      guesses = normalizeOperativeGuesses(raw, revealed, requiredLength);
+      lastCount = guesses.length;
+      if (requiredLength === 0 || guesses.length === requiredLength) break;
     }
+
     const sim = simulateBlueGuesses(assignment, revealed, guesses, number);
     steps = sim.steps.map((s) => ({
       index: s.index,
@@ -189,9 +226,16 @@ module.exports = async (req, res) => {
     return;
   }
 
+  const planIncomplete =
+    requiredLength > 0 && guesses.length !== requiredLength;
+
   res.status(200).json({
     clue,
     number,
+    guessAllowance,
+    plannedGuessCount: guesses.length,
+    guessesPlayedCount: steps.length,
+    planIncomplete,
     steps,
     revealed: nextRevealed,
     gameOver,

@@ -862,6 +862,39 @@ body.game-page--codenames {
   z-index: 1;
 }
 
+.cn-log {
+  margin-top: 0.65rem;
+  max-height: 11rem;
+  overflow-y: auto;
+  padding: 0.55rem 0.7rem;
+  border-radius: 10px;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  background: rgba(15, 20, 35, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.cn-log[hidden] {
+  display: none !important;
+}
+
+.cn-log__entry {
+  margin: 0;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.cn-log__entry:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.cn-log__label {
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+}
+
 .cn-status {
   margin: 0;
   font-size: 0.875rem;

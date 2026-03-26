@@ -31,6 +31,7 @@
     btnHumanClue: document.getElementById("cn-btn-human-clue"),
     spoilerPanel: document.getElementById("cn-spoiler"),
     spoilerWords: document.getElementById("cn-spoiler-words"),
+    log: document.getElementById("cn-log"),
   };
 
   let token = null;
@@ -48,6 +49,38 @@
   let currentNumber = 0;
   let guessesLeft = 0;
   let bluesThisTurn = 0;
+  /** @type {{ word: string, role: string }[]} */
+  let currentHumanTurnPicks = [];
+
+  function clearGameLog() {
+    if (!els.log) return;
+    els.log.innerHTML = "";
+    els.log.hidden = true;
+  }
+
+  function appendGameLog(html) {
+    if (!els.log) return;
+    els.log.hidden = false;
+    const p = document.createElement("p");
+    p.className = "cn-log__entry";
+    p.innerHTML = html;
+    els.log.appendChild(p);
+    els.log.scrollTop = els.log.scrollHeight;
+  }
+
+  function logHumanBlueTurnEnd(reason) {
+    if (!currentClue && currentNumber === 0 && !currentHumanTurnPicks.length) return;
+    const allowance = currentNumber + 1;
+    const seq =
+      currentHumanTurnPicks.length === 0
+        ? "—"
+        : currentHumanTurnPicks.map((p) => `${p.word} (${p.role})`).join(" → ");
+    const reasonBit = reason ? ` · ${reason}` : "";
+    appendGameLog(
+      `<span class="cn-log__label">Blue (you)</span> · clue <strong>${currentClue} ${currentNumber}</strong> · allowance <strong>${allowance}</strong> (${currentNumber}+1) · flipped <strong>${currentHumanTurnPicks.length}</strong>${reasonBit}: ${seq}`
+    );
+    currentHumanTurnPicks = [];
+  }
 
   function setStatus(html) {
     els.status.innerHTML = html;
@@ -214,11 +247,14 @@
       revealed = normalizeRevealed(res.revealed);
       revealedBy[index] = "blue";
       guessesLeft -= 1;
+      currentHumanTurnPicks.push({ word: res.word, role: res.role });
       if (res.gameOver) {
+        logHumanBlueTurnEnd("game over");
         endGame(res.winner);
         return;
       }
       if (res.role !== "blue") {
+        logHumanBlueTurnEnd("wrong color — turn ends");
         await runRedTurnAfterBlue("");
         return;
       }
@@ -228,10 +264,12 @@
           `<strong>Your guess:</strong> ${res.word} was <span class="cn-tag cn-tag--blue">blue</span> — that’s <strong>${currentNumber}</strong> for this clue. Ending your turn.`
         );
         renderBoard();
+        logHumanBlueTurnEnd("found all blues for this clue");
         await runRedTurnAfterBlue("");
         return;
       }
       if (guessesLeft <= 0) {
+        logHumanBlueTurnEnd("used full allowance");
         await runRedTurnAfterBlue("");
         return;
       }
@@ -267,6 +305,18 @@
         msg += res.steps.map((s) => `${s.word} (${s.role})`).join(" → ");
       }
       setStatus(msg);
+      if (res.clue === "PASS") {
+        appendGameLog(`<span class="cn-log__label">Red (sim)</span> · pass (no red words left)`);
+      } else {
+        const nFlip = res.steps && res.steps.length ? res.steps.length : 0;
+        const seq =
+          res.steps && res.steps.length
+            ? res.steps.map((s) => `${s.word} (${s.role})`).join(" → ")
+            : "—";
+        appendGameLog(
+          `<span class="cn-log__label">Red (sim)</span> · clue <strong>${res.clue} ${res.number}</strong> · cards flipped <strong>${nFlip}</strong>: ${seq}`
+        );
+      }
       if (res.gameOver) {
         endGame(res.winner);
         return;
@@ -317,6 +367,8 @@
 
   async function startSession() {
     updateOperativeSpoiler(null);
+    clearGameLog();
+    currentHumanTurnPicks = [];
     hideOverlay();
     phase = "loading";
     setClue("—");
@@ -386,6 +438,7 @@
       if (res.clue === "PASS" || res.number === 0) {
         setClue("PASS");
         updateOperativeSpoiler(null);
+        appendGameLog(`<span class="cn-log__label">Blue (AI spymaster)</span> · pass — no blue words left`);
         setStatus("No blue words left — ending your turn.");
         bluesThisTurn = 0;
         await runRedTurnAfterBlue("");
@@ -394,9 +447,13 @@
       currentClue = res.clue;
       currentNumber = res.number;
       bluesThisTurn = 0;
+      currentHumanTurnPicks = [];
       guessesLeft = res.number + 1;
       setClue(`${res.clue} · ${res.number}`);
       updateOperativeSpoiler(Array.isArray(res.spoilerWords) ? res.spoilerWords : null);
+      appendGameLog(
+        `<span class="cn-log__label">Blue clue (AI)</span> <strong>${res.clue} ${res.number}</strong> · allowance <strong>${guessesLeft}</strong> guesses (${res.number}+1 official rule). Turn ends after <strong>${currentNumber}</strong> correct blues or on a wrong color.`
+      );
       setStatus(
         `Your clue: <strong>${res.clue} ${res.number}</strong>. <strong>Official rule:</strong> you may use up to <strong>${guessesLeft}</strong> guesses total (number <strong>+ 1</strong>, e.g. <strong>2 → 3</strong> taps). Turn also ends after <strong>${currentNumber}</strong> correct blues or on a wrong color.`
       );
@@ -450,9 +507,29 @@
       if (res.clue === "PASS" || res.number === 0) {
         setClue("PASS");
         prefix = "<strong>You passed.</strong> No guesses.";
+        appendGameLog(`<span class="cn-log__label">Blue (you spymaster)</span> · <strong>PASS</strong> · no guesses`);
       } else {
         setClue(`${res.clue} · ${res.number}`);
-        prefix = `Your clue: <strong>${res.clue} ${res.number}</strong>.`;
+        const allowance = res.guessAllowance ?? res.number + 1;
+        const planned = res.plannedGuessCount ?? 0;
+        const played =
+          typeof res.guessesPlayedCount === "number"
+            ? res.guessesPlayedCount
+            : Array.isArray(res.steps)
+              ? res.steps.length
+              : 0;
+        const seq =
+          res.steps && res.steps.length
+            ? res.steps.map((s) => `${s.word} (${s.role})`).join(" → ")
+            : "—";
+        const warn =
+          res.planIncomplete === true
+            ? " · <em>warning: model did not return a full guess list after retries</em>"
+            : "";
+        appendGameLog(
+          `<span class="cn-log__label">Blue (Gemini operative)</span> · your clue <strong>${res.clue} ${res.number}</strong> · allowance <strong>${allowance}</strong> (${res.number}+1) · planned list length <strong>${planned}</strong> · cards flipped <strong>${played}</strong>${warn}: ${seq}`
+        );
+        prefix = `Your clue: <strong>${res.clue} ${res.number}</strong> · allowance <strong>${allowance}</strong> (${res.number}+1).`;
         if (res.steps && res.steps.length) {
           prefix += " Blue guessed: ";
           prefix += res.steps.map((s) => `${s.word} (${s.role})`).join(" → ");
