@@ -47,7 +47,7 @@ function normalizeOperativeGuesses(raw, revealed, maxLen) {
 }
 
 function simulateBlueGuesses(assignment, revealed, guesses, clueNumber) {
-  const maxSteps = clueNumber <= 0 ? 0 : clueNumber + 1;
+  const maxSteps = clueNumber <= 0 ? 0 : clueNumber;
   const steps = [];
   const next = { ...revealed };
   let assassinHit = false;
@@ -177,7 +177,7 @@ module.exports = async (req, res) => {
   let winner = null;
   let guesses = [];
 
-  const guessAllowance = number + 1;
+  const guessAllowance = number;
   const unrevealedCount = countUnrevealed(revealed);
   const requiredLength = Math.min(guessAllowance, unrevealedCount);
 

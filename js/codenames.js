@@ -70,14 +70,14 @@
 
   function logHumanBlueTurnEnd(reason) {
     if (!currentClue && currentNumber === 0 && !currentHumanTurnPicks.length) return;
-    const allowance = currentNumber + 1;
+    const allowance = currentNumber;
     const seq =
       currentHumanTurnPicks.length === 0
         ? "—"
         : currentHumanTurnPicks.map((p) => `${p.word} (${p.role})`).join(" → ");
     const reasonBit = reason ? ` · ${reason}` : "";
     appendGameLog(
-      `<span class="cn-log__label">Blue (you)</span> · clue <strong>${currentClue} ${currentNumber}</strong> · allowance <strong>${allowance}</strong> (${currentNumber}+1) · flipped <strong>${currentHumanTurnPicks.length}</strong>${reasonBit}: ${seq}`
+      `<span class="cn-log__label">Blue (you)</span> · clue <strong>${currentClue} ${currentNumber}</strong> · allowance <strong>${allowance}</strong> guesses · flipped <strong>${currentHumanTurnPicks.length}</strong>${reasonBit}: ${seq}`
     );
     currentHumanTurnPicks = [];
   }
@@ -448,14 +448,14 @@
       currentNumber = res.number;
       bluesThisTurn = 0;
       currentHumanTurnPicks = [];
-      guessesLeft = res.number + 1;
+      guessesLeft = res.number;
       setClue(`${res.clue} · ${res.number}`);
       updateOperativeSpoiler(Array.isArray(res.spoilerWords) ? res.spoilerWords : null);
       appendGameLog(
-        `<span class="cn-log__label">Blue clue (AI)</span> <strong>${res.clue} ${res.number}</strong> · allowance <strong>${guessesLeft}</strong> guesses (${res.number}+1 official rule). Turn ends after <strong>${currentNumber}</strong> correct blues or on a wrong color.`
+        `<span class="cn-log__label">Blue clue (AI)</span> <strong>${res.clue} ${res.number}</strong> · allowance <strong>${guessesLeft}</strong> guesses. Turn ends after <strong>${currentNumber}</strong> correct blues or on a wrong color.`
       );
       setStatus(
-        `Your clue: <strong>${res.clue} ${res.number}</strong>. <strong>Official rule:</strong> you may use up to <strong>${guessesLeft}</strong> guesses total (number <strong>+ 1</strong>, e.g. <strong>2 → 3</strong> taps). Turn also ends after <strong>${currentNumber}</strong> correct blues or on a wrong color.`
+        `Your clue: <strong>${res.clue} ${res.number}</strong>. You may guess up to <strong>${guessesLeft}</strong> words this turn (same as the clue number). Turn also ends after <strong>${currentNumber}</strong> correct blues or on a wrong color.`
       );
       phase = "humanGuess";
     } catch (e) {
@@ -510,7 +510,7 @@
         appendGameLog(`<span class="cn-log__label">Blue (you spymaster)</span> · <strong>PASS</strong> · no guesses`);
       } else {
         setClue(`${res.clue} · ${res.number}`);
-        const allowance = res.guessAllowance ?? res.number + 1;
+        const allowance = res.guessAllowance ?? res.number;
         const planned = res.plannedGuessCount ?? 0;
         const played =
           typeof res.guessesPlayedCount === "number"
@@ -527,9 +527,9 @@
             ? " · <em>warning: model did not return a full guess list after retries</em>"
             : "";
         appendGameLog(
-          `<span class="cn-log__label">Blue (Gemini operative)</span> · your clue <strong>${res.clue} ${res.number}</strong> · allowance <strong>${allowance}</strong> (${res.number}+1) · planned list length <strong>${planned}</strong> · cards flipped <strong>${played}</strong>${warn}: ${seq}`
+          `<span class="cn-log__label">Blue (Gemini operative)</span> · your clue <strong>${res.clue} ${res.number}</strong> · allowance <strong>${allowance}</strong> guesses · planned list length <strong>${planned}</strong> · cards flipped <strong>${played}</strong>${warn}: ${seq}`
         );
-        prefix = `Your clue: <strong>${res.clue} ${res.number}</strong> · allowance <strong>${allowance}</strong> (${res.number}+1).`;
+        prefix = `Your clue: <strong>${res.clue} ${res.number}</strong> · allowance <strong>${allowance}</strong> guesses.`;
         if (res.steps && res.steps.length) {
           prefix += " Blue guessed: ";
           prefix += res.steps.map((s) => `${s.word} (${s.role})`).join(" → ");
@@ -559,10 +559,10 @@
     if (!els.intro) return;
     if (humanRole === "operative") {
       els.intro.innerHTML =
-        "You are the <strong>blue operative</strong>. No spymaster key. <strong>Bright blue border</strong> = blue guessed that card; <strong>bright red border</strong> = red guessed it. After clue <strong>N</strong>, you may guess up to <strong>N+1</strong> times (official Codenames). Red is simulated and never picks the assassin.";
+        "You are the <strong>blue operative</strong>. No spymaster key. <strong>Bright blue border</strong> = blue guessed that card; <strong>bright red border</strong> = red guessed it. After clue <strong>N</strong>, you may guess up to <strong>N</strong> words. Red is simulated and never picks the assassin.";
     } else {
       els.intro.innerHTML =
-        "You are the <strong>blue spymaster</strong>. The key: blue, red, tan (neutral), dark (assassin). A revealed word has a <strong>bright blue border</strong> if blue flipped it or <strong>bright red</strong> if red flipped it. Your number <strong>N</strong> allows up to <strong>N+1</strong> guesses (official rule). Submit clue + number (or <strong>PASS</strong> + <strong>0</strong>). Gemini plays blue operative. Red sim never picks the assassin.";
+        "You are the <strong>blue spymaster</strong>. The key: blue, red, tan (neutral), dark (assassin). A revealed word has a <strong>bright blue border</strong> if blue flipped it or <strong>bright red</strong> if red flipped it. Your number <strong>N</strong> is how many guesses blue gets this turn. Submit clue + number (or <strong>PASS</strong> + <strong>0</strong>). Gemini plays blue operative. Red sim never picks the assassin.";
     }
   }
 
