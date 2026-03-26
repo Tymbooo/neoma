@@ -110,7 +110,9 @@ module.exports = async (req, res) => {
     });
 
     try {
-      const parsed = await generateJsonPrompt(batchPrompt, SCHEMA_IMPOSTER_VOTES_BATCH);
+      const parsed = await generateJsonPrompt(batchPrompt, SCHEMA_IMPOSTER_VOTES_BATCH, {
+        temperature: 0.22,
+      });
       const rows = Array.isArray(parsed.votes) ? parsed.votes : [];
       const bySeat = new Map();
       for (const row of rows) {
