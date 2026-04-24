@@ -4,11 +4,13 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
 
 const els = {
+  boot: document.getElementById("home-auth-boot"),
   loginGate: document.getElementById("home-login-gate"),
   loginDisabled: document.getElementById("home-login-disabled"),
   mapApp: document.getElementById("home-map-app"),
+  coinsVal: document.getElementById("home-coins-val"),
+  heartsRow: document.getElementById("home-hearts-row"),
   overlay: document.getElementById("home-map-auth-overlay"),
-  status: document.getElementById("home-auth-status"),
   btnGoogle: document.getElementById("home-auth-google"),
   btnOut: document.getElementById("home-auth-signout"),
   modal: document.getElementById("auth-username-modal"),
@@ -18,6 +20,64 @@ const els = {
 };
 
 let supabase = null;
+/** @type {{ coins: number, heartLosses: string[] }} */
+let walletSnapshot = { coins: 0, heartLosses: [] };
+/** @type {ReturnType<typeof setInterval> | null} */
+let heartTick = null;
+
+const HEART_MS = 60 * 60 * 1000;
+
+function hideBoot() {
+  if (els.boot) els.boot.hidden = true;
+}
+
+function clearOptimisticMapClass() {
+  document.body.classList.remove("home--optimistic-map");
+}
+
+function renderHeartsUI() {
+  if (!els.heartsRow) return;
+  const now = Date.now();
+  const active = walletSnapshot.heartLosses.filter((ts) => {
+    const t = new Date(ts).getTime();
+    return !Number.isNaN(t) && now - t < HEART_MS;
+  }).length;
+  const dark = Math.min(3, active);
+  els.heartsRow.innerHTML = "";
+  for (let i = 0; i < 3; i++) {
+    const s = document.createElement("span");
+    s.className = "home-heart" + (i < dark ? " home-heart--lost" : "");
+    s.textContent = "\u2764\uFE0F";
+    s.setAttribute("aria-hidden", "true");
+    els.heartsRow.appendChild(s);
+  }
+}
+
+function applyWalletFromProfile(profile) {
+  if (profile) {
+    walletSnapshot.coins = Number(profile.coins) || 0;
+    walletSnapshot.heartLosses = Array.isArray(profile.heart_losses)
+      ? profile.heart_losses.map(String)
+      : [];
+  } else {
+    walletSnapshot.coins = 0;
+    walletSnapshot.heartLosses = [];
+  }
+  if (els.coinsVal) els.coinsVal.textContent = String(walletSnapshot.coins);
+  renderHeartsUI();
+}
+
+function startHeartTimer() {
+  stopHeartTimer();
+  heartTick = setInterval(() => renderHeartsUI(), 30000);
+}
+
+function stopHeartTimer() {
+  if (heartTick != null) {
+    clearInterval(heartTick);
+    heartTick = null;
+  }
+}
 
 function normalizeUsername(raw) {
   return String(raw || "")
@@ -51,18 +111,24 @@ async function loadConfig() {
 
 /** Map only, no auth (misconfigured or error). */
 function showGuestMap() {
+  hideBoot();
+  clearOptimisticMapClass();
   if (els.loginGate) els.loginGate.hidden = true;
   if (els.mapApp) els.mapApp.hidden = false;
   if (els.overlay) els.overlay.hidden = true;
+  stopHeartTimer();
   document.body.classList.add("home--map-visible");
   showModal(false);
 }
 
 /** Full-screen login; map hidden. */
 function showLoginScreen(showDisabledHint) {
+  hideBoot();
+  clearOptimisticMapClass();
   if (els.loginGate) els.loginGate.hidden = false;
   if (els.mapApp) els.mapApp.hidden = true;
   if (els.overlay) els.overlay.hidden = true;
+  stopHeartTimer();
   if (els.loginDisabled) els.loginDisabled.hidden = !showDisabledHint;
   if (els.btnGoogle) els.btnGoogle.hidden = !!showDisabledHint;
   document.body.classList.remove("home--map-visible");
@@ -70,11 +136,14 @@ function showLoginScreen(showDisabledHint) {
 }
 
 /** Map + top overlay; login hidden. */
-function showMapWithOverlay(statusText) {
+function showMapWithOverlay() {
+  hideBoot();
+  clearOptimisticMapClass();
   if (els.loginGate) els.loginGate.hidden = true;
   if (els.mapApp) els.mapApp.hidden = false;
   if (els.overlay) els.overlay.hidden = false;
-  if (els.status) els.status.textContent = statusText;
+  renderHeartsUI();
+  startHeartTimer();
   document.body.classList.add("home--map-visible");
 }
 
@@ -84,8 +153,8 @@ function renderSignedOut() {
 
 function renderSignedIn(user, profile) {
   const name = profile?.username;
-  const statusText = name ? `Signed in as ${name}` : "Signed in — pick a username";
-  showMapWithOverlay(statusText);
+  showMapWithOverlay();
+  applyWalletFromProfile(profile);
 
   if (!name) {
     showModal(true);
@@ -96,16 +165,20 @@ function renderSignedIn(user, profile) {
 }
 
 async function refreshProfile(userId) {
-  const { data, error } = await supabase
+  const full = await supabase
     .from("profiles")
-    .select("username")
+    .select("username, coins, heart_losses")
     .eq("id", userId)
     .maybeSingle();
-  if (error) {
-    console.warn("profiles select", error);
+  if (!full.error) return full.data;
+
+  console.warn("profiles select (wallet columns may be missing — run 003_wallet_hearts.sql)", full.error);
+  const slim = await supabase.from("profiles").select("username").eq("id", userId).maybeSingle();
+  if (slim.error) {
+    console.warn("profiles select", slim.error);
     return null;
   }
-  return data;
+  return { ...slim.data, coins: 0, heart_losses: [] };
 }
 
 async function handleSession(session) {
@@ -144,6 +217,20 @@ async function init() {
     window.history.replaceState({}, "", `${window.location.pathname}${window.location.hash}`);
   }
   await handleSession(session);
+
+  window.addEventListener("neoma:wallet-updated", (e) => {
+    if (typeof e.detail?.coins === "number") {
+      walletSnapshot.coins = e.detail.coins;
+      if (els.coinsVal) els.coinsVal.textContent = String(walletSnapshot.coins);
+    }
+  });
+
+  window.addEventListener("neoma:hearts-updated", (e) => {
+    if (Array.isArray(e.detail?.heartLosses)) {
+      walletSnapshot.heartLosses = e.detail.heartLosses.map(String);
+      renderHeartsUI();
+    }
+  });
 
   supabase.auth.onAuthStateChange((_event, session) => {
     handleSession(session);
@@ -199,13 +286,15 @@ async function init() {
       return;
     }
 
+    const profile = await refreshProfile(session.user.id);
     showModal(false);
-    showMapWithOverlay(`Signed in as ${u}`);
     els.input.value = "";
+    renderSignedIn(session.user, profile);
   });
 }
 
 init().catch((e) => {
   console.error(e);
+  hideBoot();
   showGuestMap();
 });

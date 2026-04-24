@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Spain map quiz — Neoma</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700&family=JetBrains+Mono:wght@500&family=Koh+Santepheap:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/styles.css?v=mqvis2" />
+</head>
+<body class="game-page game-page--spain-geo">
+  <div class="home-bg" aria-hidden="true"></div>
+  <header class="game-topbar">
+    <a class="back-link" href="../index.html">← All games</a>
+    <h1 class="game-title">Spain map quiz</h1>
+  </header>
+  <main class="game-shell game-shell--spain-geo">
+    <p class="sg-lede">
+      Three questions per round. Tap a numbered highlight on the map <strong>or</strong> use the buttons (keys 1–4).
+      The geography is <strong>schematic</strong>, not cartographic.
+    </p>
+    <p id="sg-prompt" class="sg-prompt" role="status"></p>
+    <div id="sg-map" class="sg-map" aria-label="Interactive map"></div>
+    <div id="sg-choices" class="sg-choices"></div>
+    <p id="sg-feedback" class="sg-feedback" role="status" aria-live="polite"></p>
+    <p id="sg-score" class="sg-score" aria-live="polite"></p>
+    <div class="sg-actions">
+      <button type="button" class="sg-btn" id="sg-next" hidden>Next</button>
+      <button type="button" class="sg-btn sg-btn--secondary" id="sg-again" hidden>Play again</button>
+    </div>
+  </main>
+  <script type="module" src="../js/spain-geo.js?v=1"></script>
+</body>
+</html>

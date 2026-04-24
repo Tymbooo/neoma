@@ -1,13 +1,13 @@
 require("../../lib/loadEnv")();
 const { verifyToken, parseRevealed } = require("../../lib/state");
 const {
-  buildBlueOperativePrompt,
-  buildSchemaCodenamesGuessesExact,
+  buildBlueOperativeScorePrompt,
+  buildSchemaCodenamesOperativeScoresExact,
   generateJsonPrompt,
-  SCHEMA_CODENAMES_GUESSES,
 } = require("../../lib/gemini");
 const { clueValid } = require("../../lib/clueValidate");
-const { teamWordsLeft, winnerFromState } = require("../../lib/codenamesRedSim");
+const { normCodeWord } = require("../../lib/codenamesWordNorm");
+const { teamWordsLeft, outcomeAfterReveal, fullRevealPayload } = require("../../lib/codenamesRedSim");
 
 function verifyRevealedMap(assignment, revealed) {
   for (const [k, r] of Object.entries(revealed)) {
@@ -24,26 +24,28 @@ function blueIndices(assignment) {
   return r;
 }
 
-function countUnrevealed(revealed) {
-  let n = 0;
-  for (let i = 0; i < 25; i++) if (!revealed[i]) n++;
-  return n;
-}
-
-/** Dedupe, skip revealed/invalid; cap at maxLen. */
-function normalizeOperativeGuesses(raw, revealed, maxLen) {
-  const guesses = [];
-  const seen = new Set();
-  const arr = Array.isArray(raw) ? raw : [];
-  for (const g of arr) {
-    const i = parseInt(g, 10);
-    if (i >= 0 && i < 25 && !seen.has(i) && !revealed[i]) {
-      seen.add(i);
-      guesses.push(i);
-      if (guesses.length >= maxLen) break;
-    }
+/**
+ * @param {unknown} raw
+ * @param {Set<number>} unrevealedSet
+ * @returns {{ index: number, score: number }[] | null}
+ */
+function parseOperativeScores(raw, unrevealedSet) {
+  if (!Array.isArray(raw)) return null;
+  const byIndex = new Map();
+  for (const row of raw) {
+    const idx = Number(row && row.index);
+    let sc = Number(row && row.score);
+    if (!Number.isInteger(idx) || idx < 0 || idx > 24 || !unrevealedSet.has(idx)) return null;
+    if (byIndex.has(idx)) return null;
+    if (!Number.isFinite(sc)) return null;
+    sc = Math.max(0, Math.min(100, Math.round(sc)));
+    byIndex.set(idx, sc);
   }
-  return guesses;
+  for (const i of unrevealedSet) {
+    if (!byIndex.has(i)) byIndex.set(i, 0);
+  }
+  if (byIndex.size !== unrevealedSet.size) return null;
+  return Array.from(byIndex.entries()).map(([index, score]) => ({ index, score }));
 }
 
 function simulateBlueGuesses(assignment, revealed, guesses, clueNumber) {
@@ -131,13 +133,13 @@ module.exports = async (req, res) => {
       revealed,
       gameOver: false,
       winner: null,
+      winReason: null,
+      operativeScores: [],
     });
     return;
   }
 
-  const clue = String(clueRaw || "")
-    .toUpperCase()
-    .replace(/[^A-Z]/g, "");
+  const clue = normCodeWord(clueRaw || "");
   const number = parseInt(numRaw, 10);
 
   if (clue === "PASS" && number === 0) {
@@ -148,12 +150,14 @@ module.exports = async (req, res) => {
       revealed,
       gameOver: false,
       winner: null,
+      winReason: null,
+      operativeScores: [],
     });
     return;
   }
 
   if (!/^[A-Z]{2,24}$/.test(clue)) {
-    res.status(400).json({ error: "Clue must be one English word (letters only, 2–24 chars)" });
+    res.status(400).json({ error: "Clue must be one word (letters only, 2–24 chars)" });
     return;
   }
   if (!Number.isInteger(number) || number < 1 || number > 9) {
@@ -171,74 +175,96 @@ module.exports = async (req, res) => {
     return;
   }
 
+  const unrevealedIndices = [];
+  for (let i = 0; i < 25; i++) {
+    if (!revealed[i]) unrevealedIndices.push(i);
+  }
+  const unrevealedSet = new Set(unrevealedIndices);
+  const k = unrevealedIndices.length;
+
   let steps = [];
   let nextRevealed = { ...revealed };
   let gameOver = false;
   let winner = null;
-  let guesses = [];
+  let winReason = null;
+  /** @type {{ index: number, score: number, word: string }[]} */
+  let operativeScoresSorted = [];
+  let scoresPlanIncomplete = false;
 
   const guessAllowance = number;
-  const unrevealedCount = countUnrevealed(revealed);
-  const requiredLength = Math.min(guessAllowance, unrevealedCount);
 
   try {
+    let parsedScores = null;
     let lastCount = -1;
     for (let attempt = 0; attempt < 4; attempt++) {
-      const schema =
-        requiredLength > 0
-          ? buildSchemaCodenamesGuessesExact(requiredLength)
-          : SCHEMA_CODENAMES_GUESSES;
+      const schema = buildSchemaCodenamesOperativeScoresExact(k);
       const correctionNote =
         attempt > 0
-          ? `FIX: Your last answer had ${lastCount} valid unrevealed guesses but the rules require EXACTLY ${requiredLength} distinct unrevealed indices in "guesses" (full tap order). Reply again with exactly ${requiredLength} integers.`
+          ? `FIX: Your last "scores" array had ${lastCount} valid entries but must have EXACTLY ${k} objects — one per unrevealed index (${[...unrevealedSet].sort((a, b) => a - b).join(", ")}), each index once, scores 0–100.`
           : undefined;
-      const opPrompt = buildBlueOperativePrompt(words, revealed, clue, number, {
-        requiredGuessCount: requiredLength,
+      const opPrompt = buildBlueOperativeScorePrompt(words, revealed, clue, number, unrevealedIndices, {
         correctionNote,
       });
       const opOut = await generateJsonPrompt(opPrompt, schema);
-      const raw = Array.isArray(opOut.guesses) ? opOut.guesses : [];
-      guesses = normalizeOperativeGuesses(raw, revealed, requiredLength);
-      lastCount = guesses.length;
-      if (requiredLength === 0 || guesses.length === requiredLength) break;
+      const raw = Array.isArray(opOut.scores) ? opOut.scores : [];
+      parsedScores = parseOperativeScores(raw, unrevealedSet);
+      lastCount = Array.isArray(raw) ? raw.length : 0;
+      if (parsedScores && parsedScores.length === k) break;
     }
 
-    const sim = simulateBlueGuesses(assignment, revealed, guesses, number);
+    if (!parsedScores || parsedScores.length !== k) {
+      scoresPlanIncomplete = true;
+      parsedScores = unrevealedIndices.map((index) => ({ index, score: 0 }));
+    }
+
+    const sorted = [...parsedScores].sort((a, b) => b.score - a.score || a.index - b.index);
+    const orderedIndices = sorted.map((e) => e.index);
+    const scoreByIndex = new Map(sorted.map((e) => [e.index, e.score]));
+
+    const sim = simulateBlueGuesses(assignment, revealed, orderedIndices, number);
     steps = sim.steps.map((s) => ({
       index: s.index,
       role: s.role,
       word: words[s.index],
+      score: scoreByIndex.get(s.index) ?? null,
     }));
     nextRevealed = sim.revealed;
 
+    operativeScoresSorted = sorted.map((e) => ({
+      index: e.index,
+      score: e.score,
+      word: words[e.index],
+    }));
+
     if (sim.assassinHit) {
-      gameOver = true;
-      winner = "red";
+      const o = outcomeAfterReveal(assignment, nextRevealed, { assassinRevealedBy: "blue" });
+      gameOver = o.gameOver;
+      winner = o.winner;
+      winReason = o.winReason;
     } else {
-      const w = winnerFromState(assignment, nextRevealed);
-      if (w) {
-        gameOver = true;
-        winner = w;
-      }
+      const o = outcomeAfterReveal(assignment, nextRevealed);
+      gameOver = o.gameOver;
+      winner = o.winner;
+      winReason = o.winReason;
     }
   } catch (e) {
     res.status(502).json({ error: e.message || "Blue operative failed" });
     return;
   }
 
-  const planIncomplete =
-    requiredLength > 0 && guesses.length !== requiredLength;
-
   res.status(200).json({
     clue,
     number,
     guessAllowance,
-    plannedGuessCount: guesses.length,
+    plannedGuessCount: k,
     guessesPlayedCount: steps.length,
-    planIncomplete,
+    planIncomplete: scoresPlanIncomplete,
     steps,
+    operativeScores: operativeScoresSorted,
     revealed: nextRevealed,
     gameOver,
     winner,
+    winReason,
+    fullReveal: gameOver ? fullRevealPayload(assignment) : undefined,
   });
 };

@@ -31,6 +31,8 @@
     btnHumanClue: document.getElementById("cn-btn-human-clue"),
     spoilerPanel: document.getElementById("cn-spoiler"),
     spoilerWords: document.getElementById("cn-spoiler-words"),
+    spoilerLabel: document.getElementById("cn-spoiler-label"),
+    cheatToggle: document.getElementById("cn-cheat-toggle"),
     log: document.getElementById("cn-log"),
   };
 
@@ -44,6 +46,9 @@
   /** Which side flipped the tile (client-only; for borders). */
   /** @type {Record<number, "blue" | "red">} */
   let revealedBy = {};
+  /** Spymaster: clue-fit scores (0–100) from last Gemini blue turn, keyed by cell index. */
+  /** @type {Record<number, number>} */
+  let spymasterClueFitByIndex = {};
   let phase = "idle";
   let currentClue = null;
   let currentNumber = 0;
@@ -110,6 +115,24 @@
     return out;
   }
 
+  /** After game over, show every card’s true color (server sends key, or spymaster fallback). */
+  function applyFullRevealAfterGame(fullRevealFromServer) {
+    if (fullRevealFromServer && typeof fullRevealFromServer === "object") {
+      for (const [k, v] of Object.entries(fullRevealFromServer)) {
+        const i = parseInt(k, 10);
+        if (i >= 0 && i < 25 && ["blue", "red", "neutral", "assassin"].includes(v)) {
+          revealed[i] = v;
+        }
+      }
+      return;
+    }
+    if (keyAssignment && validateKeyAssignment(keyAssignment)) {
+      for (let i = 0; i < 25; i++) {
+        revealed[i] = keyAssignment[i];
+      }
+    }
+  }
+
   /** API / JSON may send index as string; steps must still drive guesser borders. */
   function stepBoardIndex(s) {
     const n = Number(s && s.index);
@@ -140,19 +163,39 @@
     if (els.humanCluePanel) els.humanCluePanel.hidden = true;
   }
 
+  function setCheatPanelOpen(open) {
+    if (!els.spoilerPanel || !els.cheatToggle) return;
+    els.spoilerPanel.hidden = !open;
+    els.cheatToggle.setAttribute("aria-expanded", open ? "true" : "false");
+  }
+
+  /** Cheat / linked words stay hidden until the player uses the discreet control under the board. */
   function updateOperativeSpoiler(wordList) {
     if (!els.spoilerPanel || !els.spoilerWords) return;
     if (humanRole !== "operative") {
       els.spoilerPanel.hidden = true;
+      els.spoilerWords.textContent = "";
+      if (els.cheatToggle) {
+        els.cheatToggle.hidden = true;
+        els.cheatToggle.setAttribute("aria-expanded", "false");
+      }
       return;
     }
     if (!wordList || !wordList.length) {
       els.spoilerPanel.hidden = true;
       els.spoilerWords.textContent = "";
+      if (els.cheatToggle) {
+        els.cheatToggle.hidden = true;
+        els.cheatToggle.setAttribute("aria-expanded", "false");
+      }
       return;
     }
-    els.spoilerPanel.hidden = false;
+    if (els.spoilerLabel) {
+      els.spoilerLabel.textContent = "Linked words (cheat)";
+    }
     els.spoilerWords.textContent = wordList.map((w) => String(w).toUpperCase()).join(" · ");
+    if (els.cheatToggle) els.cheatToggle.hidden = false;
+    setCheatPanelOpen(false);
   }
 
   function scheduleAutoClue() {
@@ -180,6 +223,69 @@
     return a.every((x) => ok.has(x));
   }
 
+  function sleep(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  /** @param {unknown} rows */
+  function setSpymasterClueFitFromOperativeScores(rows) {
+    spymasterClueFitByIndex = {};
+    if (!Array.isArray(rows)) return;
+    for (const row of rows) {
+      const ix = Number(row && row.index);
+      const sc = Number(row && row.score);
+      if (!Number.isInteger(ix) || ix < 0 || ix >= 25 || !Number.isFinite(sc)) continue;
+      spymasterClueFitByIndex[ix] = Math.max(0, Math.min(100, Math.round(sc)));
+    }
+  }
+
+  /**
+   * Spymaster: reveal blue’s simulated picks one at a time (server order = clue-fit score, high first).
+   * @param {Record<number, string>} prevRevealed
+   * @param {object} res blue-operate JSON
+   */
+  async function animateSpymasterBlueSteps(prevRevealed, res) {
+    const steps = Array.isArray(res.steps) ? res.steps : [];
+    const finalRevealed = normalizeRevealed(res.revealed);
+    const scoreMap = new Map();
+    if (Array.isArray(res.operativeScores)) {
+      for (const row of res.operativeScores) {
+        const ix = Number(row.index);
+        if (Number.isInteger(ix) && ix >= 0 && ix < 25) {
+          scoreMap.set(ix, Number(row.score));
+        }
+      }
+    }
+
+    if (!steps.length) {
+      revealed = finalRevealed;
+      applyStepsToRevealedBy(res.steps, "blue");
+      fillRevealedByForNewTiles(prevRevealed, revealed, "blue");
+      return;
+    }
+
+    revealed = { ...prevRevealed };
+
+    for (const s of steps) {
+      const ix = stepBoardIndex(s);
+      if (ix === null) continue;
+      revealed[ix] = s.role;
+      revealedBy[ix] = "blue";
+      let sc = s.score != null ? Number(s.score) : NaN;
+      if (!Number.isFinite(sc)) sc = scoreMap.get(ix);
+      const label = s.word || words[ix] || "?";
+      const scoreSuffix =
+        Number.isFinite(sc) ? ` · clue fit <strong>${sc}</strong>/100` : "";
+      setStatus(`Blue flips <strong>${label}</strong> (${s.role})${scoreSuffix}`);
+      renderBoard();
+      await sleep(620);
+    }
+    revealed = finalRevealed;
+    applyStepsToRevealedBy(res.steps, "blue");
+    fillRevealedByForNewTiles(prevRevealed, revealed, "blue");
+    renderBoard();
+  }
+
   function renderBoard() {
     if (!els.board) return;
     els.board.innerHTML = "";
@@ -201,7 +307,20 @@
       if (spymasterKey) {
         const team = keyAssignment[i];
         btn.classList.add("cn-sm-" + team);
-        btn.textContent = w;
+        const clueFit = spymasterClueFitByIndex[i];
+        if (clueFit != null) {
+          btn.textContent = "";
+          const wordEl = document.createElement("span");
+          wordEl.className = "cn-cell__word-cn";
+          wordEl.textContent = w;
+          btn.appendChild(wordEl);
+          const fitEl = document.createElement("span");
+          fitEl.className = "cn-cell__clue-fit";
+          fitEl.textContent = String(clueFit);
+          btn.appendChild(fitEl);
+        } else {
+          btn.textContent = w;
+        }
         btn.disabled = true;
         if (r) {
           btn.classList.add("cn-cell--revealed-public");
@@ -250,7 +369,7 @@
       currentHumanTurnPicks.push({ word: res.word, role: res.role });
       if (res.gameOver) {
         logHumanBlueTurnEnd("game over");
-        endGame(res.winner);
+        endGame(res.winner, res.winReason, res.fullReveal);
         return;
       }
       if (res.role !== "blue") {
@@ -318,7 +437,7 @@
         );
       }
       if (res.gameOver) {
-        endGame(res.winner);
+        endGame(res.winner, res.winReason, res.fullReveal);
         return;
       }
       if (humanRole === "operative") {
@@ -344,25 +463,51 @@
     }
   }
 
-  function endGame(winner) {
+  function endGameSummary(winner, winReason) {
+    let headline = "Game over";
+    let why = "";
+    if (winner === "blue") {
+      headline = "Blue wins";
+      if (winReason === "all_blue_found") {
+        why = "All nine blue words were revealed.";
+      } else if (winReason === "assassin_by_red") {
+        why = "The assassin was revealed while red was guessing — instant win for blue.";
+      } else {
+        why = "Blue wins the round.";
+      }
+    } else if (winner === "red") {
+      headline = "Red wins";
+      if (winReason === "all_red_found") {
+        why = "All eight red words were revealed.";
+      } else if (winReason === "assassin_by_blue") {
+        why = "Blue revealed the assassin — instant win for red.";
+      } else {
+        why = "Red wins the round.";
+      }
+    }
+    const keyNote = "Every card is face-up so you can see the full key.";
+    const statusHtml = `<strong>${headline}.</strong> ${why ? `${why} ` : ""}<em>${keyNote}</em> Use <strong>← All games</strong> and open Codenames again for a new board.`;
+    return { headline, why, statusHtml, keyNote };
+  }
+
+  function endGame(winner, winReason, fullRevealFromServer) {
     phase = "over";
     updateOperativeSpoiler(null);
     hideHumanCluePanel();
+    hideOverlay();
+    applyFullRevealAfterGame(fullRevealFromServer);
     /* Spymaster keeps seeing the key after game over. */
     renderBoard();
-    showOverlay(
-      winner === "blue"
-        ? "Blue wins — all blue words found, or red hit the assassin."
-        : winner === "red"
-          ? "Red wins — all red words found, or blue hit the assassin."
-          : "Game over.",
-      true
-    );
-    setStatus(
-      winner === "blue"
-        ? "<strong>Blue won.</strong> Use <strong>← All games</strong> and open Codenames again for a new board."
-        : "<strong>Red won.</strong> Use <strong>← All games</strong> and open Codenames again for a new board."
-    );
+    const { headline, why, statusHtml, keyNote } = endGameSummary(winner, winReason);
+    setStatus(statusHtml);
+    const humanWon = winner === "blue";
+    const detailWin = [why, keyNote].filter(Boolean).join(" ");
+    const detailLoss = [`${headline} — ${why || "End of round."}`, keyNote].filter(Boolean).join(" ");
+    void globalThis.GameResult?.show?.({
+      won: humanWon,
+      title: humanWon ? "You won!" : "You lost",
+      detail: humanWon ? detailWin : detailLoss,
+    });
   }
 
   async function startSession() {
@@ -387,6 +532,7 @@
       words = j.words;
       revealed = {};
       revealedBy = {};
+      spymasterClueFitByIndex = {};
       bluesThisTurn = 0;
       if (humanRole === "spymaster") {
         if (!validateKeyAssignment(j.assignment)) {
@@ -409,7 +555,7 @@
       } else {
         phase = "needHumanClue";
         setStatus(
-          "Blue spymaster — enter your clue and number. <span class=\"cn-tag cn-tag--blue\">Gemini</span> plays operative. Red uses a fast local sim."
+          "Blue spymaster — same <strong>themed 9 + 16 filler</strong> boards as operative. Enter your clue and number; <span class=\"cn-tag cn-tag--blue\">Gemini</span> plays operative. Red uses a fast local sim."
         );
         showHumanCluePanel();
         if (els.humanClue) els.humanClue.value = "";
@@ -451,8 +597,9 @@
       guessesLeft = res.number;
       setClue(`${res.clue} · ${res.number}`);
       updateOperativeSpoiler(Array.isArray(res.spoilerWords) ? res.spoilerWords : null);
+      const clueLabel = res.openerPreset ? "Blue clue (curated)" : "Blue clue (AI)";
       appendGameLog(
-        `<span class="cn-log__label">Blue clue (AI)</span> <strong>${res.clue} ${res.number}</strong> · allowance <strong>${guessesLeft}</strong> guesses. Turn ends after <strong>${currentNumber}</strong> correct blues or on a wrong color.`
+        `<span class="cn-log__label">${clueLabel}</span> <strong>${res.clue} ${res.number}</strong> · allowance <strong>${guessesLeft}</strong> guesses. Turn ends after <strong>${currentNumber}</strong> correct blues or on a wrong color.`
       );
       setStatus(
         `Your clue: <strong>${res.clue} ${res.number}</strong>. You may guess up to <strong>${guessesLeft}</strong> words this turn (same as the clue number). Turn also ends after <strong>${currentNumber}</strong> correct blues or on a wrong color.`
@@ -471,7 +618,12 @@
     if (!token || phase !== "needHumanClue" || humanRole !== "spymaster") return;
 
     const rawClue = String(els.humanClue?.value || "").trim();
-    const clue = rawClue.toUpperCase().replace(/[^A-Z]/g, "");
+    const clue = rawClue
+      .normalize("NFD")
+      .replace(/\p{M}/gu, "")
+      .replace(/Ñ/gi, "N")
+      .toUpperCase()
+      .replace(/[^A-Z]/g, "");
     const num = parseInt(String(els.humanNumber?.value ?? "1"), 10);
 
     if (clue === "PASS" && num === 0) {
@@ -499,9 +651,18 @@
         clue: clue === "PASS" ? "PASS" : clue,
         number: num,
       });
-      revealed = normalizeRevealed(res.revealed);
-      applyStepsToRevealedBy(res.steps, "blue");
-      fillRevealedByForNewTiles(prevRevealed, revealed, "blue");
+
+      if (res.clue === "PASS" || res.number === 0) {
+        spymasterClueFitByIndex = {};
+        revealed = normalizeRevealed(res.revealed);
+        applyStepsToRevealedBy(res.steps, "blue");
+        fillRevealedByForNewTiles(prevRevealed, revealed, "blue");
+      } else {
+        setSpymasterClueFitFromOperativeScores(res.operativeScores);
+        setStatus("Blue operative scored every card vs your clue; flipping highest first…");
+        renderBoard();
+        await animateSpymasterBlueSteps(prevRevealed, res);
+      }
 
       let prefix = "";
       if (res.clue === "PASS" || res.number === 0) {
@@ -524,23 +685,33 @@
             : "—";
         const warn =
           res.planIncomplete === true
-            ? " · <em>warning: model did not return a full guess list after retries</em>"
+            ? " · <em>warning: model did not return a full score list after retries</em>"
+            : "";
+        const scoreNote =
+          Array.isArray(res.operativeScores) && res.operativeScores.length
+            ? " · ranked <strong>all unrevealed</strong> by clue fit (0–100), flips follow that order (within turn rules)"
             : "";
         appendGameLog(
-          `<span class="cn-log__label">Blue (Gemini operative)</span> · your clue <strong>${res.clue} ${res.number}</strong> · allowance <strong>${allowance}</strong> guesses · planned list length <strong>${planned}</strong> · cards flipped <strong>${played}</strong>${warn}: ${seq}`
+          `<span class="cn-log__label">Blue (Gemini operative)</span> · your clue <strong>${res.clue} ${res.number}</strong> · allowance <strong>${allowance}</strong> guesses · scored cells <strong>${planned}</strong> · cards flipped <strong>${played}</strong>${scoreNote}${warn}: ${seq}`
         );
         prefix = `Your clue: <strong>${res.clue} ${res.number}</strong> · allowance <strong>${allowance}</strong> guesses.`;
         if (res.steps && res.steps.length) {
-          prefix += " Blue guessed: ";
-          prefix += res.steps.map((s) => `${s.word} (${s.role})`).join(" → ");
+          prefix += " Blue flipped (high clue-fit first): ";
+          prefix += res.steps
+            .map((s) =>
+              s.score != null && Number.isFinite(Number(s.score))
+                ? `${s.word} (${s.role}, ${s.score})`
+                : `${s.word} (${s.role})`
+            )
+            .join(" → ");
         } else {
-          prefix += " (no valid guesses.)";
+          prefix += " (no flips this turn.)";
         }
       }
 
       if (res.gameOver) {
         setStatus(prefix);
-        endGame(res.winner);
+        endGame(res.winner, res.winReason, res.fullReveal);
         return;
       }
 
@@ -559,10 +730,10 @@
     if (!els.intro) return;
     if (humanRole === "operative") {
       els.intro.innerHTML =
-        "You are the <strong>blue operative</strong>. No spymaster key. <strong>Bright blue border</strong> = blue guessed that card; <strong>bright red border</strong> = red guessed it. After clue <strong>N</strong>, you may guess up to <strong>N</strong> words. Red is simulated and never picks the assassin.";
+        "You are the <strong>blue operative</strong>. Each board pairs a <strong>9-word blue theme</strong> with <strong>16 fixed filler</strong> words (shuffled). Up to <strong>five curated clues</strong> are tried in order; if any word tied to the next curated clue is already revealed, that clue is skipped and the next is used. When no curated clues remain, <strong>Gemini</strong> takes over. <strong>Bright blue border</strong> = blue guessed that card; <strong>bright red border</strong> = red guessed it. After clue <strong>N</strong>, you may guess up to <strong>N</strong> words. Red is simulated and never picks the assassin.";
     } else {
       els.intro.innerHTML =
-        "You are the <strong>blue spymaster</strong>. The key: blue, red, tan (neutral), dark (assassin). A revealed word has a <strong>bright blue border</strong> if blue flipped it or <strong>bright red</strong> if red flipped it. Your number <strong>N</strong> is how many guesses blue gets this turn. Submit clue + number (or <strong>PASS</strong> + <strong>0</strong>). Gemini plays blue operative. Red sim never picks the assassin.";
+        "You are the <strong>blue spymaster</strong>. Boards use the same <strong>random themed nine blues + paired fillers</strong> as operative mode (shuffled positions). The key: blue, red, tan (neutral), dark (assassin). A revealed word has a <strong>bright blue border</strong> if blue flipped it or <strong>bright red</strong> if red flipped it. Your number <strong>N</strong> is how many guesses blue gets this turn. Submit clue + number (or <strong>PASS</strong> + <strong>0</strong>). <strong>Gemini</strong> scores every unrevealed word vs your clue (0–100) and flips from highest score down (within turn rules). Red sim never picks the assassin.";
     }
   }
 
@@ -577,8 +748,14 @@
   function init() {
     if (!els.board) return;
     bindBoardClicks();
-    els.overlay.addEventListener("click", () => {
+    els.overlay?.addEventListener("click", () => {
       if (els.overlay.classList.contains("cn-overlay--dismiss")) hideOverlay();
+    });
+
+    els.cheatToggle?.addEventListener("click", () => {
+      if (humanRole !== "operative" || !els.spoilerPanel || !els.spoilerWords) return;
+      if (!els.spoilerWords.textContent.trim()) return;
+      setCheatPanelOpen(els.spoilerPanel.hidden);
     });
 
     document.getElementById("cn-role-operative")?.addEventListener("click", () => {

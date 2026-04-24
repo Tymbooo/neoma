@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Codenames vs AI — Exprobable</title>
+  <title>Codenames vs AI — Neoma</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../css/styles.css?v=cn5" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700&family=JetBrains+Mono:wght@500&family=Koh+Santepheap:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/styles.css?v=mqvis2" />
 </head>
 <body class="game-page game-page--codenames">
   <div class="home-bg" aria-hidden="true"></div>
@@ -22,11 +22,11 @@
         <div class="cn-role-btns">
           <button type="button" class="cn-btn cn-btn--role" id="cn-role-operative">
             <strong>Operative</strong>
-            <span class="cn-role-desc">Gemini gives you clues; you tap words on the board.</span>
+            <span class="cn-role-desc">Paired blues + fillers; five curated clues first, then Gemini; you tap the board.</span>
           </button>
           <button type="button" class="cn-btn cn-btn--role" id="cn-role-spymaster">
             <strong>Spymaster</strong>
-            <span class="cn-role-desc">You type clue + number; Gemini plays blue operative. Red uses a fast local sim (no API).</span>
+            <span class="cn-role-desc">Same themed boards as operative; you clue + number; Gemini plays blue. Red sim (no API).</span>
           </button>
         </div>
       </section>
@@ -35,11 +35,6 @@
         <p class="cn-intro" id="cn-intro"></p>
         <p class="cn-clue" id="cn-clue" aria-live="polite">—</p>
         <div id="cn-log" class="cn-log" aria-label="Game log" hidden></div>
-
-        <aside id="cn-spoiler" class="cn-spoiler" hidden aria-label="Spoiler: words AI spymaster intended">
-          <p class="cn-spoiler__label">AI spymaster intended (cheat)</p>
-          <p id="cn-spoiler-words" class="cn-spoiler__words"></p>
-        </aside>
 
         <div id="cn-human-clue-panel" class="cn-human-clue-panel" hidden>
           <p class="cn-human-clue-title">Your clue for blue</p>
@@ -56,10 +51,25 @@
           <button type="button" class="cn-btn cn-btn--primary" id="cn-btn-human-clue">Submit clue</button>
         </div>
 
-        <div id="cn-board" class="cn-board" role="grid" aria-label="Codenames board"></div>
+        <div class="cn-board-wrap">
+          <div id="cn-board" class="cn-board" role="grid" aria-label="Codenames board"></div>
+          <button
+            type="button"
+            id="cn-cheat-toggle"
+            class="cn-cheat-toggle"
+            hidden
+            aria-expanded="false"
+            aria-controls="cn-spoiler"
+            aria-label="Show or hide linked words"
+          ></button>
+        </div>
+        <aside id="cn-spoiler" class="cn-spoiler" hidden aria-label="Words the clue was meant to suggest">
+          <p id="cn-spoiler-label" class="cn-spoiler__label">Linked words (cheat)</p>
+          <p id="cn-spoiler-words" class="cn-spoiler__words"></p>
+        </aside>
         <p class="cn-status" id="cn-status" aria-live="polite"></p>
         <p class="cn-footnote">
-          <strong>Live site (exprobable / Vercel):</strong> add <code>GEMINI_API_KEY</code> in
+          <strong>Live site (neoma / Vercel):</strong> add <code>GEMINI_API_KEY</code> in
           <strong>Vercel → Project → Settings → Environment Variables</strong> (check <strong>Production</strong>), paste your Google AI Studio key, Save, then <strong>Redeploy</strong>.
           <code>.env.local</code> is only for your computer — it is not deployed.
           <strong>Local:</strong> <code>npx vercel dev</code> reads <code>.env.local</code>.
@@ -75,6 +85,7 @@
     </div>
   </div>
 
-  <script src="../js/codenames.js?v=10"></script>
+  <script src="../js/game-result.js?v=1"></script>
+  <script src="../js/codenames.js?v=21"></script>
 </body>
 </html>

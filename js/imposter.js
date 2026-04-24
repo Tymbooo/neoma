@@ -90,6 +90,27 @@
     inputRow.hidden = true;
     clueInput.disabled = true;
     btnSubmitClue.disabled = true;
+    void window.GameResult?.show?.({
+      won: true,
+      title: "You won!",
+      detail: "You said the secret word as your clue — Imposter wins.",
+    });
+  }
+
+  /**
+   * @param {typeof state} st
+   * @param {Record<string, unknown>} voteJ
+   * @param {Record<string, unknown> | null} redeemJ
+   */
+  function humanWonImposter(st, voteJ, redeemJ) {
+    if (!st) return false;
+    if (redeemJ) {
+      if (st.youAreImposter) return !!redeemJ.imposterStoleWin;
+      return !redeemJ.imposterStoleWin;
+    }
+    const innocentsWin = !!voteJ.innocentsWin;
+    if (st.youAreImposter) return !innocentsWin;
+    return innocentsWin;
   }
 
   function showScreen(which) {
@@ -406,6 +427,12 @@
     resultCard.appendChild(details);
     pendingRedeemVote = null;
     showScreen("result");
+    const won = humanWonImposter(state, voteJ, redeemJ);
+    void window.GameResult?.show?.({
+      won,
+      title: won ? "You won!" : "You lose",
+      detail: lead,
+    });
   }
 
   document.getElementById("imp-btn-start").addEventListener("click", async () => {

@@ -64,6 +64,7 @@ module.exports = async (req, res) => {
       revealed,
       gameOver: false,
       winner: null,
+      winReason: null,
       redSimulated: true,
     });
     return;

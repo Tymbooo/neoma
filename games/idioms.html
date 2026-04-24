@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Spanish idioms — Neoma</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700&family=JetBrains+Mono:wght@500&family=Koh+Santepheap:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/styles.css?v=mqvis2" />
+</head>
+<body class="game-page game-page--idioms">
+  <div class="home-bg" aria-hidden="true"></div>
+  <header class="game-topbar">
+    <a class="back-link" href="../index.html">← All games</a>
+    <h1 class="game-title">Spanish idioms</h1>
+  </header>
+  <main class="game-shell game-shell--idioms">
+    <div id="idioms-intro" class="af-panel">
+      <p class="af-copy">
+        Each round shows a <strong>Spanish</strong> saying. Pick the best <strong>English</strong> meaning (three other choices are decoys, often other sayings’ meanings). <strong>Three</strong> questions — get <strong>all three</strong> right to win.
+      </p>
+      <button type="button" class="af-btn af-btn--primary" id="idioms-begin">Begin round</button>
+    </div>
+    <div id="idioms-play" class="af-panel" hidden>
+      <p id="idioms-quote" class="idioms-quote" aria-live="polite"></p>
+      <div id="idioms-choices" class="idioms-choices"></div>
+      <p id="idioms-progress" class="af-copy"></p>
+      <p id="idioms-result" class="idioms-result" hidden role="status"></p>
+    </div>
+  </main>
+  <script src="../js/game-result.js?v=1"></script>
+  <script type="module" src="../js/idioms.js?v=4"></script>
+</body>
+</html>

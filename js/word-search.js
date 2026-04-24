@@ -1,6 +1,5 @@
 (function () {
   const WORDS = [
-    "EXPROBABLE",
     "HOSTINGER",
     "SEARCH",
     "PUZZLE",
@@ -12,16 +11,6 @@
 
   /** Multiple choice: correct meaning + three distractors per grid word */
   const QUIZ = {
-    EXPROBABLE: {
-      question: "Which meaning fits this (site) name best?",
-      correct:
-        "Something highly likely — like “exponential” meets “probable”",
-      wrong: [
-        "A legal contract clause only used in the EU",
-        "A technical term for CPU cache size",
-        "A file extension for 3D models",
-      ],
-    },
     HOSTINGER: {
       question: "Hostinger is best known as:",
       correct: "A company that provides web hosting and domains",
@@ -78,7 +67,7 @@
       ],
     },
     DOMAIN: {
-      question: "A domain (like exprobable.com) is:",
+      question: "A domain (like neoma.com) is:",
       correct: "A human-readable name that points to a place on the internet",
       wrong: [
         "The physical data cable in your wall",
@@ -283,12 +272,20 @@
       listItems.set(w, li);
     }
 
+    let winRewardShown = false;
     function updateProgress() {
       const n = foundWords.size;
       const t = wordSet.size;
       progressEl.textContent = `Found ${n} / ${t} words`;
       if (n >= t && t > 0) {
         winEl.classList.add("visible");
+        if (!winRewardShown) {
+          winRewardShown = true;
+          void window.GameResult?.show?.({
+            won: true,
+            detail: "You found every word.",
+          });
+        }
       }
     }
 

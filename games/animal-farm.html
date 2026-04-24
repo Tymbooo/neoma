@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Animal Farm — Neoma</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700&family=JetBrains+Mono:wght@500&family=Koh+Santepheap:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/styles.css?v=mqvis2" />
+</head>
+<body class="game-page game-page--animal-farm">
+  <div class="home-bg" aria-hidden="true"></div>
+  <header class="game-topbar">
+    <a class="back-link" href="../index.html">← All games</a>
+    <h1 class="game-title">Animal Farm</h1>
+  </header>
+  <main class="game-shell game-shell--af">
+    <div class="af-panel">
+      <p class="af-copy">
+        The game picks a random animal. Each round, choose <strong>one</strong> of up to eight questions.
+        The game answers <strong>Yes</strong> or <strong>No</strong> truthfully. After up to ten rounds (or when only one animal fits),
+        guess the animal.
+      </p>
+      <button type="button" class="af-btn af-btn--primary" id="af-start">Start new game</button>
+    </div>
+
+    <div id="af-pick-phase" class="af-panel" hidden>
+      <h2>Round <span id="af-round">1</span> — pick a question</h2>
+      <p class="af-copy">Still possible: <strong id="af-pool-size">0</strong> animals.</p>
+      <div id="af-question-grid" class="af-question-grid"></div>
+    </div>
+
+    <div id="af-answer-phase" class="af-panel" hidden>
+      <h2>Answer</h2>
+      <p id="af-chosen-text" class="af-copy"></p>
+      <p id="af-reveal" class="af-reveal" role="status"></p>
+      <div class="af-row af-row--split">
+        <button type="button" class="af-btn" id="af-back-to-pick">Choose a different question</button>
+        <button type="button" class="af-btn af-btn--primary" id="af-next-round">Next round</button>
+      </div>
+    </div>
+
+    <div id="af-final-phase" class="af-panel af-final" hidden>
+      <h2>Final guess</h2>
+      <p class="af-copy">Type the animal’s name (use the list’s spelling).</p>
+      <input id="af-guess" type="text" list="af-animals" autocomplete="off" placeholder="e.g. Lion" />
+      <datalist id="af-animals"></datalist>
+      <div class="af-row">
+        <button type="button" class="af-btn af-btn--primary" id="af-submit-guess">Submit guess</button>
+        <button type="button" class="af-btn" id="af-reset">New game</button>
+      </div>
+      <p id="af-final-msg" class="af-copy" role="status"></p>
+      <div id="af-answered-log" class="af-log"></div>
+    </div>
+  </main>
+  <script type="module" src="../js/animal-farm.js?v=2"></script>
+</body>
+</html>

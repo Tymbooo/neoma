@@ -1,5 +1,6 @@
 require("../../lib/loadEnv")();
 const { verifyToken, parseRevealed } = require("../../lib/state");
+const { normCodeWord } = require("../../lib/codenamesWordNorm");
 const {
   buildSpymasterPrompt,
   buildClueDominanceVerifyPrompt,
@@ -8,6 +9,10 @@ const {
   SCHEMA_CODENAMES_CLUE_DOMINANCE,
 } = require("../../lib/gemini");
 const { clueValid } = require("../../lib/clueValidate");
+
+function isRevealedEmpty(revealed) {
+  return Object.keys(revealed).length === 0;
+}
 
 function verifyRevealedMap(assignment, revealed) {
   for (const [k, r] of Object.entries(revealed)) {
@@ -55,6 +60,43 @@ function validateTargetIndices(assignment, revealed, team, number, clue, targetI
   return { ok: true, indices: Array.from(seen) };
 }
 
+/**
+ * Preset ladder: targets are blue words (stable across shuffles). Exhausted if any target is revealed.
+ * @returns {{ clue: string, number: number, indices: number[], spoilerWords: string[] } | null}
+ */
+function resolveOperativePresetEntry(words, assignment, revealed, entry) {
+  const clue = normCodeWord(entry.clue || "");
+  const number = parseInt(String(entry.number), 10);
+  const targets = Array.isArray(entry.targets) ? entry.targets : [];
+  if (number < 2 || number > 4 || targets.length !== number) return null;
+  if (!/^[A-Z]{2,24}$/.test(clue) || !clueValid(clue, words)) return null;
+  const indices = [];
+  for (const tw of targets) {
+    const T = normCodeWord(tw);
+    let found = -1;
+    for (let i = 0; i < 25; i++) {
+      if (normCodeWord(words[i]) === T && assignment[i] === "blue") {
+        if (found >= 0) return null;
+        found = i;
+      }
+    }
+    if (found < 0) return null;
+    if (revealed[found]) return null;
+    indices.push(found);
+  }
+  if (new Set(indices).size !== indices.length) return null;
+  return { clue, number, indices, spoilerWords: indices.map((i) => words[i]) };
+}
+
+function pickFirstUsableOperativePreset(words, assignment, revealed, presetClues) {
+  if (!Array.isArray(presetClues) || !presetClues.length) return null;
+  for (const entry of presetClues) {
+    const r = resolveOperativePresetEntry(words, assignment, revealed, entry);
+    if (r) return r;
+  }
+  return null;
+}
+
 async function readBody(req) {
   if (req.body && typeof req.body === "object" && !Buffer.isBuffer(req.body)) {
     return req.body;
@@ -97,11 +139,47 @@ module.exports = async (req, res) => {
     res.status(400).json({ error: "Invalid game token" });
     return;
   }
-  const { words, assignment } = game;
+  const { words, assignment, firstClue, presetClues } = game;
   const revealed = parseRevealed(revealedRaw || {});
   if (!verifyRevealedMap(assignment, revealed)) {
     res.status(400).json({ error: "Revealed state does not match game" });
     return;
+  }
+
+  if (
+    team === "blue" &&
+    Array.isArray(presetClues) &&
+    presetClues.length > 0 &&
+    teamWordsLeft(assignment, revealed, team) > 0
+  ) {
+    const hit = pickFirstUsableOperativePreset(words, assignment, revealed, presetClues);
+    if (hit) {
+      res.status(200).json({
+        clue: hit.clue,
+        number: hit.number,
+        spoilerWords: hit.spoilerWords,
+        openerPreset: true,
+      });
+      return;
+    }
+  }
+
+  if (
+    team === "blue" &&
+    firstClue &&
+    isRevealedEmpty(revealed) &&
+    teamWordsLeft(assignment, revealed, team) > 0
+  ) {
+    const clue = normCodeWord(firstClue.clue || "");
+    const number = parseInt(firstClue.number, 10);
+    if (/^[A-Z]{2,24}$/.test(clue) && number >= 2 && number <= 4 && clueValid(clue, words)) {
+      const targets = validateTargetIndices(assignment, revealed, team, number, clue, firstClue.targetIndices);
+      if (targets.ok) {
+        const spoilerWords = targets.indices.map((i) => words[i]);
+        res.status(200).json({ clue, number, spoilerWords, openerPreset: true });
+        return;
+      }
+    }
   }
 
   if (teamWordsLeft(assignment, revealed, team) === 0) {
@@ -123,9 +201,7 @@ module.exports = async (req, res) => {
     try {
       const prompt = buildSpymasterPrompt(team, words, assignment, revealed);
       const out = await generateJsonPrompt(prompt, SCHEMA_CODENAMES_CLUE);
-      const clue = String(out.clue || "")
-        .toUpperCase()
-        .replace(/[^A-Z]/g, "");
+      const clue = normCodeWord(out.clue || "");
       const number = parseInt(out.number, 10);
       if (clue === "PASS" && number === 0) {
         res.status(200).json({ clue: "PASS", number: 0, spoilerWords: [] });
@@ -148,7 +224,7 @@ module.exports = async (req, res) => {
         lastErr = "Model targetIndices must match number and unrevealed team cards";
         continue;
       }
-      const teamLabel = team === "blue" ? "BLUE" : "RED";
+      const teamLabel = team === "blue" ? "AZUL" : "ROJO";
       const verifyPrompt = buildClueDominanceVerifyPrompt(
         words,
         assignment,

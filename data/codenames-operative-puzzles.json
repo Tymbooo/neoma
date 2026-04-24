@@ -1,0 +1,1490 @@
+[
+  {
+    "blues": [
+      "MARFIL",
+      "COMPAS",
+      "ARANA",
+      "PASTEL",
+      "BERMUDAS",
+      "ORNITORRINCO",
+      "UNICORNIO",
+      "KIWI",
+      "GOZO"
+    ],
+    "fillers": [
+      "ACEITE",
+      "ANILLO",
+      "BICHO",
+      "CAMBIO",
+      "CENTRO",
+      "CONCIERTO",
+      "CUELLO",
+      "DON",
+      "FARO",
+      "GOLFO",
+      "HIELO",
+      "JUICIO",
+      "MAGIA",
+      "MICRO",
+      "NAVE",
+      "ORDEN"
+    ],
+    "presetClues": [
+      {
+        "clue": "GLORIA",
+        "number": 3,
+        "targets": [
+          "PASTEL",
+          "ORNITORRINCO",
+          "UNICORNIO"
+        ]
+      },
+      {
+        "clue": "MANANA",
+        "number": 2,
+        "targets": [
+          "KIWI",
+          "BERMUDAS"
+        ]
+      },
+      {
+        "clue": "GONDOLA",
+        "number": 2,
+        "targets": [
+          "MARFIL",
+          "ARANA"
+        ]
+      },
+      {
+        "clue": "LAGONESS",
+        "number": 2,
+        "targets": [
+          "COMPAS",
+          "UNICORNIO"
+        ]
+      },
+      {
+        "clue": "VIDRIO",
+        "number": 2,
+        "targets": [
+          "GOZO",
+          "BERMUDAS"
+        ]
+      }
+    ]
+  },
+  {
+    "blues": [
+      "COPA",
+      "GATO",
+      "ESTADO",
+      "BOTA",
+      "NAVE",
+      "DAMA",
+      "INDICE",
+      "MINA",
+      "TRAMA"
+    ],
+    "fillers": [
+      "BALLENA",
+      "CADENA",
+      "CASINO",
+      "COLERA",
+      "CUELLO",
+      "EGIPTO",
+      "FLAUTA",
+      "GRECIA",
+      "IGLESIA",
+      "LIMA",
+      "MARCHA",
+      "MONITOR",
+      "NUEVAYORK",
+      "PASO",
+      "PISTA",
+      "RASCACIELOS"
+    ],
+    "presetClues": [
+      {
+        "clue": "POLICIA",
+        "number": 2,
+        "targets": [
+          "COPA",
+          "INDICE"
+        ]
+      },
+      {
+        "clue": "CHOZA",
+        "number": 3,
+        "targets": [
+          "GATO",
+          "DAMA",
+          "MINA"
+        ]
+      },
+      {
+        "clue": "MIELO",
+        "number": 2,
+        "targets": [
+          "NAVE",
+          "TRAMA"
+        ]
+      },
+      {
+        "clue": "BERLIN",
+        "number": 2,
+        "targets": [
+          "ESTADO",
+          "MINA"
+        ]
+      },
+      {
+        "clue": "CONTRABANDISTA",
+        "number": 2,
+        "targets": [
+          "BOTA",
+          "ESTADO"
+        ]
+      }
+    ]
+  },
+  {
+    "blues": [
+      "COLUMNA",
+      "CINTA",
+      "MANGA",
+      "BOMBA",
+      "MISIL",
+      "EGIPTO",
+      "CANAL",
+      "ARCO",
+      "SOBRE"
+    ],
+    "fillers": [
+      "CARAVANA",
+      "COCO",
+      "CUBO",
+      "DON",
+      "FIGURA",
+      "GRECIA",
+      "IMAN",
+      "LIMUSINA",
+      "MEDICO",
+      "MUERTE",
+      "OLIMPO",
+      "PELICULA",
+      "PLOMO",
+      "REY",
+      "SUBMARINISTA",
+      "VACIO"
+    ],
+    "presetClues": [
+      {
+        "clue": "LAPIZ",
+        "number": 2,
+        "targets": [
+          "COLUMNA",
+          "CANAL"
+        ]
+      },
+      {
+        "clue": "SIRENA",
+        "number": 3,
+        "targets": [
+          "MANGA",
+          "ARCO",
+          "EGIPTO"
+        ]
+      },
+      {
+        "clue": "TEATRO",
+        "number": 2,
+        "targets": [
+          "BOMBA",
+          "CANAL"
+        ]
+      },
+      {
+        "clue": "PILOTO",
+        "number": 2,
+        "targets": [
+          "MISIL",
+          "ARCO"
+        ]
+      },
+      {
+        "clue": "PUNTO",
+        "number": 2,
+        "targets": [
+          "SOBRE",
+          "EGIPTO"
+        ]
+      }
+    ]
+  },
+  {
+    "blues": [
+      "ANTARTIDA",
+      "PUERTO",
+      "PENA",
+      "CARGA",
+      "FLECHA",
+      "RESERVA",
+      "BANDA",
+      "POTRO",
+      "ESCORPION"
+    ],
+    "fillers": [
+      "CORTE",
+      "DIARIO",
+      "ETIQUETA",
+      "GOMA",
+      "HORCA",
+      "LIBRA",
+      "MARFIL",
+      "MOSCU",
+      "OLA",
+      "PELICULA",
+      "PLUMA",
+      "SABLE",
+      "TAPA",
+      "VIENTO",
+      "ESPEJO",
+      "AGUA"
+    ],
+    "presetClues": [
+      {
+        "clue": "VENENO",
+        "number": 3,
+        "targets": [
+          "ANTARTIDA",
+          "BANDA",
+          "CARGA"
+        ]
+      },
+      {
+        "clue": "MORTERO",
+        "number": 2,
+        "targets": [
+          "PENA",
+          "RESERVA"
+        ]
+      },
+      {
+        "clue": "BOTELLA",
+        "number": 2,
+        "targets": [
+          "ESCORPION",
+          "FLECHA"
+        ]
+      },
+      {
+        "clue": "NINJA",
+        "number": 2,
+        "targets": [
+          "PUERTO",
+          "FLECHA"
+        ]
+      },
+      {
+        "clue": "DOLOR",
+        "number": 2,
+        "targets": [
+          "POTRO",
+          "BANDA"
+        ]
+      }
+    ]
+  },
+  {
+    "blues": [
+      "CUELLO",
+      "ENANO",
+      "TORTA",
+      "TESTIGO",
+      "PEKIN",
+      "OSO",
+      "PLUMA",
+      "INDIA",
+      "SUERTE"
+    ],
+    "fillers": [
+      "EMBAJADA",
+      "FUENTE",
+      "GUSANO",
+      "JUICIO",
+      "MANGA",
+      "MODELO",
+      "NUDO",
+      "PAVO",
+      "POLO",
+      "ROSA",
+      "TELESCOPIO",
+      "ZAPATO",
+      "DUDA",
+      "AGUJERO",
+      "BALA",
+      "CAJA"
+    ],
+    "presetClues": [
+      {
+        "clue": "MOTOR",
+        "number": 3,
+        "targets": [
+          "ENANO",
+          "PEKIN",
+          "SUERTE"
+        ]
+      },
+      {
+        "clue": "ESTADIO",
+        "number": 2,
+        "targets": [
+          "TORTA",
+          "OSO"
+        ]
+      },
+      {
+        "clue": "GRANADA",
+        "number": 2,
+        "targets": [
+          "TESTIGO",
+          "SUERTE"
+        ]
+      },
+      {
+        "clue": "ALGODON",
+        "number": 2,
+        "targets": [
+          "CUELLO",
+          "PEKIN"
+        ]
+      },
+      {
+        "clue": "ABOGADO",
+        "number": 2,
+        "targets": [
+          "INDIA",
+          "SUERTE"
+        ]
+      }
+    ]
+  },
+  {
+    "blues": [
+      "DISCO",
+      "FAMA",
+      "DON",
+      "RADIO",
+      "FURGONETA",
+      "LASER",
+      "CORAZON",
+      "ZANAHORIA",
+      "FICHA"
+    ],
+    "fillers": [
+      "GRADO",
+      "IMAN",
+      "LLAMA",
+      "MEXICO",
+      "NOCHE",
+      "PAPEL",
+      "PISTOLA",
+      "REVOLUCION",
+      "SUBMARINISTA",
+      "VENUS",
+      "ESPEJO",
+      "AGUILA",
+      "AZTECA",
+      "CAJA",
+      "CHOQUE",
+      "CORRIENTE"
+    ],
+    "presetClues": [
+      {
+        "clue": "CHULETA",
+        "number": 2,
+        "targets": [
+          "FAMA",
+          "RADIO"
+        ]
+      },
+      {
+        "clue": "ALPES",
+        "number": 2,
+        "targets": [
+          "DISCO",
+          "FURGONETA"
+        ]
+      },
+      {
+        "clue": "PELOTON",
+        "number": 3,
+        "targets": [
+          "DON",
+          "LASER",
+          "CORAZON"
+        ]
+      },
+      {
+        "clue": "EUROPA",
+        "number": 2,
+        "targets": [
+          "ZANAHORIA",
+          "FICHA"
+        ]
+      },
+      {
+        "clue": "LONDRES",
+        "number": 2,
+        "targets": [
+          "FICHA",
+          "CORAZON"
+        ]
+      }
+    ]
+  },
+  {
+    "blues": [
+      "PLANTA",
+      "REINA",
+      "BOSQUE",
+      "MARCHA",
+      "PLAYA",
+      "ALIANZA",
+      "CABINA",
+      "SERPIENTE",
+      "CIDRA"
+    ],
+    "fillers": [
+      "JARRA",
+      "MALTA",
+      "MODULO",
+      "OJO",
+      "PERRO",
+      "PUENTE",
+      "SENAL",
+      "TRONCO",
+      "BRUMA",
+      "AFRICA",
+      "ATLANTIDA",
+      "CABALLO",
+      "CERVANTES",
+      "CORREDOR",
+      "DIENTE",
+      "FIESTA"
+    ],
+    "presetClues": [
+      {
+        "clue": "TRIGO",
+        "number": 4,
+        "targets": [
+          "PLANTA",
+          "BOSQUE",
+          "CIDRA",
+          "CABINA"
+        ]
+      },
+      {
+        "clue": "PARACAIDAS",
+        "number": 2,
+        "targets": [
+          "ALIANZA",
+          "SERPIENTE"
+        ]
+      },
+      {
+        "clue": "ESPIA",
+        "number": 2,
+        "targets": [
+          "PLAYA",
+          "CABINA"
+        ]
+      },
+      {
+        "clue": "PULSO",
+        "number": 2,
+        "targets": [
+          "REINA",
+          "MARCHA"
+        ]
+      },
+      {
+        "clue": "CUARTO",
+        "number": 2,
+        "targets": [
+          "PLANTA",
+          "MARCHA"
+        ]
+      }
+    ]
+  },
+  {
+    "blues": [
+      "TABLETA",
+      "AIRE",
+      "MANDO",
+      "CUBIERTA",
+      "SATURNO",
+      "CENTAURO",
+      "MONO",
+      "MANZANA",
+      "RASCACIELOS"
+    ],
+    "fillers": [
+      "MEDICO",
+      "NILO",
+      "PANTALLA",
+      "PLANO",
+      "ROJO",
+      "TESTIGO",
+      "MANTA",
+      "SUENO",
+      "ARANA",
+      "BOTON",
+      "CASINO",
+      "CORNETA",
+      "DIARIO",
+      "FIESTA",
+      "GUANTE",
+      "JUDIA"
+    ],
+    "presetClues": [
+      {
+        "clue": "PALA",
+        "number": 3,
+        "targets": [
+          "MANDO",
+          "MANZANA",
+          "TABLETA"
+        ]
+      },
+      {
+        "clue": "RULETA",
+        "number": 2,
+        "targets": [
+          "AIRE",
+          "CENTAURO"
+        ]
+      },
+      {
+        "clue": "BOLSA",
+        "number": 2,
+        "targets": [
+          "CUBIERTA",
+          "MONO"
+        ]
+      },
+      {
+        "clue": "CLASE",
+        "number": 2,
+        "targets": [
+          "RASCACIELOS",
+          "CENTAURO"
+        ]
+      },
+      {
+        "clue": "MURO",
+        "number": 2,
+        "targets": [
+          "SATURNO",
+          "TABLETA"
+        ]
+      }
+    ]
+  },
+  {
+    "blues": [
+      "MEXICO",
+      "CABALLERO",
+      "GUARDIA",
+      "PUNTA",
+      "PORTERO",
+      "ESTADIO",
+      "COMETA",
+      "MERCURIO",
+      "GOLPE"
+    ],
+    "fillers": [
+      "NUDO",
+      "PENDIENTE",
+      "PRIMA",
+      "SERPIENTE",
+      "VACIO",
+      "PELUCHE",
+      "AGUJA",
+      "BARRA",
+      "CANA",
+      "COCO",
+      "DESTINO",
+      "ESTUDIO",
+      "GRANO",
+      "JARRA",
+      "MANGA",
+      "MUELLE"
+    ],
+    "presetClues": [
+      {
+        "clue": "PLACA",
+        "number": 2,
+        "targets": [
+          "MEXICO",
+          "MERCURIO"
+        ]
+      },
+      {
+        "clue": "BARCO",
+        "number": 2,
+        "targets": [
+          "PORTERO",
+          "GUARDIA"
+        ]
+      },
+      {
+        "clue": "MORTERO",
+        "number": 2,
+        "targets": [
+          "PUNTA",
+          "COMETA"
+        ]
+      },
+      {
+        "clue": "ZARZA",
+        "number": 2,
+        "targets": [
+          "GOLPE",
+          "MERCURIO"
+        ]
+      },
+      {
+        "clue": "HELICOPTERO",
+        "number": 2,
+        "targets": [
+          "CABALLERO",
+          "ESTADIO"
+        ]
+      }
+    ]
+  },
+  {
+    "blues": [
+      "ANTORCHA",
+      "PARACAIDAS",
+      "EMPERADOR",
+      "LIBRA",
+      "MODULO",
+      "PINA",
+      "SOLDADO",
+      "CROMO",
+      "MANCHA"
+    ],
+    "fillers": [
+      "PILOTO",
+      "REGLA",
+      "TACO",
+      "NOPAL",
+      "FRIO",
+      "ARCO",
+      "CABALLERO",
+      "CHOQUE",
+      "CRUZ",
+      "ENANO",
+      "GENIO",
+      "IGLESIA",
+      "LUZ",
+      "MODELO",
+      "OPERA",
+      "PINGUINO"
+    ],
+    "presetClues": [
+      {
+        "clue": "MANGO",
+        "number": 4,
+        "targets": [
+          "PARACAIDAS",
+          "LIBRA",
+          "SOLDADO",
+          "CROMO"
+        ]
+      },
+      {
+        "clue": "TUBO",
+        "number": 2,
+        "targets": [
+          "PINA",
+          "MODULO"
+        ]
+      },
+      {
+        "clue": "YUGO",
+        "number": 2,
+        "targets": [
+          "MODULO",
+          "MANCHA"
+        ]
+      },
+      {
+        "clue": "VAMPIRO",
+        "number": 2,
+        "targets": [
+          "ANTORCHA",
+          "MODULO"
+        ]
+      },
+      {
+        "clue": "CUERNO",
+        "number": 2,
+        "targets": [
+          "EMPERADOR",
+          "LIBRA"
+        ]
+      }
+    ]
+  },
+  {
+    "blues": [
+      "HIELO",
+      "FRENTE",
+      "CAMPANA",
+      "COCHE",
+      "CODIGO",
+      "TIERRA",
+      "BATERIA",
+      "CAPA",
+      "CRUZ"
+    ],
+    "fillers": [
+      "RONDA",
+      "TIEMPO",
+      "POLVO",
+      "AGENTE",
+      "BALLENA",
+      "CAPITAL",
+      "CONEJO",
+      "DINOSAURIO",
+      "FOSO",
+      "HIERBA",
+      "LINEA",
+      "MINA",
+      "OBRA",
+      "PIE",
+      "RED",
+      "SUERTE"
+    ],
+    "presetClues": [
+      {
+        "clue": "NARANJA",
+        "number": 3,
+        "targets": [
+          "HIELO",
+          "FRENTE",
+          "CODIGO"
+        ]
+      },
+      {
+        "clue": "PANTALLA",
+        "number": 2,
+        "targets": [
+          "CAMPANA",
+          "BATERIA"
+        ]
+      },
+      {
+        "clue": "RUMOR",
+        "number": 2,
+        "targets": [
+          "CODIGO",
+          "COCHE"
+        ]
+      },
+      {
+        "clue": "CRESTA",
+        "number": 2,
+        "targets": [
+          "TIERRA",
+          "CRUZ"
+        ]
+      },
+      {
+        "clue": "HOLLYWOOD",
+        "number": 2,
+        "targets": [
+          "CAPA",
+          "TIERRA"
+        ]
+      }
+    ]
+  },
+  {
+    "blues": [
+      "GRIFO",
+      "TOPO",
+      "CIRCULO",
+      "CAMA",
+      "ROMA",
+      "COMPAS",
+      "BOLA",
+      "AZTECA",
+      "DIA"
+    ],
+    "fillers": [
+      "TOKIO",
+      "NOPAL",
+      "RIVAL",
+      "AFRICA",
+      "ANTORCHA",
+      "BLANCO",
+      "CAMPO",
+      "CHOQUE",
+      "COPA",
+      "DAMA",
+      "EMPERADOR",
+      "FLAUTA",
+      "GRANO",
+      "HOTEL",
+      "LASER",
+      "MANZANA"
+    ],
+    "presetClues": [
+      {
+        "clue": "FANTASMA",
+        "number": 3,
+        "targets": [
+          "CIRCULO",
+          "CAMA",
+          "GRIFO"
+        ]
+      },
+      {
+        "clue": "BANO",
+        "number": 3,
+        "targets": [
+          "TOPO",
+          "DIA",
+          "COMPAS"
+        ]
+      },
+      {
+        "clue": "PIRATA",
+        "number": 2,
+        "targets": [
+          "BOLA",
+          "AZTECA"
+        ]
+      },
+      {
+        "clue": "MAZO",
+        "number": 2,
+        "targets": [
+          "ROMA",
+          "CAMA"
+        ]
+      },
+      {
+        "clue": "PASTA",
+        "number": 2,
+        "targets": [
+          "DIA",
+          "COMPAS"
+        ]
+      }
+    ]
+  },
+  {
+    "blues": [
+      "CAMARA",
+      "GOLFO",
+      "AMERICA",
+      "CASCO",
+      "ALEMANIA",
+      "NILO",
+      "GIGANTE",
+      "SAHARA",
+      "HOSPITAL"
+    ],
+    "fillers": [
+      "MANTEL",
+      "ACEITE",
+      "ARANA",
+      "BOCA",
+      "CAMPO",
+      "CIENTIFICO",
+      "CORONA",
+      "DIAMANTE",
+      "ENFERMERA",
+      "FUENTE",
+      "GUERRA",
+      "ITALIA",
+      "LLAMA",
+      "MESA",
+      "MUERTE",
+      "OLIMPO"
+    ],
+    "presetClues": [
+      {
+        "clue": "SUERO",
+        "number": 3,
+        "targets": [
+          "CASCO",
+          "GOLFO",
+          "AMERICA"
+        ]
+      },
+      {
+        "clue": "LENGUA",
+        "number": 3,
+        "targets": [
+          "ALEMANIA",
+          "NILO",
+          "GIGANTE"
+        ]
+      },
+      {
+        "clue": "GOTA",
+        "number": 2,
+        "targets": [
+          "CAMARA",
+          "GOLFO"
+        ]
+      },
+      {
+        "clue": "ESTADO",
+        "number": 2,
+        "targets": [
+          "SAHARA",
+          "HOSPITAL"
+        ]
+      },
+      {
+        "clue": "BAILE",
+        "number": 2,
+        "targets": [
+          "HOSPITAL",
+          "ALEMANIA"
+        ]
+      }
+    ]
+  },
+  {
+    "blues": [
+      "SIERRA",
+      "TECLADO",
+      "NUEVAYORK",
+      "BERMUDAS",
+      "RAYO",
+      "SOPA",
+      "PINGUINO",
+      "CARRERA",
+      "MASCARA"
+    ],
+    "fillers": [
+      "ALEMANIA",
+      "BALA",
+      "CADENA",
+      "CEMENTERIO",
+      "CONCIERTO",
+      "CURA",
+      "EMPERADOR",
+      "FOSO",
+      "GUANTE",
+      "INDICE",
+      "LISTA",
+      "MESA",
+      "MUNECA",
+      "ORDEN",
+      "PERRO",
+      "PORTADA"
+    ],
+    "presetClues": [
+      {
+        "clue": "RABIA",
+        "number": 3,
+        "targets": [
+          "TECLADO",
+          "SOPA",
+          "MASCARA"
+        ]
+      },
+      {
+        "clue": "MILLONARIO",
+        "number": 2,
+        "targets": [
+          "NUEVAYORK",
+          "SIERRA"
+        ]
+      },
+      {
+        "clue": "VIGA",
+        "number": 2,
+        "targets": [
+          "PINGUINO",
+          "RAYO"
+        ]
+      },
+      {
+        "clue": "LUNA",
+        "number": 2,
+        "targets": [
+          "CARRERA",
+          "SIERRA"
+        ]
+      },
+      {
+        "clue": "LATIGO",
+        "number": 2,
+        "targets": [
+          "BERMUDAS",
+          "PINGUINO"
+        ]
+      }
+    ]
+  },
+  {
+    "blues": [
+      "VADO",
+      "ARCHIVO",
+      "REY",
+      "PRINCESA",
+      "CANTO",
+      "EXTRATERRESTRE",
+      "SUPERHEROE",
+      "CINTA",
+      "ORO"
+    ],
+    "fillers": [
+      "BOMBA",
+      "CARA",
+      "COCO",
+      "CUCHILLO",
+      "EGIPTO",
+      "FLECHA",
+      "GUANTE",
+      "INGLATERRA",
+      "LOMO",
+      "METRO",
+      "NILO",
+      "PALMA",
+      "PILOTO",
+      "PUERTO",
+      "SATURNO",
+      "TIERRA"
+    ],
+    "presetClues": [
+      {
+        "clue": "ANGEL",
+        "number": 4,
+        "targets": [
+          "ARCHIVO",
+          "REY",
+          "PRINCESA",
+          "EXTRATERRESTRE"
+        ]
+      },
+      {
+        "clue": "VIDA",
+        "number": 2,
+        "targets": [
+          "SUPERHEROE",
+          "CANTO"
+        ]
+      },
+      {
+        "clue": "FUEGO",
+        "number": 2,
+        "targets": [
+          "CINTA",
+          "ORO"
+        ]
+      },
+      {
+        "clue": "ENFERMEDAD",
+        "number": 2,
+        "targets": [
+          "CANTO",
+          "VADO"
+        ]
+      },
+      {
+        "clue": "FRANCIA",
+        "number": 2,
+        "targets": [
+          "PRINCESA",
+          "REY"
+        ]
+      }
+    ]
+  },
+  {
+    "blues": [
+      "BLOQUE",
+      "CINTURON",
+      "CEBOLLA",
+      "NIEVE",
+      "CABO",
+      "PENDIENTE",
+      "DELTA",
+      "RUEDA",
+      "TACTO"
+    ],
+    "fillers": [
+      "CHECO",
+      "CORONA",
+      "DIANA",
+      "ESTUDIO",
+      "GOLFO",
+      "HORCA",
+      "LIMA",
+      "MEDICO",
+      "MUNECA",
+      "ORGANO",
+      "PIEZA",
+      "PUENTE",
+      "SATELITE",
+      "TIERRA",
+      "MANTA",
+      "FRIO"
+    ],
+    "presetClues": [
+      {
+        "clue": "PINTA",
+        "number": 3,
+        "targets": [
+          "BLOQUE",
+          "NIEVE",
+          "PENDIENTE"
+        ]
+      },
+      {
+        "clue": "PINCHO",
+        "number": 3,
+        "targets": [
+          "CEBOLLA",
+          "RUEDA",
+          "TACTO"
+        ]
+      },
+      {
+        "clue": "VELA",
+        "number": 2,
+        "targets": [
+          "CABO",
+          "DELTA"
+        ]
+      },
+      {
+        "clue": "MANO",
+        "number": 2,
+        "targets": [
+          "CINTURON",
+          "CEBOLLA"
+        ]
+      },
+      {
+        "clue": "PEZ",
+        "number": 2,
+        "targets": [
+          "PENDIENTE",
+          "NIEVE"
+        ]
+      }
+    ]
+  },
+  {
+    "blues": [
+      "CARRO",
+      "TAPA",
+      "TABLA",
+      "BRAZO",
+      "BLANCO",
+      "COLA",
+      "ZARZA",
+      "DUENDE",
+      "LLAVE"
+    ],
+    "fillers": [
+      "DAMA",
+      "ENLACE",
+      "GANCHO",
+      "HIERBA",
+      "LEON",
+      "MASA",
+      "MUNECA",
+      "ORNITORRINCO",
+      "PILA",
+      "PULPO",
+      "SERIE",
+      "TRONCO",
+      "POLVO",
+      "ACEITE",
+      "ARTICULO",
+      "BRUJA"
+    ],
+    "presetClues": [
+      {
+        "clue": "CANGURO",
+        "number": 2,
+        "targets": [
+          "BRAZO",
+          "CARRO"
+        ]
+      },
+      {
+        "clue": "RATON",
+        "number": 3,
+        "targets": [
+          "TABLA",
+          "DUENDE",
+          "LLAVE"
+        ]
+      },
+      {
+        "clue": "PLATANO",
+        "number": 2,
+        "targets": [
+          "COLA",
+          "BLANCO"
+        ]
+      },
+      {
+        "clue": "DRAGON",
+        "number": 2,
+        "targets": [
+          "ZARZA",
+          "COLA"
+        ]
+      },
+      {
+        "clue": "CUERO",
+        "number": 2,
+        "targets": [
+          "TAPA",
+          "BLANCO"
+        ]
+      }
+    ]
+  },
+  {
+    "blues": [
+      "TANQUE",
+      "CINTA",
+      "OPERA",
+      "GATO",
+      "SILLA",
+      "PISTOLA",
+      "PICO",
+      "HOJA",
+      "ARGENTINA"
+    ],
+    "fillers": [
+      "FALDA",
+      "GRANO",
+      "INGLATERRA",
+      "MAESTRO",
+      "MISIL",
+      "NUDO",
+      "PELICULA",
+      "POTRO",
+      "SALSA",
+      "TORRE",
+      "NORIA",
+      "YERBA",
+      "ARCO",
+      "BOTON",
+      "CASCO",
+      "COPA"
+    ],
+    "presetClues": [
+      {
+        "clue": "CHOZA",
+        "number": 4,
+        "targets": [
+          "GATO",
+          "OPERA",
+          "PICO",
+          "CINTA"
+        ]
+      },
+      {
+        "clue": "SUENO",
+        "number": 2,
+        "targets": [
+          "SILLA",
+          "HOJA"
+        ]
+      },
+      {
+        "clue": "TARDE",
+        "number": 2,
+        "targets": [
+          "PISTOLA",
+          "ARGENTINA"
+        ]
+      },
+      {
+        "clue": "CACTUS",
+        "number": 2,
+        "targets": [
+          "ARGENTINA",
+          "TANQUE"
+        ]
+      },
+      {
+        "clue": "ESTACION",
+        "number": 2,
+        "targets": [
+          "OPERA",
+          "PICO"
+        ]
+      }
+    ]
+  },
+  {
+    "blues": [
+      "PRENSA",
+      "FUERZA",
+      "CHOCOLATE",
+      "ESPACIO",
+      "ROBOT",
+      "VACIO",
+      "CALOR",
+      "VESTIDO",
+      "TIENDA"
+    ],
+    "fillers": [
+      "GUARDIA",
+      "JUICIO",
+      "MARCA",
+      "MUELLE",
+      "ORNITORRINCO",
+      "PINGUINO",
+      "REGLA",
+      "SUERTE",
+      "YEMA",
+      "FAMA",
+      "AMBULANCIA",
+      "BOCA",
+      "CAQUI",
+      "COLERA",
+      "DIA",
+      "ESTRELLA"
+    ],
+    "presetClues": [
+      {
+        "clue": "LADRON",
+        "number": 4,
+        "targets": [
+          "FUERZA",
+          "CHOCOLATE",
+          "TIENDA",
+          "VESTIDO"
+        ]
+      },
+      {
+        "clue": "OPERA",
+        "number": 2,
+        "targets": [
+          "VACIO",
+          "ROBOT"
+        ]
+      },
+      {
+        "clue": "CUERDA",
+        "number": 3,
+        "targets": [
+          "ESPACIO",
+          "ROBOT",
+          "CALOR"
+        ]
+      },
+      {
+        "clue": "PIRAMIDE",
+        "number": 2,
+        "targets": [
+          "VESTIDO",
+          "FUERZA"
+        ]
+      },
+      {
+        "clue": "CABEZA",
+        "number": 2,
+        "targets": [
+          "PRENSA",
+          "CHOCOLATE"
+        ]
+      }
+    ]
+  },
+  {
+    "blues": [
+      "ENFERMERA",
+      "HELADO",
+      "CUADRO",
+      "FARO",
+      "BOTA",
+      "TALON",
+      "PASE",
+      "CARTA",
+      "PENA"
+    ],
+    "fillers": [
+      "LISTA",
+      "MICROSCOPI",
+      "NOTA",
+      "PELICULA",
+      "PRENSA",
+      "SENAL",
+      "TUBERIA",
+      "SONDA",
+      "AGUILA",
+      "BANDA",
+      "CANTO",
+      "COCINERO",
+      "DAMA",
+      "ESTRELLA",
+      "GRANO",
+      "JARRA"
+    ],
+    "presetClues": [
+      {
+        "clue": "GOLONDRINA",
+        "number": 2,
+        "targets": [
+          "ENFERMERA",
+          "TALON"
+        ]
+      },
+      {
+        "clue": "CAZA",
+        "number": 2,
+        "targets": [
+          "HELADO",
+          "FARO"
+        ]
+      },
+      {
+        "clue": "BANCO",
+        "number": 3,
+        "targets": [
+          "CUADRO",
+          "PASE",
+          "CARTA"
+        ]
+      },
+      {
+        "clue": "GLORIA",
+        "number": 2,
+        "targets": [
+          "TALON",
+          "PENA"
+        ]
+      },
+      {
+        "clue": "CONEJO",
+        "number": 2,
+        "targets": [
+          "BOTA",
+          "PENA"
+        ]
+      }
+    ]
+  }
+]

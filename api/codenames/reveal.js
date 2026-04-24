@@ -1,18 +1,6 @@
 require("../../lib/loadEnv")();
 const { verifyToken, parseRevealed } = require("../../lib/state");
-
-function winnerFromState(assignment, revealed) {
-  let blueLeft = 0;
-  let redLeft = 0;
-  for (let i = 0; i < 25; i++) {
-    if (revealed[i]) continue;
-    if (assignment[i] === "blue") blueLeft++;
-    else if (assignment[i] === "red") redLeft++;
-  }
-  if (blueLeft === 0) return "blue";
-  if (redLeft === 0) return "red";
-  return null;
-}
+const { outcomeAfterReveal, fullRevealPayload } = require("../../lib/codenamesRedSim");
 
 function verifyRevealedMap(assignment, revealed) {
   for (const [k, r] of Object.entries(revealed)) {
@@ -82,16 +70,18 @@ module.exports = async (req, res) => {
 
   let gameOver = false;
   let winner = null;
+  let winReason = null;
 
   if (role === "assassin") {
-    gameOver = true;
-    winner = guesser === "blue" ? "red" : "blue";
+    const o = outcomeAfterReveal(assignment, nextRevealed, { assassinRevealedBy: guesser });
+    gameOver = o.gameOver;
+    winner = o.winner;
+    winReason = o.winReason;
   } else {
-    const w = winnerFromState(assignment, nextRevealed);
-    if (w) {
-      gameOver = true;
-      winner = w;
-    }
+    const o = outcomeAfterReveal(assignment, nextRevealed);
+    gameOver = o.gameOver;
+    winner = o.winner;
+    winReason = o.winReason;
   }
 
   res.status(200).json({
@@ -100,6 +90,8 @@ module.exports = async (req, res) => {
     word: words[idx],
     gameOver,
     winner,
+    winReason,
     revealed: nextRevealed,
+    fullReveal: gameOver ? fullRevealPayload(assignment) : undefined,
   });
 };

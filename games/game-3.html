@@ -1,35 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Tech newspaper — Exprobable</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700&family=Newsreader:ital,opsz,wght@0,6..60,400;0,6..60,600;1,6..60,400&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../css/styles.css" />
+  <meta name="description" content="Radio Zumo — aprende idiomas con sabor. Elige temas y practica escuchando." />
+  <title>Radio Zumo — Neoma</title>
+  <link rel="stylesheet" href="./newsroom/assets/radio-main.css" />
 </head>
-<body class="game-page game-page--newspaper">
-  <div class="home-bg" aria-hidden="true"></div>
-  <header class="game-topbar">
-    <a class="back-link" href="../index.html">← All games</a>
-    <h1 class="game-title">The tech desk</h1>
-  </header>
-  <main class="game-shell game-shell--newspaper">
-    <div class="np-wrap">
-      <p class="np-lede">
-        Live <strong>web</strong> and <strong>X</strong> search for tech news (last ~12 hours; X uses a UTC date window), then five short articles via xAI Responses. If your key blocks tools, the app falls back to plain chat (not live).
-      </p>
-      <button type="button" class="np-btn" id="np-request">
-        Request the newspaper
-      </button>
-      <p class="np-status" id="np-status" aria-live="polite"></p>
-      <article id="np-output" class="np-article" aria-live="polite"></article>
-      <p class="np-foot">
-        Needs <code>XAI_API_KEY</code>. For live results: enable <strong>Responses</strong>, <strong>Web Search</strong>, and <strong>X Search</strong> on the key, plus your model. Optional <code>XAI_MODEL</code> pins the model id.
-      </p>
-    </div>
-  </main>
-  <script src="../js/newspaper.js?v=2"></script>
+<body>
+  <div id="root"></div>
+  <script type="module" src="./newsroom/assets/radio-main.js"></script>
 </body>
 </html>

@@ -1,0 +1,1490 @@
+[
+  {
+    "blues": [
+      "MINT",
+      "CRANE",
+      "BARK",
+      "POOL",
+      "BOLT",
+      "PIT",
+      "TANK",
+      "LEAD",
+      "WEB"
+    ],
+    "fillers": [
+      "AFRICA",
+      "BAND",
+      "BOMB",
+      "CAPITAL",
+      "CHOCOLATE",
+      "CRASH",
+      "DRAFT",
+      "FAN",
+      "GAS",
+      "HEART",
+      "IRON",
+      "LAWYER",
+      "MARBLE",
+      "MOUTH",
+      "ORGAN",
+      "PIRATE"
+    ],
+    "presetClues": [
+      {
+        "clue": "WATER",
+        "number": 3,
+        "targets": [
+          "POOL",
+          "PIT",
+          "TANK"
+        ]
+      },
+      {
+        "clue": "METAL",
+        "number": 2,
+        "targets": [
+          "LEAD",
+          "BOLT"
+        ]
+      },
+      {
+        "clue": "HERB",
+        "number": 2,
+        "targets": [
+          "MINT",
+          "BARK"
+        ]
+      },
+      {
+        "clue": "LIFT",
+        "number": 2,
+        "targets": [
+          "CRANE",
+          "TANK"
+        ]
+      },
+      {
+        "clue": "THREAD",
+        "number": 2,
+        "targets": [
+          "WEB",
+          "BOLT"
+        ]
+      }
+    ]
+  },
+  {
+    "blues": [
+      "CROWN",
+      "HAMMER",
+      "FOOT",
+      "BRIDGE",
+      "ORGAN",
+      "DRILL",
+      "KING",
+      "NAIL",
+      "TABLE"
+    ],
+    "fillers": [
+      "BERRY",
+      "CALF",
+      "CHICK",
+      "COTTON",
+      "DRAFT",
+      "FIELD",
+      "GIANT",
+      "HONEY",
+      "KANGAROO",
+      "LINK",
+      "MINE",
+      "NURSE",
+      "PHOENIX",
+      "POLE",
+      "ROBOT",
+      "SERVER"
+    ],
+    "presetClues": [
+      {
+        "clue": "ROYAL",
+        "number": 2,
+        "targets": [
+          "CROWN",
+          "KING"
+        ]
+      },
+      {
+        "clue": "TOOL",
+        "number": 3,
+        "targets": [
+          "HAMMER",
+          "DRILL",
+          "NAIL"
+        ]
+      },
+      {
+        "clue": "MUSIC",
+        "number": 2,
+        "targets": [
+          "ORGAN",
+          "TABLE"
+        ]
+      },
+      {
+        "clue": "BODY",
+        "number": 2,
+        "targets": [
+          "FOOT",
+          "NAIL"
+        ]
+      },
+      {
+        "clue": "CROSSING",
+        "number": 2,
+        "targets": [
+          "BRIDGE",
+          "FOOT"
+        ]
+      }
+    ]
+  },
+  {
+    "blues": [
+      "COURT",
+      "CLUB",
+      "MATCH",
+      "BOX",
+      "NET",
+      "FIELD",
+      "CASE",
+      "BAT",
+      "SPRING"
+    ],
+    "fillers": [
+      "CHANGE",
+      "COOK",
+      "DOCTOR",
+      "FAN",
+      "GHOST",
+      "HONEY",
+      "KETCHUP",
+      "LION",
+      "MODEL",
+      "OLIVE",
+      "PIN",
+      "POUND",
+      "ROUND",
+      "SHOT",
+      "STADIUM",
+      "TAP"
+    ],
+    "presetClues": [
+      {
+        "clue": "TRIAL",
+        "number": 2,
+        "targets": [
+          "COURT",
+          "CASE"
+        ]
+      },
+      {
+        "clue": "SPORT",
+        "number": 3,
+        "targets": [
+          "MATCH",
+          "BAT",
+          "FIELD"
+        ]
+      },
+      {
+        "clue": "STORAGE",
+        "number": 2,
+        "targets": [
+          "BOX",
+          "CASE"
+        ]
+      },
+      {
+        "clue": "RACKET",
+        "number": 2,
+        "targets": [
+          "NET",
+          "BAT"
+        ]
+      },
+      {
+        "clue": "SEASON",
+        "number": 2,
+        "targets": [
+          "SPRING",
+          "FIELD"
+        ]
+      }
+    ]
+  },
+  {
+    "blues": [
+      "BANK",
+      "SCREEN",
+      "WAVE",
+      "CHARGE",
+      "GLASS",
+      "SHIP",
+      "BILL",
+      "SCALE",
+      "FLASH"
+    ],
+    "fillers": [
+      "DAY",
+      "ENGLAND",
+      "FORK",
+      "HELICOPTER",
+      "JET",
+      "LINE",
+      "MINT",
+      "OCTOPUS",
+      "PILOT",
+      "POUND",
+      "ROW",
+      "SNOW",
+      "STOCK",
+      "THUMB",
+      "WAKE",
+      "AMAZON"
+    ],
+    "presetClues": [
+      {
+        "clue": "TELLER",
+        "number": 3,
+        "targets": [
+          "BANK",
+          "BILL",
+          "CHARGE"
+        ]
+      },
+      {
+        "clue": "OCEAN",
+        "number": 2,
+        "targets": [
+          "WAVE",
+          "SHIP"
+        ]
+      },
+      {
+        "clue": "BRIGHT",
+        "number": 2,
+        "targets": [
+          "FLASH",
+          "GLASS"
+        ]
+      },
+      {
+        "clue": "PANEL",
+        "number": 2,
+        "targets": [
+          "SCREEN",
+          "GLASS"
+        ]
+      },
+      {
+        "clue": "WEIGH",
+        "number": 2,
+        "targets": [
+          "SCALE",
+          "BILL"
+        ]
+      }
+    ]
+  },
+  {
+    "blues": [
+      "DRAFT",
+      "FILE",
+      "WING",
+      "STRIKE",
+      "POST",
+      "PLANE",
+      "ROW",
+      "KEY",
+      "STAFF"
+    ],
+    "fillers": [
+      "FIGHTER",
+      "GRACE",
+      "HOTEL",
+      "LAWYER",
+      "MATCH",
+      "NINJA",
+      "PENGUIN",
+      "PORT",
+      "RULER",
+      "SMUGGLER",
+      "STRAW",
+      "TIME",
+      "WASHINGTON",
+      "ANTARCTICA",
+      "BERLIN",
+      "CANADA"
+    ],
+    "presetClues": [
+      {
+        "clue": "OFFICE",
+        "number": 3,
+        "targets": [
+          "FILE",
+          "POST",
+          "STAFF"
+        ]
+      },
+      {
+        "clue": "FLY",
+        "number": 2,
+        "targets": [
+          "WING",
+          "PLANE"
+        ]
+      },
+      {
+        "clue": "HIT",
+        "number": 2,
+        "targets": [
+          "STRIKE",
+          "STAFF"
+        ]
+      },
+      {
+        "clue": "ARMY",
+        "number": 2,
+        "targets": [
+          "DRAFT",
+          "POST"
+        ]
+      },
+      {
+        "clue": "ACCESS",
+        "number": 2,
+        "targets": [
+          "KEY",
+          "STAFF"
+        ]
+      }
+    ]
+  },
+  {
+    "blues": [
+      "FALL",
+      "WATCH",
+      "FAN",
+      "SECOND",
+      "GROUND",
+      "LIGHT",
+      "CURRENT",
+      "TIE",
+      "GEAR"
+    ],
+    "fillers": [
+      "HIMALAYAS",
+      "KETCHUP",
+      "LONDON",
+      "MOUSE",
+      "PAPER",
+      "PLOT",
+      "ROCK",
+      "SHOE",
+      "STADIUM",
+      "TEMPLE",
+      "WAKE",
+      "AMERICA",
+      "BELT",
+      "CANADA",
+      "CLIFF",
+      "DATE"
+    ],
+    "presetClues": [
+      {
+        "clue": "CLOCK",
+        "number": 2,
+        "targets": [
+          "WATCH",
+          "SECOND"
+        ]
+      },
+      {
+        "clue": "AUTUMN",
+        "number": 2,
+        "targets": [
+          "FALL",
+          "GROUND"
+        ]
+      },
+      {
+        "clue": "POWER",
+        "number": 3,
+        "targets": [
+          "FAN",
+          "LIGHT",
+          "CURRENT"
+        ]
+      },
+      {
+        "clue": "FORMAL",
+        "number": 2,
+        "targets": [
+          "TIE",
+          "GEAR"
+        ]
+      },
+      {
+        "clue": "MACHINE",
+        "number": 2,
+        "targets": [
+          "GEAR",
+          "CURRENT"
+        ]
+      }
+    ]
+  },
+  {
+    "blues": [
+      "ROOT",
+      "SHELL",
+      "BRANCH",
+      "MINE",
+      "ROSE",
+      "ARROW",
+      "BUSH",
+      "SPIKE",
+      "TRUNK"
+    ],
+    "fillers": [
+      "KNIGHT",
+      "MARCH",
+      "NOTE",
+      "PIE",
+      "PRINCESS",
+      "SCORPION",
+      "SPELL",
+      "TABLET",
+      "UNDERTAKER",
+      "AIR",
+      "BEAT",
+      "BUGLE",
+      "CHURCH",
+      "DANCE",
+      "EUROPE",
+      "GENIUS"
+    ],
+    "presetClues": [
+      {
+        "clue": "TREE",
+        "number": 4,
+        "targets": [
+          "ROOT",
+          "BRANCH",
+          "TRUNK",
+          "BUSH"
+        ]
+      },
+      {
+        "clue": "POINT",
+        "number": 2,
+        "targets": [
+          "ARROW",
+          "SPIKE"
+        ]
+      },
+      {
+        "clue": "FLOWER",
+        "number": 2,
+        "targets": [
+          "ROSE",
+          "BUSH"
+        ]
+      },
+      {
+        "clue": "SEA",
+        "number": 2,
+        "targets": [
+          "SHELL",
+          "MINE"
+        ]
+      },
+      {
+        "clue": "DIG",
+        "number": 2,
+        "targets": [
+          "ROOT",
+          "MINE"
+        ]
+      }
+    ]
+  },
+  {
+    "blues": [
+      "STAR",
+      "APPLE",
+      "MARS",
+      "DISH",
+      "SPACE",
+      "CHIP",
+      "NUT",
+      "MERCURY",
+      "SERVER"
+    ],
+    "fillers": [
+      "MODEL",
+      "PALM",
+      "PLAY",
+      "ROME",
+      "SKYSCRAPER",
+      "STRIKE",
+      "TOWER",
+      "WHEEL",
+      "BARK",
+      "BRUSH",
+      "CHICK",
+      "CYCLE",
+      "ENGLAND",
+      "GENIUS",
+      "HORN",
+      "LAP"
+    ],
+    "presetClues": [
+      {
+        "clue": "PLANET",
+        "number": 3,
+        "targets": [
+          "MARS",
+          "MERCURY",
+          "STAR"
+        ]
+      },
+      {
+        "clue": "SNACK",
+        "number": 2,
+        "targets": [
+          "APPLE",
+          "CHIP"
+        ]
+      },
+      {
+        "clue": "BOWL",
+        "number": 2,
+        "targets": [
+          "DISH",
+          "NUT"
+        ]
+      },
+      {
+        "clue": "COMPUTER",
+        "number": 2,
+        "targets": [
+          "SERVER",
+          "CHIP"
+        ]
+      },
+      {
+        "clue": "ORBIT",
+        "number": 2,
+        "targets": [
+          "SPACE",
+          "STAR"
+        ]
+      }
+    ]
+  },
+  {
+    "blues": [
+      "MOUSE",
+      "BUG",
+      "HORSESHOE",
+      "SEAL",
+      "SAW",
+      "FLY",
+      "CRAB",
+      "MOLE",
+      "HEDGE"
+    ],
+    "fillers": [
+      "PENGUIN",
+      "PRESS",
+      "SCIENTIST",
+      "SPIKE",
+      "TAP",
+      "VET",
+      "ANGEL",
+      "BLOCK",
+      "CAT",
+      "COOK",
+      "DROP",
+      "FOREST",
+      "HOLLYWOOD",
+      "KNIGHT",
+      "MATCH",
+      "OIL"
+    ],
+    "presetClues": [
+      {
+        "clue": "RODENT",
+        "number": 2,
+        "targets": [
+          "MOUSE",
+          "MOLE"
+        ]
+      },
+      {
+        "clue": "BLADE",
+        "number": 2,
+        "targets": [
+          "SAW",
+          "HORSESHOE"
+        ]
+      },
+      {
+        "clue": "OCEAN",
+        "number": 2,
+        "targets": [
+          "SEAL",
+          "CRAB"
+        ]
+      },
+      {
+        "clue": "YARD",
+        "number": 2,
+        "targets": [
+          "HEDGE",
+          "MOLE"
+        ]
+      },
+      {
+        "clue": "INSECT",
+        "number": 2,
+        "targets": [
+          "BUG",
+          "FLY"
+        ]
+      }
+    ]
+  },
+  {
+    "blues": [
+      "BAR",
+      "POINT",
+      "FIGURE",
+      "LINE",
+      "NOTE",
+      "RECORD",
+      "SQUARE",
+      "DEGREE",
+      "MARK"
+    ],
+    "fillers": [
+      "RACKET",
+      "SHARK",
+      "STATE",
+      "TOKYO",
+      "WHALE",
+      "BAT",
+      "BUG",
+      "CLIFF",
+      "DIAMOND",
+      "FILE",
+      "HAND",
+      "KANGAROO",
+      "MAMMOTH",
+      "NINJA",
+      "PIPE",
+      "RAY"
+    ],
+    "presetClues": [
+      {
+        "clue": "MATH",
+        "number": 4,
+        "targets": [
+          "POINT",
+          "LINE",
+          "SQUARE",
+          "DEGREE"
+        ]
+      },
+      {
+        "clue": "TALLY",
+        "number": 2,
+        "targets": [
+          "RECORD",
+          "NOTE"
+        ]
+      },
+      {
+        "clue": "WRITE",
+        "number": 2,
+        "targets": [
+          "NOTE",
+          "MARK"
+        ]
+      },
+      {
+        "clue": "TAVERN",
+        "number": 2,
+        "targets": [
+          "BAR",
+          "NOTE"
+        ]
+      },
+      {
+        "clue": "DRAW",
+        "number": 2,
+        "targets": [
+          "FIGURE",
+          "LINE"
+        ]
+      }
+    ]
+  },
+  {
+    "blues": [
+      "IRON",
+      "GOLD",
+      "CARD",
+      "CONDUCTOR",
+      "COPPER",
+      "SUIT",
+      "BOARD",
+      "CELL",
+      "DIAMOND"
+    ],
+    "fillers": [
+      "SLUG",
+      "SUB",
+      "TUBE",
+      "ALPS",
+      "BERRY",
+      "CENTAUR",
+      "CROSS",
+      "EYE",
+      "GLOVE",
+      "IVORY",
+      "LOCK",
+      "NAIL",
+      "PIANO",
+      "PYRAMID",
+      "SHADOW",
+      "STAFF"
+    ],
+    "presetClues": [
+      {
+        "clue": "ORE",
+        "number": 3,
+        "targets": [
+          "IRON",
+          "GOLD",
+          "COPPER"
+        ]
+      },
+      {
+        "clue": "PLAY",
+        "number": 2,
+        "targets": [
+          "CARD",
+          "BOARD"
+        ]
+      },
+      {
+        "clue": "WIRE",
+        "number": 2,
+        "targets": [
+          "COPPER",
+          "CONDUCTOR"
+        ]
+      },
+      {
+        "clue": "DECK",
+        "number": 2,
+        "targets": [
+          "SUIT",
+          "DIAMOND"
+        ]
+      },
+      {
+        "clue": "JAIL",
+        "number": 2,
+        "targets": [
+          "CELL",
+          "SUIT"
+        ]
+      }
+    ]
+  },
+  {
+    "blues": [
+      "HOOD",
+      "SWALLOW",
+      "COAT",
+      "CAP",
+      "SLIP",
+      "CRANE",
+      "BOW",
+      "BELT",
+      "DUCK"
+    ],
+    "fillers": [
+      "SUPERHERO",
+      "TOKYO",
+      "WALL",
+      "AIR",
+      "BAR",
+      "BOND",
+      "CARROT",
+      "CLIFF",
+      "CROWN",
+      "DRILL",
+      "FIGURE",
+      "GIANT",
+      "HOLLYWOOD",
+      "JUPITER",
+      "LIGHT",
+      "MERCURY"
+    ],
+    "presetClues": [
+      {
+        "clue": "GARMENT",
+        "number": 3,
+        "targets": [
+          "COAT",
+          "CAP",
+          "HOOD"
+        ]
+      },
+      {
+        "clue": "BIRD",
+        "number": 3,
+        "targets": [
+          "SWALLOW",
+          "DUCK",
+          "CRANE"
+        ]
+      },
+      {
+        "clue": "RIBBON",
+        "number": 2,
+        "targets": [
+          "BOW",
+          "BELT"
+        ]
+      },
+      {
+        "clue": "MISTAKE",
+        "number": 2,
+        "targets": [
+          "SLIP",
+          "CAP"
+        ]
+      },
+      {
+        "clue": "POND",
+        "number": 2,
+        "targets": [
+          "DUCK",
+          "CRANE"
+        ]
+      }
+    ]
+  },
+  {
+    "blues": [
+      "CAPE",
+      "HEART",
+      "BACK",
+      "CHEST",
+      "ARM",
+      "PALM",
+      "HEAD",
+      "SOLE",
+      "JOINT"
+    ],
+    "fillers": [
+      "VAN",
+      "AFRICA",
+      "BARK",
+      "BOOM",
+      "CARROT",
+      "CLOUD",
+      "CZECH",
+      "DWARF",
+      "FIRE",
+      "GRACE",
+      "HOSPITAL",
+      "KNIFE",
+      "LONDON",
+      "MONSTER",
+      "OLIVE",
+      "PIN"
+    ],
+    "presetClues": [
+      {
+        "clue": "TORSO",
+        "number": 3,
+        "targets": [
+          "CHEST",
+          "HEART",
+          "BACK"
+        ]
+      },
+      {
+        "clue": "LIMB",
+        "number": 3,
+        "targets": [
+          "ARM",
+          "PALM",
+          "HEAD"
+        ]
+      },
+      {
+        "clue": "HERO",
+        "number": 2,
+        "targets": [
+          "CAPE",
+          "HEART"
+        ]
+      },
+      {
+        "clue": "FOOT",
+        "number": 2,
+        "targets": [
+          "SOLE",
+          "JOINT"
+        ]
+      },
+      {
+        "clue": "BEND",
+        "number": 2,
+        "targets": [
+          "JOINT",
+          "ARM"
+        ]
+      }
+    ]
+  },
+  {
+    "blues": [
+      "SPIRIT",
+      "STORM",
+      "PHOENIX",
+      "BOLT",
+      "SHADE",
+      "WIND",
+      "RAY",
+      "CHARM",
+      "MIST"
+    ],
+    "fillers": [
+      "ARM",
+      "BERLIN",
+      "CALF",
+      "CHINA",
+      "CRASH",
+      "DRESS",
+      "FIGURE",
+      "GLOVE",
+      "HORN",
+      "KING",
+      "LOG",
+      "MONSTER",
+      "OLYMPUS",
+      "PIRATE",
+      "PRINCESS",
+      "SATELLITE"
+    ],
+    "presetClues": [
+      {
+        "clue": "WEATHER",
+        "number": 3,
+        "targets": [
+          "STORM",
+          "WIND",
+          "MIST"
+        ]
+      },
+      {
+        "clue": "MYTH",
+        "number": 2,
+        "targets": [
+          "PHOENIX",
+          "SPIRIT"
+        ]
+      },
+      {
+        "clue": "BEAM",
+        "number": 2,
+        "targets": [
+          "RAY",
+          "SHADE"
+        ]
+      },
+      {
+        "clue": "MAGIC",
+        "number": 2,
+        "targets": [
+          "CHARM",
+          "SPIRIT"
+        ]
+      },
+      {
+        "clue": "LIGHTNING",
+        "number": 2,
+        "targets": [
+          "BOLT",
+          "RAY"
+        ]
+      }
+    ]
+  },
+  {
+    "blues": [
+      "TAPE",
+      "BASE",
+      "SHOT",
+      "SCORE",
+      "CAST",
+      "FOUL",
+      "STAGE",
+      "CLUB",
+      "PITCH"
+    ],
+    "fillers": [
+      "BOX",
+      "CHAIR",
+      "COOK",
+      "DOG",
+      "FIELD",
+      "GLASS",
+      "HORN",
+      "KIWI",
+      "LUCK",
+      "MOUNT",
+      "PALM",
+      "PLASTIC",
+      "RACKET",
+      "SCREEN",
+      "SPACE",
+      "SUIT"
+    ],
+    "presetClues": [
+      {
+        "clue": "BALL",
+        "number": 4,
+        "targets": [
+          "BASE",
+          "SHOT",
+          "SCORE",
+          "FOUL"
+        ]
+      },
+      {
+        "clue": "THEATER",
+        "number": 2,
+        "targets": [
+          "STAGE",
+          "CAST"
+        ]
+      },
+      {
+        "clue": "GOLF",
+        "number": 2,
+        "targets": [
+          "CLUB",
+          "PITCH"
+        ]
+      },
+      {
+        "clue": "FILM",
+        "number": 2,
+        "targets": [
+          "CAST",
+          "TAPE"
+        ]
+      },
+      {
+        "clue": "GOAL",
+        "number": 2,
+        "targets": [
+          "SCORE",
+          "SHOT"
+        ]
+      }
+    ]
+  },
+  {
+    "blues": [
+      "BOOK",
+      "COACH",
+      "TRAIN",
+      "PAGE",
+      "CAB",
+      "PRESS",
+      "DRIVE",
+      "TRACK",
+      "STATION"
+    ],
+    "fillers": [
+      "CIRCLE",
+      "CZECH",
+      "EMBASSY",
+      "FOREST",
+      "HEART",
+      "JET",
+      "LINK",
+      "MODEL",
+      "OLYMPUS",
+      "PISTOL",
+      "QUEEN",
+      "SCORPION",
+      "SOUND",
+      "SUIT",
+      "TOWER",
+      "WHALE"
+    ],
+    "presetClues": [
+      {
+        "clue": "READ",
+        "number": 3,
+        "targets": [
+          "BOOK",
+          "PAGE",
+          "PRESS"
+        ]
+      },
+      {
+        "clue": "RAIL",
+        "number": 3,
+        "targets": [
+          "TRAIN",
+          "TRACK",
+          "STATION"
+        ]
+      },
+      {
+        "clue": "TAXI",
+        "number": 2,
+        "targets": [
+          "CAB",
+          "DRIVE"
+        ]
+      },
+      {
+        "clue": "MENTOR",
+        "number": 2,
+        "targets": [
+          "COACH",
+          "TRAIN"
+        ]
+      },
+      {
+        "clue": "PRINT",
+        "number": 2,
+        "targets": [
+          "PRESS",
+          "PAGE"
+        ]
+      }
+    ]
+  },
+  {
+    "blues": [
+      "CHECK",
+      "STOCK",
+      "STAPLE",
+      "BUCK",
+      "BOND",
+      "CORD",
+      "YARD",
+      "FIBER",
+      "LOOM"
+    ],
+    "fillers": [
+      "DRILL",
+      "FISH",
+      "HAM",
+      "IVORY",
+      "LIMOUSINE",
+      "MISSILE",
+      "OLYMPUS",
+      "PIT",
+      "RABBIT",
+      "SCUBA",
+      "SPIDER",
+      "TABLET",
+      "TUBE",
+      "AFRICA",
+      "BATTERY",
+      "BUFFALO"
+    ],
+    "presetClues": [
+      {
+        "clue": "CASH",
+        "number": 2,
+        "targets": [
+          "BUCK",
+          "CHECK"
+        ]
+      },
+      {
+        "clue": "SEW",
+        "number": 3,
+        "targets": [
+          "STAPLE",
+          "FIBER",
+          "LOOM"
+        ]
+      },
+      {
+        "clue": "ROPE",
+        "number": 2,
+        "targets": [
+          "CORD",
+          "BOND"
+        ]
+      },
+      {
+        "clue": "FENCE",
+        "number": 2,
+        "targets": [
+          "YARD",
+          "CORD"
+        ]
+      },
+      {
+        "clue": "TRADE",
+        "number": 2,
+        "targets": [
+          "STOCK",
+          "BOND"
+        ]
+      }
+    ]
+  },
+  {
+    "blues": [
+      "STICK",
+      "CLUB",
+      "PIPE",
+      "HAMMER",
+      "SPOKE",
+      "ROCK",
+      "PUMP",
+      "JACK",
+      "BATTER"
+    ],
+    "fillers": [
+      "FRANCE",
+      "HOLLYWOOD",
+      "KIWI",
+      "MAPLE",
+      "NET",
+      "PENGUIN",
+      "POUND",
+      "SCALE",
+      "SOUL",
+      "SWING",
+      "TRIP",
+      "WORM",
+      "BAT",
+      "BRUSH",
+      "CHEST",
+      "CROWN"
+    ],
+    "presetClues": [
+      {
+        "clue": "TOOL",
+        "number": 4,
+        "targets": [
+          "HAMMER",
+          "PIPE",
+          "PUMP",
+          "CLUB"
+        ]
+      },
+      {
+        "clue": "WHEEL",
+        "number": 2,
+        "targets": [
+          "SPOKE",
+          "JACK"
+        ]
+      },
+      {
+        "clue": "STONE",
+        "number": 2,
+        "targets": [
+          "ROCK",
+          "BATTER"
+        ]
+      },
+      {
+        "clue": "CAKE",
+        "number": 2,
+        "targets": [
+          "BATTER",
+          "STICK"
+        ]
+      },
+      {
+        "clue": "FLUID",
+        "number": 2,
+        "targets": [
+          "PIPE",
+          "PUMP"
+        ]
+      }
+    ]
+  },
+  {
+    "blues": [
+      "SCHOOL",
+      "GRADE",
+      "CLASS",
+      "FLOW",
+      "SINK",
+      "TAP",
+      "WELL",
+      "TERM",
+      "SUBJECT"
+    ],
+    "fillers": [
+      "HORSESHOE",
+      "LAWYER",
+      "MICROSCOPE",
+      "OIL",
+      "PIT",
+      "RAY",
+      "SHARK",
+      "STAFF",
+      "TICK",
+      "WATCH",
+      "AZTEC",
+      "BOOM",
+      "CENTER",
+      "COTTON",
+      "DUCK",
+      "FORCE"
+    ],
+    "presetClues": [
+      {
+        "clue": "LEARN",
+        "number": 4,
+        "targets": [
+          "GRADE",
+          "CLASS",
+          "SUBJECT",
+          "TERM"
+        ]
+      },
+      {
+        "clue": "PIPE",
+        "number": 2,
+        "targets": [
+          "TAP",
+          "SINK"
+        ]
+      },
+      {
+        "clue": "DRAIN",
+        "number": 3,
+        "targets": [
+          "FLOW",
+          "SINK",
+          "WELL"
+        ]
+      },
+      {
+        "clue": "REPORT",
+        "number": 2,
+        "targets": [
+          "TERM",
+          "GRADE"
+        ]
+      },
+      {
+        "clue": "BUILDING",
+        "number": 2,
+        "targets": [
+          "SCHOOL",
+          "CLASS"
+        ]
+      }
+    ]
+  },
+  {
+    "blues": [
+      "FIRE",
+      "ICE",
+      "DICE",
+      "GAS",
+      "BRIDGE",
+      "STEAM",
+      "POKER",
+      "CHESS",
+      "WAVE"
+    ],
+    "fillers": [
+      "LOG",
+      "MUG",
+      "PASTE",
+      "POUND",
+      "SCHOOL",
+      "SPELL",
+      "TAG",
+      "VACUUM",
+      "AMERICA",
+      "BILL",
+      "CAST",
+      "CONTRACT",
+      "DRILL",
+      "FORCE",
+      "HOLLYWOOD",
+      "KNIGHT"
+    ],
+    "presetClues": [
+      {
+        "clue": "HEAT",
+        "number": 2,
+        "targets": [
+          "FIRE",
+          "STEAM"
+        ]
+      },
+      {
+        "clue": "CHILL",
+        "number": 2,
+        "targets": [
+          "ICE",
+          "GAS"
+        ]
+      },
+      {
+        "clue": "BET",
+        "number": 3,
+        "targets": [
+          "DICE",
+          "POKER",
+          "CHESS"
+        ]
+      },
+      {
+        "clue": "WATER",
+        "number": 2,
+        "targets": [
+          "STEAM",
+          "WAVE"
+        ]
+      },
+      {
+        "clue": "CROSS",
+        "number": 2,
+        "targets": [
+          "BRIDGE",
+          "WAVE"
+        ]
+      }
+    ]
+  }
+]
