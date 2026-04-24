@@ -2,7 +2,7 @@
 
 Use this in order. Your **Supabase project ref** is in **Project Settings → General** (the subdomain in `https://REF.supabase.co`).
 
-Replace **`YOUR_SITE`** with your real site (e.g. `https://exprobable.com` or your Vercel URL).
+Replace **`YOUR_SITE`** with your real site (e.g. `https://neoma.com` or your Vercel URL).
 
 ### If your ref is `vryzbzskpqowooeyrshw` — click these
 
@@ -54,7 +54,7 @@ Below, **`REF`** = your ref if different from above. Replace `REF` in URLs if ne
 2. Type: **Web application**. Name: e.g. `Neoma`.
 3. **Authorized JavaScript origins** — **Add URI**:
    - `http://localhost:3000`
-   - `YOUR_SITE` (no path; e.g. `https://exprobable.com`)
+   - `YOUR_SITE` (no path; e.g. `https://neoma.com`)
 4. **Authorized redirect URIs** — **Add URI** (must match Supabase exactly):
 
    `https://REF.supabase.co/auth/v1/callback`

@@ -1,10 +1,12 @@
 {
+  "buildCommand": "npm --prefix newsroom ci && npm --prefix newsroom run build",
+  "outputDirectory": ".",
   "functions": {
     "api/codenames/*.js": {
       "maxDuration": 60
     },
     "api/newspaper.js": {
-      "maxDuration": 180
+      "maxDuration": 300
     },
     "api/imposter/*.js": {
       "maxDuration": 60
